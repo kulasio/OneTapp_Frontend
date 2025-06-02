@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFC Website - Login/Signup</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Login Form -->
+        <div id="loginForm">
+            <h2>Login</h2>
+            <form id="login">
+                <div class="form-group">
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password:</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit">Login</button>
+                <div id="loginMessage"></div>
+            </form>
+            <div class="toggle-form">
+                <p>Don't have an account? <a href="#" onclick="toggleForms()">Sign up</a></p>
+            </div>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signupForm" style="display: none;">
+            <h2>Sign Up</h2>
+            <form id="signup">
+                <div class="form-group">
+                    <label for="signupName">Name:</label>
+                    <input type="text" id="signupName" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email:</label>
+                    <input type="email" id="signupEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password:</label>
+                    <input type="password" id="signupPassword" required>
+                </div>
+                <button type="submit">Sign Up</button>
+                <div id="signupMessage"></div>
+            </form>
+            <div class="toggle-form">
+                <p>Already have an account? <a href="#" onclick="toggleForms()">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle between login and signup forms
+        function toggleForms() {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            if (loginForm.style.display === 'none') {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+            } else {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+            }
+        }
+
+        // Handle login form submission
+        document.getElementById('login').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const messageDiv = document.getElementById('loginMessage');
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    messageDiv.className = 'success';
+                    messageDiv.textContent = 'Login successful!';
+                    // Redirect or update UI as needed
+                } else {
+                    messageDiv.className = 'error';
+                    messageDiv.textContent = data.message || 'Login failed';
+                }
+            } catch (error) {
+                messageDiv.className = 'error';
+                messageDiv.textContent = 'An error occurred. Please try again.';
+            }
+        });
+
+        // Handle signup form submission
+        document.getElementById('signup').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const messageDiv = document.getElementById('signupMessage');
+
+            try {
+                const response = await fetch('/api/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, email, password }),
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    messageDiv.className = 'success';
+                    messageDiv.textContent = 'Signup successful!';
+                    // Redirect or update UI as needed
+                } else {
+                    messageDiv.className = 'error';
+                    messageDiv.textContent = data.message || 'Signup failed';
+                }
+            } catch (error) {
+                messageDiv.className = 'error';
+                messageDiv.textContent = 'An error occurred. Please try again.';
+            }
+        });
+    </script>
+</body>
+</html> 
