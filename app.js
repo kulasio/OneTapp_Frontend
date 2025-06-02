@@ -1,3 +1,5 @@
+const API_BASE = 'https://onetapp-backend.onrender.com';
+
 // Toggle between login and signup forms
 function toggleForms() {
     const loginForm = document.getElementById('loginForm');
@@ -21,7 +23,7 @@ if (loginForm) {
         const messageDiv = document.getElementById('loginMessage');
         messageDiv.textContent = '';
         try {
-            const response = await fetch('/api/login', {
+            const response = await fetch(`${API_BASE}/api/users/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
@@ -56,7 +58,7 @@ if (signupForm) {
         const messageDiv = document.getElementById('signupMessage');
         messageDiv.textContent = '';
         try {
-            const response = await fetch('/api/signup', {
+            const response = await fetch(`${API_BASE}/api/users`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, email, password })
