@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>User Dashboard</h2>
+        <button onclick="logout()" class="logout-btn">Logout</button>
+        <h3>Add New User</h3>
+        <form id="addUserForm">
+            <div class="form-group">
+                <label for="addName">Name:</label>
+                <input type="text" id="addName" required>
+            </div>
+            <div class="form-group">
+                <label for="addEmail">Email:</label>
+                <input type="email" id="addEmail" required>
+            </div>
+            <div class="form-group">
+                <label for="addPassword">Password:</label>
+                <input type="password" id="addPassword" required>
+            </div>
+            <button type="submit">Add User</button>
+            <div id="addUserMessage"></div>
+        </form>
+        <h3>All Users</h3>
+        <table id="usersTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Users will be loaded here -->
+            </tbody>
+        </table>
+        <div id="editUserModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeEditModal()">&times;</span>
+                <h3>Edit User</h3>
+                <form id="editUserForm">
+                    <input type="hidden" id="editUserId">
+                    <div class="form-group">
+                        <label for="editName">Name:</label>
+                        <input type="text" id="editName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editEmail">Email:</label>
+                        <input type="email" id="editEmail" required>
+                    </div>
+                    <button type="submit">Update User</button>
+                    <div id="editUserMessage"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="dashboard.js"></script>
+</body>
+</html> 
