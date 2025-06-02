@@ -54,6 +54,9 @@
     </div>
 
     <script>
+        // Get the base URL for API calls
+        const API_BASE_URL = window.location.origin;
+
         // Toggle between login and signup forms
         function toggleForms() {
             const loginForm = document.getElementById('loginForm');
@@ -73,9 +76,13 @@
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             const messageDiv = document.getElementById('loginMessage');
+            const submitButton = e.target.querySelector('button');
 
             try {
-                const response = await fetch('/api/login', {
+                submitButton.disabled = true;
+                submitButton.textContent = 'Logging in...';
+                
+                const response = await fetch(`${API_BASE_URL}/api/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -87,7 +94,11 @@
                 if (response.ok) {
                     messageDiv.className = 'success';
                     messageDiv.textContent = 'Login successful!';
-                    // Redirect or update UI as needed
+                    // Store the token
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    // Redirect to dashboard or home page
+                    window.location.href = '/dashboard.html';
                 } else {
                     messageDiv.className = 'error';
                     messageDiv.textContent = data.message || 'Login failed';
@@ -95,6 +106,9 @@
             } catch (error) {
                 messageDiv.className = 'error';
                 messageDiv.textContent = 'An error occurred. Please try again.';
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Login';
             }
         });
 
@@ -105,9 +119,13 @@
             const email = document.getElementById('signupEmail').value;
             const password = document.getElementById('signupPassword').value;
             const messageDiv = document.getElementById('signupMessage');
+            const submitButton = e.target.querySelector('button');
 
             try {
-                const response = await fetch('/api/signup', {
+                submitButton.disabled = true;
+                submitButton.textContent = 'Signing up...';
+
+                const response = await fetch(`${API_BASE_URL}/api/signup`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -119,7 +137,11 @@
                 if (response.ok) {
                     messageDiv.className = 'success';
                     messageDiv.textContent = 'Signup successful!';
-                    // Redirect or update UI as needed
+                    // Store the token
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    // Redirect to dashboard or home page
+                    window.location.href = '/dashboard.html';
                 } else {
                     messageDiv.className = 'error';
                     messageDiv.textContent = data.message || 'Signup failed';
@@ -127,6 +149,9 @@
             } catch (error) {
                 messageDiv.className = 'error';
                 messageDiv.textContent = 'An error occurred. Please try again.';
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Sign Up';
             }
         });
     </script>
