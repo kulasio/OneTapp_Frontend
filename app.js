@@ -34,8 +34,8 @@ if (loginForm) {
                 messageDiv.textContent = 'Login successful!';
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
-                // Redirect to dashboard or home page
-                // window.location.href = '/dashboard.html';
+                // Redirect to dashboard
+                window.location.href = 'dashboard.html';
             } else {
                 messageDiv.className = 'error';
                 messageDiv.textContent = data.message || 'Login failed';
