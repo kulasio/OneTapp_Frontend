@@ -105,10 +105,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             try {
                 // Show loading state
-                const submitBtn = this.querySelector('button[type="submit"]');
-                const originalText = submitBtn.textContent;
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Creating Account...';
+                const submitButton = this.querySelector('button[type="submit"]');
+                const originalText = submitButton.textContent;
+                submitButton.disabled = true;
+                submitButton.textContent = 'Creating Account...';
 
                 // API call would go here
                 // const response = await fetch('your-api-endpoint', {
@@ -129,8 +129,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Show error message
             } finally {
                 // Reset button state
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
+                submitButton.disabled = false;
+                submitButton.textContent = originalText;
             }
         });
     }
