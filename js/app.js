@@ -87,6 +87,8 @@ if (localStorage.getItem('cookieConsent') === 'accepted') {
 }
 
 // Form Submissions
+const API_BASE = 'https://onetapp-backend.onrender.com';
+
 document.getElementById('signupForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
@@ -117,7 +119,7 @@ document.getElementById('signupForm').addEventListener('submit', async function(
     submitButton.disabled = true;
 
     try {
-        const response = await fetch('/api/users', {
+        const response = await fetch(`${API_BASE}/api/users`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -143,7 +145,7 @@ document.getElementById('signupForm').addEventListener('submit', async function(
             alert('Account created successfully!');
             // Automatically log in the user
             try {
-                const loginResponse = await fetch('/api/users/login', {
+                const loginResponse = await fetch(`${API_BASE}/api/users/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -254,7 +256,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     };
 
     try {
-        const response = await fetch('/api/users/login', {
+        const response = await fetch(`${API_BASE}/api/users/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
