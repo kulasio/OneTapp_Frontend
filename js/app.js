@@ -98,6 +98,7 @@ document.getElementById('signupForm').addEventListener('submit', async function(
     const firstName = document.getElementById('signupFirstName').value;
     const lastName = document.getElementById('signupLastName').value;
     const email = document.getElementById('signupEmail').value;
+    const phone = document.getElementById('signupPhone').value;
     const password = document.getElementById('signupPassword').value;
     const confirmPassword = document.getElementById('signupConfirmPassword').value;
 
@@ -126,8 +127,10 @@ document.getElementById('signupForm').addEventListener('submit', async function(
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                name: `${firstName} ${lastName}`,
+                firstName,
+                lastName,
                 email,
+                phone,
                 password
             })
         });
