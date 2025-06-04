@@ -94,19 +94,42 @@ if (localStorage.getItem('cookieConsent') === 'accepted') {
 document.getElementById('signupForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
-    const formData = {
-        name: document.getElementById('signupName').value,
-        email: document.getElementById('signupEmail').value,
-        password: document.getElementById('signupPassword').value
-    };
+    // Get form data
+    const firstName = document.getElementById('signupFirstName').value;
+    const lastName = document.getElementById('signupLastName').value;
+    const email = document.getElementById('signupEmail').value;
+    const password = document.getElementById('signupPassword').value;
+    const confirmPassword = document.getElementById('signupConfirmPassword').value;
+
+    // Validate passwords match
+    if (password !== confirmPassword) {
+        alert('Passwords do not match');
+        return;
+    }
+
+    // Validate password strength
+    if (password.length < 6) {
+        alert('Password must be at least 6 characters long');
+        return;
+    }
+
+    // Show loading state
+    const submitButton = this.querySelector('button[type="submit"]');
+    const originalButtonText = submitButton.innerHTML;
+    submitButton.innerHTML = 'Creating Account...';
+    submitButton.disabled = true;
 
     try {
-        const response = await fetch('/api/users/register', {
+        const response = await fetch('/api/users', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(formData)
+            body: JSON.stringify({
+                name: `${firstName} ${lastName}`,
+                email,
+                password
+            })
         });
 
         const data = await response.json();
@@ -123,8 +146,71 @@ document.getElementById('signupForm').addEventListener('submit', async function(
     } catch (error) {
         console.error('Error:', error);
         alert('An error occurred. Please try again.');
+    } finally {
+        // Reset button state
+        submitButton.innerHTML = originalButtonText;
+        submitButton.disabled = false;
     }
 });
+
+// Password strength indicator
+document.getElementById('signupPassword').addEventListener('input', function(e) {
+    const password = e.target.value;
+    const strengthBar = document.querySelector('.strength-level');
+    const strengthText = document.querySelector('.strength-text');
+    
+    // Calculate password strength
+    let strength = 0;
+    if (password.length >= 6) strength += 1;
+    if (password.match(/[a-z]+/)) strength += 1;
+    if (password.match(/[A-Z]+/)) strength += 1;
+    if (password.match(/[0-9]+/)) strength += 1;
+    if (password.match(/[^a-zA-Z0-9]+/)) strength += 1;
+
+    // Update strength bar
+    const strengthPercentage = (strength / 5) * 100;
+    strengthBar.style.width = `${strengthPercentage}%`;
+
+    // Update strength text and color
+    let strengthMessage = '';
+    let strengthColor = '';
+    switch(strength) {
+        case 0:
+        case 1:
+            strengthMessage = 'Very Weak';
+            strengthColor = '#ff4444';
+            break;
+        case 2:
+            strengthMessage = 'Weak';
+            strengthColor = '#ffbb33';
+            break;
+        case 3:
+            strengthMessage = 'Medium';
+            strengthColor = '#ffeb3b';
+            break;
+        case 4:
+            strengthMessage = 'Strong';
+            strengthColor = '#00C851';
+            break;
+        case 5:
+            strengthMessage = 'Very Strong';
+            strengthColor = '#007E33';
+            break;
+    }
+    
+    strengthBar.style.backgroundColor = strengthColor;
+    strengthText.textContent = strengthMessage;
+    strengthText.style.color = strengthColor;
+});
+
+// Toggle password visibility
+function togglePassword(inputId, toggleButton) {
+    const input = document.getElementById(inputId);
+    const type = input.type === 'password' ? 'text' : 'password';
+    input.type = type;
+    toggleButton.classList.toggle('fa-eye');
+    toggleButton.classList.toggle('fa-eye-slash');
+}
 
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
