@@ -3,55 +3,556 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFC Website - Login/Signup</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="OneTapp NFC - Revolutionize your networking with digital business cards">
+    <meta name="keywords" content="NFC, business cards, digital cards, networking, contact sharing">
+    <title>OneTapp NFC Landing Page</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Add AOS library for scroll animations -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
 <body>
-    <div class="container">
-        <!-- Login Form -->
-        <div id="loginForm">
-            <h2>Login</h2>
-            <form id="login">
-                <div class="form-group">
-                    <label for="loginEmail">Email:</label>
-                    <input type="email" id="loginEmail" required>
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword">Password:</label>
-                    <input type="password" id="loginPassword" required>
-                </div>
-                <button type="submit">Login</button>
-                <div id="loginMessage"></div>
-            </form>
-            <div class="toggle-form">
-                <p>Don't have an account? <a href="#" onclick="toggleForms()">Sign up</a></p>
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" class="cookie-consent">
+        <p>We use cookies to enhance your experience. By continuing to visit this site you agree to our use of cookies.</p>
+        <button onclick="acceptCookies()" class="btn btn-primary">Accept</button>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="back-to-top" title="Back to Top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenu" class="mobile-menu">
+        <button class="mobile-menu__close" onclick="toggleMobileMenu()">
+            <i class="fas fa-times"></i>
+        </button>
+        <nav class="mobile-menu__nav">
+            <ul>
+                <li><a href="#home" onclick="toggleMobileMenu()">Home</a></li>
+                <li><a href="#features" onclick="toggleMobileMenu()">Features</a></li>
+                <li><a href="#pricing" onclick="toggleMobileMenu()">Pricing</a></li>
+                <li><a href="#contact" onclick="toggleMobileMenu()">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Navbar Section -->
+    <header class="navbar" id="navbar">
+        <div class="navbar__logo">
+            <img src="images/OneTapp_Logo.png" alt="OneTapp Logo" class="onetapp-logo">
+        </div>
+        <button class="navbar__mobile-toggle" onclick="toggleMobileMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <nav class="navbar__nav">
+            <ul class="navbar__links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li class="navbar__dropdown">
+                    <a href="#">More <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-menu">
+                        <a href="#about">About Us</a>
+                        <a href="#blog">Blog</a>
+                        <a href="#support">Support</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <div class="navbar__actions">
+            <button class="btn btn-outline" onclick="showHelpModal()">Help</button>
+            <button class="btn btn-primary" onclick="showSignupModal()">Join</button>
+        </div>
+    </header>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero__content">
+            <h1>Revolutionize Networking with OneTapp NFC Cards</h1>
+            <p>OneTapp empowers you to connect effortlessly using NFC technology. Manage your digital business card with real-time analytics and seamless CRM integration.</p>
+            <div class="hero__buttons">
+                <button class="btn btn-primary" onclick="showSignupModal()">Sign Up</button>
+                <button class="btn btn-outline">Learn More</button>
             </div>
         </div>
-
-        <!-- Signup Form -->
-        <div id="signupForm" style="display: none;">
-            <h2>Sign Up</h2>
-            <form id="signup">
-                <div class="form-group">
-                    <label for="signupName">Name:</label>
-                    <input type="text" id="signupName" required>
-                </div>
-                <div class="form-group">
-                    <label for="signupEmail">Email:</label>
-                    <input type="email" id="signupEmail" required>
-                </div>
-                <div class="form-group">
-                    <label for="signupPassword">Password:</label>
-                    <input type="password" id="signupPassword" required>
-                </div>
-                <button type="submit">Sign Up</button>
-                <div id="signupMessage"></div>
-            </form>
-            <div class="toggle-form">
-                <p>Already have an account? <a href="#" onclick="toggleForms()">Login</a></p>
+        <div class="hero__image">
+            <img src="images/Agent1.png" alt="OneTapp Agent" class="hero-main-image">
+        </div>
+    </section>
+    <!-- Features Overview -->
+    <section class="features-overview">
+        <div class="features-overview__columns">
+            <div class="features-overview__column">
+                <h3>Explore Our Features</h3>
+                <ul>
+                    <li><i class="fa-solid fa-chart-line"></i><div>Analytics Dashboard<br><small>Track your NFC card performance in real-time.</small></div></li>
+                    <li><i class="fa-solid fa-user-circle"></i><div>Profile Management<br><small>Easily update your digital business card details.</small></div></li>
+                    <li><i class="fa-solid fa-plug"></i><div>CRM Integration<br><small>Seamlessly connect with your favorite CRM tools.</small></div></li>
+                    <li><i class="fa-solid fa-users"></i><div>Team Management<br><small>Collaborate effectively with your team members.</small></div></li>
+                </ul>
             </div>
+            <div class="features-overview__column">
+                <h3>Manage Your Cards</h3>
+                <ul>
+                    <li><i class="fa-solid fa-id-badge"></i><div>Card Activation<br><small>Check the status of your NFC cards.</small></div></li>
+                    <li><i class="fa-solid fa-cogs"></i><div>System Settings<br><small>Choose your subscription plan and manage billing.</small></div></li>
+                    <li><i class="fa-solid fa-bell"></i><div>Notifications<br><small>Stay updated with real-time alerts and reports.</small></div></li>
+                    <li><i class="fa-solid fa-headset"></i><div>Support Center<br><small>Get help and support for your NFC card.</small></div></li>
+                </ul>
+            </div>
+            <div class="features-overview__column">
+                <h3>Additional Resources</h3>
+                <ul>
+                    <li><i class="fa-solid fa-blog"></i><div>Blog Articles<br><small>Read insights and tips on NFC technology.</small></div></li>
+                    <li><i class="fa-solid fa-book-open"></i><div>Case Studies<br><small>Learn how others are using NFC cards.</small></div></li>
+                    <li><i class="fa-solid fa-question-circle"></i><div>FAQs<br><small>Find answers to common questions about NFC.</small></div></li>
+                    <li><i class="fa-solid fa-book"></i><div>User Guides<br><small>Step-by-step instructions for using our service.</small></div></li>
+                </ul>
+            </div>
+            <div class="features-overview__column">
+                <h3>Stay Connected</h3>
+                <ul>
+                    <li><i class="fa-solid fa-hashtag"></i><div>Social Media<br><small>Follow us for updates and news.</small></div></li>
+                    <li><i class="fa-solid fa-envelope-open-text"></i><div>Newsletter Signup<br><small>Subscribe for the latest news and offers.</small></div></li>
+                    <li><i class="fa-solid fa-life-ring"></i><div>Contact Support<br><small>Reach out for assistance with your account.</small></div></li>
+                    <li><i class="fa-solid fa-comment-dots"></i><div>Feedback<br><small>We value your thoughts and suggestions.</small></div></li>
+                </ul>
+            </div>
+        </div>
+        <div class="features-overview__signup">
+            Ready to elevate your networking? <a href="#" class="signup-link" onclick="showSignupModal()">Sign up for free</a>
+        </div>
+    </section>
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="features-section__header">
+            <span>Features</span>
+            <h2>Discover Our Powerful NFC Business Card Features</h2>
+            <p>Unlock the full potential of your networking with our innovative NFC business card solutions. Our features are designed to enhance your professional interactions and streamline your contact management.</p>
+        </div>
+        <div class="features-section__items">
+            <div class="feature-item">
+                <i class="fa-solid fa-chart-bar"></i>
+                <h3>Real-Time Analytics for Informed Decisions</h3>
+                <p>Monitor your card's performance with real-time analytics.</p>
+            </div>
+            <div class="feature-item">
+                <i class="fa-solid fa-id-card"></i>
+                <h3>Effortless Profile Management at Your Fingertips</h3>
+                <p>Easily edit and manage your digital card profile.</p>
+            </div>
+            <div class="feature-item">
+                <i class="fa-solid fa-network-wired"></i>
+                <h3>Seamless CRM Integration for Enhanced Engagement</h3>
+                <p>Track client interactions and export data effortlessly.</p>
+            </div>
+        </div>
+        <div class="features-section__buttons">
+            <button class="btn btn-outline">Learn More</button>
+            <button class="btn btn-primary" onclick="showSignupModal()">Sign Up <span>&#8594;</span></button>
+        </div>
+    </section>
+    <!-- Service Offerings Section -->
+    <section class="services-section">
+        <div class="services-section__header">
+            <span>Innovate</span>
+            <h2>Explore Our Comprehensive Service Offerings</h2>
+            <p>OneTapp offers tailored solutions for individuals and businesses alike. Our plans are designed to enhance your networking experience and streamline your contact management.</p>
+        </div>
+        <div class="services-section__items">
+            <div class="service-item">
+                <i class="fa-solid fa-user"></i>
+                <h3>Individual Plans for Personal Networking</h3>
+                <p>Our individual plans empower you to create and manage your digital business card effortlessly.</p>
+            </div>
+            <div class="service-item">
+                <i class="fa-solid fa-users-cog"></i>
+                <h3>Pro and Enterprise Plans for Teams</h3>
+                <p>Unlock advanced features with our Pro and Enterprise plans, designed for collaborative teams.</p>
+            </div>
+            <div class="service-item">
+                <i class="fa-solid fa-sync-alt"></i>
+                <h3>Seamless CRM Integrations for Enhanced Tracking</h3>
+                <p>Integrate with popular CRMs to track engagement and streamline your workflow.</p>
+            </div>
+        </div>
+        <div class="services-section__buttons">
+            <button class="btn btn-outline">Learn More</button>
+            <button class="btn btn-primary" onclick="showSignupModal()">Sign Up <span>&#8594;</span></button>
+        </div>
+    </section>
+    <!-- Testimonial Section -->
+    <section class="testimonial-section">
+        <div class="testimonial-section__image">
+            <div class="image-placeholder"></div>
+        </div>
+        <div class="testimonial-section__content">
+            <span>Impressive</span>
+            <h2>Discover the Power of OneTapp Today</h2>
+            <p>Join thousands of users leveraging OneTapp for seamless networking. Experience the future of business cards with our innovative NFC technology.</p>
+            <div class="testimonial-section__stats">
+                <div class="stat">
+                    <span class="stat-value">75%</span>
+                    <span class="stat-label">Users have increased their connections significantly.</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">100K</span>
+                    <span class="stat-label">Total scans recorded this month.</span>
+                </div>
+            </div>
+            <div class="testimonial-section__buttons">
+                <button class="btn btn-outline">Learn More</button>
+                <button class="btn btn-primary" onclick="showSignupModal()">Sign Up <span>&#8594;</span></button>
+            </div>
+        </div>
+    </section>
+    <!-- Customer Quote Section -->
+    <section class="customer-quote-section">
+        <div class="customer-quote-section__content">
+            <div class="customer-quote-section__logo">Webflow</div>
+            <blockquote>
+                "OneTapp has transformed the way I connect with clients. The analytics dashboard is a game changer!"
+            </blockquote>
+            <div class="customer-quote-section__author">
+                <div class="author-image-placeholder"></div>
+                <div>
+                    <div class="author-name">Jane Doe</div>
+                    <div class="author-title">Marketing Director, Acme Corp</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Pricing Plans Section -->
+    <section class="pricing-section">
+        <div class="pricing-section__header">
+            <span>Affordable</span>
+            <h2>Pricing Plans</h2>
+            <p>Choose the plan that fits your business needs.</p>
+            <div class="pricing-section__toggle">
+                <button class="btn btn-outline" id="monthlyBtn">Monthly</button>
+                <button class="btn btn-outline" id="yearlyBtn">Yearly</button>
+            </div>
+        </div>
+        <div class="pricing-section__plans">
+            <div class="pricing-plan">
+                <h3>Starter Tap</h3>
+                <div class="pricing-plan__price" id="starterPrice">₱99/mo</div>
+                <ul>
+                    <li>1 NFC Card profile</li>
+                    <li>Basic contact & social media sharing</li>
+                    <li>100 scans/month</li>
+                    <li>Standard design template</li>
+                    <li>QR Code support</li>
+                    <li>Analytics: Tap count only</li>
+                    <li>Email support</li>
+                </ul>
+                <button class="btn btn-primary" onclick="showSignupModal()">Subscribe Now</button>
+            </div>
+            <div class="pricing-plan">
+                <h3>Pro Tap</h3>
+                <div class="pricing-plan__price" id="proPrice">₱299/mo</div>
+                <ul>
+                    <li>3 NFC Card profiles</li>
+                    <li>Contact sharing with multimedia links</li>
+                    <li>Unlimited scans</li>
+                    <li>Custom profile themes and drag-and-drop design</li>
+                    <li>Cloud dashboard (basic analytics)</li>
+                    <li>Real-time tap notifications</li>
+                    <li>CRM integration (Lite)</li>
+                    <li>Geo-tracking of scans</li>
+                    <li>Priority email & chat support</li>
+                </ul>
+                <button class="btn btn-primary" onclick="showSignupModal()">Subscribe Now</button>
+            </div>
+            <div class="pricing-plan">
+                <h3>Power Tap</h3>
+                <div class="pricing-plan__price" id="powerPrice">₱899/mo</div>
+                <ul>
+                    <li>Up to 10 NFC Card profiles</li>
+                    <li>Team dashboard access</li>
+                    <li>Full CRM integration</li>
+                    <li>Advanced analytics</li>
+                    <li>White-label branding</li>
+                    <li>NFC card printing discounts</li>
+                    <li>API access for internal tools</li>
+                    <li>Dedicated account manager</li>
+                    <li>24/7 support</li>
+                </ul>
+                <button class="btn btn-primary" onclick="showSignupModal()">Subscribe Now</button>
+            </div>
+        </div>
+    </section>
+    <!-- Call to Action Section -->
+    <section class="cta-section">
+        <div class="cta-section__content">
+            <h2>Unlock Your Networking Potential</h2>
+            <p>Experience seamless connections with our NFC business cards. Start your free trial today!</p>
+            <div class="cta-section__buttons">
+                <button class="btn btn-primary" onclick="showSignupModal()">Sign Up</button>
+                <button class="btn btn-outline">Learn More</button>
+            </div>
+        </div>
+        <div class="cta-section__image">
+            <div class="image-placeholder"></div>
+        </div>
+    </section>
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <div class="contact-section__header">
+            <span>Connect</span>
+            <h2>Get in Touch</h2>
+            <p>Reach out to our support or sales team.</p>
+        </div>
+        <div class="contact-section__content">
+            <div class="contact-section__info">
+                <div class="contact-item">
+                    <i class="fa-solid fa-envelope"></i>
+                    <strong>Email</strong><br>
+                    <small>Contact us anytime</small><br>
+                    <a href="mailto:support@onetapp.com">support@onetapp.com</a>
+                </div>
+                <div class="contact-item">
+                    <i class="fa-solid fa-phone"></i>
+                    <strong>Phone</strong><br>
+                    <small>We're here to help</small><br>
+                    <a href="tel:+15551234567">+1 (555) 123-4567</a>
+                </div>
+                <div class="contact-item">
+                    <i class="fa-solid fa-building"></i>
+                    <strong>Office</strong><br>
+                    <small>456 Business Rd, Sydney NSW 2000 AU</small><br>
+                    <a href="#">Get Directions <span>&#8594;</span></a>
+                </div>
+            </div>
+            <div class="contact-section__image">
+                <div class="image-placeholder"></div>
+            </div>
+        </div>
+    </section>
+    <!-- Footer Section -->
+    <footer class="footer">
+        <div class="footer__top">
+            <div class="footer__logo">
+                <img src="images/OneTapp_Logo.png" alt="OneTapp Logo" class="onetapp-logo">
+            </div>
+            <div class="footer__address">
+                <strong>Address:</strong><br>
+                Level 1, 12 Sample St, Sydney NSW 2000<br>
+                <strong>Contact:</strong><br>
+                1800 123 4567<br>
+                <a href="mailto:info@onetapp.com">info@onetapp.com</a>
+            </div>
+            <div class="footer__links">
+                <ul>
+                    <li>About Us</li>
+                    <li>Contact Us</li>
+                    <li>Support Center</li>
+                    <li>Blog Posts</li>
+                    <li>FAQs</li>
+                    <li>Careers</li>
+                    <li>Partnerships</li>
+                    <li>User Guide</li>
+                    <li>Feedback</li>
+                    <li>Community</li>
+                </ul>
+            </div>
+            <div class="footer__social">
+                <i class="fa-brands fa-facebook-f"></i>
+                <i class="fa-brands fa-twitter"></i>
+                <i class="fa-brands fa-linkedin-in"></i>
+                <i class="fa-brands fa-instagram"></i>
+            </div>
+        </div>
+        <div class="footer__bottom">
+            <span>&copy; 2025 OneTapp. All rights reserved.</span>
+            <span>
+                <a href="#">Privacy Policy</a> |
+                <a href="#">Terms of Service</a> |
+                <a href="#">Cookies Settings</a>
+            </span>
+        </div>
+    </footer>
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal">
+        <div class="modal__content">
+            <span class="modal__close" onclick="closeHelpModal()">&times;</span>
+            <h2>Need Help?</h2>
+            <p>Our support team is here to assist you.</p>
+            <form id="helpForm" onsubmit="submitHelpForm(event)">
+                <div class="form-group">
+                    <label for="helpEmail">Email:</label>
+                    <input type="email" id="helpEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="helpMessage">Message:</label>
+                    <textarea id="helpMessage" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
         </div>
     </div>
-    <script src="app.js"></script>
+
+    <!-- New Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal__content signup-modal">
+            <span class="modal__close" onclick="closeSignupModal()">&times;</span>
+            <div class="signup-header">
+                <h2>Create Your Account</h2>
+                <p>Join OneTapp NFC and revolutionize your networking experience</p>
+            </div>
+            <form id="signupForm" onsubmit="submitSignupForm(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signupFirstName">First Name</label>
+                        <input type="text" id="signupFirstName" required placeholder="Enter your first name">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupLastName">Last Name</label>
+                        <input type="text" id="signupLastName" required placeholder="Enter your last name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email Address</label>
+                    <input type="email" id="signupEmail" required placeholder="Enter your email address">
+                </div>
+                <div class="form-group">
+                    <label for="signupPhone">Phone Number</label>
+                    <div class="phone-input">
+                        <span class="country-code">+63</span>
+                        <input type="tel" id="signupPhone" required placeholder="Enter your phone number" pattern="[0-9]{10}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <div class="password-input">
+                        <input type="password" id="signupPassword" required placeholder="Create a password">
+                        <span class="toggle-password" onclick="togglePassword('signupPassword', this)"></span>
+                    </div>
+                    <div class="password-strength">
+                        <div class="strength-bar">
+                            <div class="strength-level"></div>
+                        </div>
+                        <span class="strength-text">Password strength</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="signupConfirmPassword">Confirm Password</label>
+                    <div class="password-input">
+                        <input type="password" id="signupConfirmPassword" required placeholder="Confirm your password">
+                        <span class="toggle-password" onclick="togglePassword('signupConfirmPassword', this)"></span>
+                    </div>
+                </div>
+                <div class="form-group terms-group">
+                    <label class="terms-label">
+                        <input type="checkbox" id="signupTerms" required>
+                        <span>I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a></span>
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                <div class="signup-divider">
+                    <span>or continue with</span>
+                </div>
+                <div class="social-signup">
+                    <button type="button" class="btn btn-social btn-google">
+                        <i class="fa-brands fa-google"></i>
+                        <span>Google</span>
+                    </button>
+                    <button type="button" class="btn btn-social btn-phone">
+                        <i class="fa-solid fa-mobile-alt"></i>
+                        <span>Phone</span>
+                    </button>
+                </div>
+                <div class="signup-footer">
+                    Already have an account? <a href="#" onclick="showLoginModal()">Log in</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        // Sticky Navbar
+        window.onscroll = function() {
+            const navbar = document.getElementById('navbar');
+            if (window.pageYOffset > 50) {
+                navbar.classList.add('navbar--sticky');
+            } else {
+                navbar.classList.remove('navbar--sticky');
+            }
+        };
+
+        // Back to Top Button
+        const backToTopButton = document.getElementById('backToTop');
+        window.onscroll = function() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                backToTopButton.style.display = "block";
+            } else {
+                backToTopButton.style.display = "none";
+            }
+        };
+
+        backToTopButton.onclick = function() {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        };
+
+        // Mobile Menu
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('mobile-menu--active');
+        }
+
+        // Cookie Consent
+        function acceptCookies() {
+            document.getElementById('cookieConsent').style.display = 'none';
+            localStorage.setItem('cookiesAccepted', 'true');
+        }
+
+        // Check if cookies were already accepted
+        if (localStorage.getItem('cookiesAccepted') === 'true') {
+            document.getElementById('cookieConsent').style.display = 'none';
+        }
+
+        // Modal Functions
+        function showHelpModal() {
+            document.getElementById('helpModal').style.display = 'block';
+        }
+
+        function closeHelpModal() {
+            document.getElementById('helpModal').style.display = 'none';
+        }
+
+        // Form Submissions
+        function submitHelpForm(event) {
+            event.preventDefault();
+            // Add your form submission logic here
+            closeHelpModal();
+        }
+
+        // Smooth Scrolling for all anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
 </body>
-</html> 
+</html>
