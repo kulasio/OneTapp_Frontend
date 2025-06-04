@@ -27,14 +27,12 @@ function closeLoginModal() {
 }
 
 function showHelpModal() {
-    const modal = document.getElementById('helpModal');
-    modal.style.display = 'block';
+    document.getElementById('helpModal').classList.add('show');
     document.body.style.overflow = 'hidden';
 }
 
 function closeHelpModal() {
-    const modal = document.getElementById('helpModal');
-    modal.style.display = 'none';
+    document.getElementById('helpModal').classList.remove('show');
     document.body.style.overflow = 'auto';
 }
 
