@@ -52,7 +52,8 @@ const signupForm = document.getElementById('signup');
 if (signupForm) {
     signupForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const name = document.getElementById('signupName').value;
+        const firstName = document.getElementById('signupFirstName').value;
+        const lastName = document.getElementById('signupLastName').value;
         const email = document.getElementById('signupEmail').value;
         const password = document.getElementById('signupPassword').value;
         const messageDiv = document.getElementById('signupMessage');
@@ -61,7 +62,13 @@ if (signupForm) {
             const response = await fetch(`${API_BASE}/api/users`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, password })
+                body: JSON.stringify({
+                    firstName,
+                    lastName,
+                    email,
+                    phone: document.getElementById('signupPhone').value,
+                    password
+                })
             });
             const data = await response.json();
             if (response.ok) {
