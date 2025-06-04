@@ -7,26 +7,22 @@ AOS.init({
 
 // Modal Functions
 function showSignupModal() {
-    const modal = document.getElementById('signupModal');
-    modal.style.display = 'block';
+    document.getElementById('signupModal').classList.add('show');
     document.body.style.overflow = 'hidden'; // Prevent background scrolling
 }
 
 function closeSignupModal() {
-    const modal = document.getElementById('signupModal');
-    modal.style.display = 'none';
+    document.getElementById('signupModal').classList.remove('show');
     document.body.style.overflow = 'auto'; // Restore scrolling
 }
 
 function showLoginModal() {
-    const modal = document.getElementById('loginModal');
-    modal.style.display = 'block';
+    document.getElementById('loginModal').classList.add('show');
     document.body.style.overflow = 'hidden';
 }
 
 function closeLoginModal() {
-    const modal = document.getElementById('loginModal');
-    modal.style.display = 'none';
+    document.getElementById('loginModal').classList.remove('show');
     document.body.style.overflow = 'auto';
 }
 
@@ -140,7 +136,29 @@ document.getElementById('signupForm').addEventListener('submit', async function(
         if (response.ok) {
             // Success
             alert('Account created successfully!');
-            // Do not close the modal, do not show login modal, do not redirect
+            // Automatically log in the user
+            try {
+                const loginResponse = await fetch('/api/users/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password
+                    })
+                });
+                const loginData = await loginResponse.json();
+                if (loginResponse.ok) {
+                    localStorage.setItem('token', loginData.token);
+                    localStorage.setItem('user', JSON.stringify(loginData.user));
+                    window.location.href = '/dashboard.html';
+                } else {
+                    alert(loginData.message || 'Login after signup failed. Please log in manually.');
+                }
+            } catch (loginError) {
+                alert('An error occurred during automatic login. Please log in manually.');
+            }
         } else {
             // Error
             alert(data.message || 'Error creating account');
