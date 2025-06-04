@@ -137,8 +137,7 @@ document.getElementById('signupForm').addEventListener('submit', async function(
         if (response.ok) {
             // Success
             alert('Account created successfully!');
-            // closeSignupModal(); // Don't close the modal automatically
-            showLoginModal();
+            // Do not close the modal, do not show login modal, do not redirect
         } else {
             // Error
             alert(data.message || 'Error creating account');
