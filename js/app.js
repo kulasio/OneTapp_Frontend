@@ -278,44 +278,44 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     }
 });
 
-// Pricing Toggle
-const monthlyBtn = document.getElementById('monthlyBtn');
-const yearlyBtn = document.getElementById('yearlyBtn');
-const starterPrice = document.getElementById('starterPrice');
-const proPrice = document.getElementById('proPrice');
-const enterprisePrice = document.getElementById('enterprisePrice');
+// Pricing Toggle Functionality for Three Plans (Starter, Pro, Power)
+document.addEventListener('DOMContentLoaded', function() {
+    const monthlyBtn = document.getElementById('monthlyBtn');
+    const yearlyBtn = document.getElementById('yearlyBtn');
+    const starterPrice = document.getElementById('starterPrice');
+    const proPrice = document.getElementById('proPrice');
+    const powerPrice = document.getElementById('powerPrice');
 
-const prices = {
-    monthly: {
-        starter: '₱99/mo',
-        pro: '₱199/mo',
-        enterprise: '₱499/mo'
-    },
-    yearly: {
-        starter: '₱990/yr',
-        pro: '₱1,990/yr',
-        enterprise: '₱4,990/yr'
+    function setMonthly() {
+        if (monthlyBtn && yearlyBtn && starterPrice && proPrice && powerPrice) {
+            monthlyBtn.classList.add('btn-primary');
+            monthlyBtn.classList.remove('btn-outline');
+            yearlyBtn.classList.remove('btn-primary');
+            yearlyBtn.classList.add('btn-outline');
+            starterPrice.textContent = '₱99/mo';
+            proPrice.textContent = '₱299/mo';
+            powerPrice.textContent = '₱899/mo';
+        }
     }
-};
 
-monthlyBtn.addEventListener('click', function() {
-    monthlyBtn.classList.add('active');
-    yearlyBtn.classList.remove('active');
-    starterPrice.textContent = prices.monthly.starter;
-    proPrice.textContent = prices.monthly.pro;
-    enterprisePrice.textContent = prices.monthly.enterprise;
+    function setYearly() {
+        if (monthlyBtn && yearlyBtn && starterPrice && proPrice && powerPrice) {
+            yearlyBtn.classList.add('btn-primary');
+            yearlyBtn.classList.remove('btn-outline');
+            monthlyBtn.classList.remove('btn-primary');
+            monthlyBtn.classList.add('btn-outline');
+            starterPrice.textContent = '₱999/yr';
+            proPrice.textContent = '₱2,999/yr';
+            powerPrice.textContent = '₱8,999/yr';
+        }
+    }
+
+    if (monthlyBtn && yearlyBtn && starterPrice && proPrice && powerPrice) {
+        setMonthly(); // Default to monthly
+        monthlyBtn.addEventListener('click', setMonthly);
+        yearlyBtn.addEventListener('click', setYearly);
+    }
 });
-
-yearlyBtn.addEventListener('click', function() {
-    yearlyBtn.classList.add('active');
-    monthlyBtn.classList.remove('active');
-    starterPrice.textContent = prices.yearly.starter;
-    proPrice.textContent = prices.yearly.pro;
-    enterprisePrice.textContent = prices.yearly.enterprise;
-});
-
-// Set initial pricing to monthly
-monthlyBtn.click();
 
 // Navbar Scroll Effect
 window.addEventListener('scroll', function() {
