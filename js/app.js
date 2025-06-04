@@ -131,10 +131,15 @@ document.getElementById('signupForm').addEventListener('submit', async function(
             })
         });
 
-        const data = await response.json();
+        let data;
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            data = await response.json();
+        } else {
+            data = { message: await response.text() };
+        }
 
         if (response.ok) {
-            // Success
             alert('Account created successfully!');
             // Automatically log in the user
             try {
@@ -148,7 +153,13 @@ document.getElementById('signupForm').addEventListener('submit', async function(
                         password
                     })
                 });
-                const loginData = await loginResponse.json();
+                let loginData;
+                const loginContentType = loginResponse.headers.get('content-type');
+                if (loginContentType && loginContentType.includes('application/json')) {
+                    loginData = await loginResponse.json();
+                } else {
+                    loginData = { message: await loginResponse.text() };
+                }
                 if (loginResponse.ok) {
                     localStorage.setItem('token', loginData.token);
                     localStorage.setItem('user', JSON.stringify(loginData.user));
@@ -160,7 +171,6 @@ document.getElementById('signupForm').addEventListener('submit', async function(
                 alert('An error occurred during automatic login. Please log in manually.');
             }
         } else {
-            // Error
             alert(data.message || 'Error creating account');
         }
     } catch (error) {
@@ -168,8 +178,11 @@ document.getElementById('signupForm').addEventListener('submit', async function(
         alert('An error occurred. Please try again.');
     } finally {
         // Reset button state
-        submitButton.innerHTML = originalButtonText;
-        submitButton.disabled = false;
+        const submitButton = this.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.innerHTML = originalButtonText;
+            submitButton.disabled = false;
+        }
     }
 });
 
