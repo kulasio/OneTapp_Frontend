@@ -163,7 +163,7 @@ document.getElementById('signupForm').addEventListener('submit', async function(
                 if (loginResponse.ok) {
                     localStorage.setItem('token', loginData.token);
                     localStorage.setItem('user', JSON.stringify(loginData.user));
-                    window.location.href = '/dashboard.html';
+                    window.location.href = '/pages/dashboard.html';
                 } else {
                     alert(loginData.message || 'Login after signup failed. Please log in manually.');
                 }
@@ -267,7 +267,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         if (response.ok) {
             // Success
             localStorage.setItem('token', data.token);
-            window.location.href = '/dashboard.html'; // Redirect to dashboard
+            window.location.href = '/pages/dashboard.html'; // Redirect to dashboard
         } else {
             // Error
             alert(data.message || 'Invalid credentials');
