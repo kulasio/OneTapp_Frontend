@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OneTapp NFC - Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Admin Dashboard Layout */
+        .admin-dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background: #1a1a1a;
+            color: white;
+            padding: 2rem;
+        }
+
+        .sidebar__logo {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .sidebar__logo img {
+            max-width: 150px;
+        }
+
+        .sidebar__nav {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar__nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar__nav-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 1rem;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar__nav-link:hover,
+        .sidebar__nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar__nav-link i {
+            width: 20px;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .dashboard-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Card and Table Styles */
+        .admin-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .admin-table th {
+            font-weight: 600;
+            color: #666;
+        }
+
+        .admin-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1565c0;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #1976d2;
+            color: #1976d2;
+        }
+
+        .btn-outline:hover {
+            background: #1976d2;
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-edit {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .btn-delete {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+        .btn-view {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .btn-logout {
+            background: #fff;
+            color: #222;
+            border: 1px solid #eee;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        .btn-logout:hover {
+            background: #f5f5f5;
+            color: #1976d2;
+            border-color: #1976d2;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-badge.active {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-badge.inactive {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .notification.hide {
+            animation: slideOut 0.3s ease-out forwards;
+        }
+
+        .notification.success {
+            border-left: 4px solid #2e7d32;
+        }
+
+        .notification.error {
+            border-left: 4px solid #d32f2f;
+        }
+
+        .notification.info {
+            border-left: 4px solid #1976d2;
+        }
+
+        .notification i {
+            font-size: 1.25rem;
+        }
+
+        .notification.success i {
+            color: #2e7d32;
+        }
+
+        .notification.error i {
+            color: #d32f2f;
+        }
+
+        .notification.info i {
+            color: #1976d2;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .admin-dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .admin-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar__logo">
+                <img src="../images/OneTapp_Logo.png" alt="OneTapp Logo">
+            </div>
+            <nav>
+                <ul class="sidebar__nav">
+                    <li class="sidebar__nav-item">
+                        <a href="#" class="sidebar__nav-link active">
+                            <i class="fas fa-home"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="sidebar__nav-item">
+                        <a href="#" class="sidebar__nav-link">
+                            <i class="fas fa-users"></i>
+                            Users
+                        </a>
+                    </li>
+                    <li class="sidebar__nav-item">
+                        <a href="#" class="sidebar__nav-link">
+                            <i class="fas fa-id-card"></i>
+                            NFC Cards
+                        </a>
+                    </li>
+                    <li class="sidebar__nav-item">
+                        <a href="#" class="sidebar__nav-link">
+                            <i class="fas fa-chart-bar"></i>
+                            Analytics
+                        </a>
+                    </li>
+                    <li class="sidebar__nav-item">
+                        <a href="#" class="sidebar__nav-link">
+                            <i class="fas fa-cog"></i>
+                            Settings
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar__logout">
+                <button class="btn btn-logout" onclick="logout()" style="width:100%;margin-top:2rem;display:flex;align-items:center;gap:0.5em;justify-content:center;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div id="dashboardSection">
+                <h1 class="dashboard-title">Welcome to the Admin Dashboard</h1>
+                <p>Use the sidebar to manage users, view analytics, and configure settings.</p>
+            </div>
+            <div id="usersSection" style="display:none;">
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">User Management</h1>
+                    <div class="dashboard-actions">
+                        <button class="btn btn-primary" onclick="showAddUserModal()">
+                            <i class="fas fa-plus"></i> Add New User
+                        </button>
+                    </div>
+                </div>
+                <!-- Search and Filter Controls -->
+                <div class="admin-card" style="margin-bottom:1rem;display:flex;flex-wrap:wrap;gap:1rem;align-items:center;">
+                    <input type="text" id="userSearchInput" placeholder="Search by name or email..." style="flex:2 1 200px;padding:0.75rem 1rem;border:1px solid #ddd;border-radius:6px;font-size:1rem;">
+                    <select id="roleFilter" style="flex:1 1 120px;padding:0.75rem 1rem;border:1px solid #ddd;border-radius:6px;font-size:1rem;">
+                        <option value="">All Roles</option>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <select id="statusFilter" style="flex:1 1 120px;padding:0.75rem 1rem;border:1px solid #ddd;border-radius:6px;font-size:1rem;">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <!-- Users Table -->
+                <div class="admin-card">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Users will be loaded here dynamically -->
+                        </tbody>
+                    </table>
+                    <div id="paginationControls" style="display:flex;justify-content:center;align-items:center;gap:0.5rem;margin-top:1rem;"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New User</h2>
+                <button class="close-modal" onclick="closeAddUserModal()">&times;</button>
+            </div>
+            <form id="addUserForm">
+                <div class="form-group">
+                    <label for="userName">Name</label>
+                    <input type="text" id="userName" required>
+                </div>
+                <div class="form-group">
+                    <label for="userEmail">Email</label>
+                    <input type="email" id="userEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="userPassword">Password</label>
+                    <input type="password" id="userPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="userRole">Role</label>
+                    <select id="userRole" required>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeAddUserModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit User</h2>
+                <button class="close-modal" onclick="closeEditUserModal()">&times;</button>
+            </div>
+            <form id="editUserForm">
+                <input type="hidden" id="editUserId">
+                <div class="form-group">
+                    <label for="editUserName">Name</label>
+                    <input type="text" id="editUserName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editUserEmail">Email</label>
+                    <input type="email" id="editUserEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="editUserRole">Role</label>
+                    <select id="editUserRole" required>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeEditUserModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Details Modal -->
+    <div id="userDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>User Details</h2>
+                <button class="close-modal" onclick="closeUserDetailsModal()">&times;</button>
+            </div>
+            <div id="userDetailsContent">
+                <!-- User details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/admin-dashboard.js"></script>
+    <script>
+    // Sidebar navigation logic
+    const sidebarLinks = document.querySelectorAll('.sidebar__nav-link');
+    const dashboardSection = document.getElementById('dashboardSection');
+    const usersSection = document.getElementById('usersSection');
+
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            sidebarLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            if (this.textContent.trim().startsWith('Dashboard')) {
+                dashboardSection.style.display = '';
+                usersSection.style.display = 'none';
+            } else if (this.textContent.trim().startsWith('Users')) {
+                dashboardSection.style.display = 'none';
+                usersSection.style.display = '';
+            } else {
+                dashboardSection.style.display = '';
+                usersSection.style.display = 'none';
+            }
+        });
+    });
+    // Show dashboard by default
+    window.addEventListener('DOMContentLoaded', () => {
+        dashboardSection.style.display = '';
+        usersSection.style.display = 'none';
+    });
+    </script>
+</body>
+</html> 
