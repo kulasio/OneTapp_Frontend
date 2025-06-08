@@ -3,72 +3,544 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
+    <title>NFC Business Card Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: #1a1a1a;
+            color: white;
+            padding: 1rem;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .sidebar-menu i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .card-item {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+
+        .card-footer {
+            padding: 1rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            margin: 0;
+            color: #666;
+            font-size: 0.875rem;
+        }
+
+        .stat-card .value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+
+        /* Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .btn-danger {
+            background: #d32f2f;
+            color: white;
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Image Upload */
+        .image-upload {
+            border: 2px dashed #ddd;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .image-upload:hover {
+            border-color: #1976d2;
+        }
+
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            margin: 1rem auto;
+        }
+
+        /* Analytics */
+        .analytics-chart {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="navbar-brand">NFC Dashboard</div>
-        <ul class="navbar-links">
-            <li><a href="dashboard.html" class="active">Dashboard</a></li>
-            <li><a href="#" onclick="logout()">Logout</a></li>
-        </ul>
-    </nav>
     <div class="dashboard-container">
-        <div class="dashboard-card">
-            <h2>Add New User</h2>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>NFC Admin</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="#" class="active" data-section="dashboard">
+                        <i class="fas fa-home"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="#" data-section="cards">
+                        <i class="fas fa-id-card"></i>
+                        Cards
+                    </a>
+                </li>
+                <li>
+                    <a href="#" data-section="analytics">
+                        <i class="fas fa-chart-bar"></i>
+                        Analytics
+                    </a>
+                </li>
+                <li>
+                    <a href="#" data-section="users">
+                        <i class="fas fa-users"></i>
+                        Users
+                    </a>
+                </li>
+                <li>
+                    <a href="#" data-section="settings">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <div id="dashboardSection" class="section">
+                <h1>Dashboard Overview</h1>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Cards</h3>
+                        <div class="value" id="totalCards">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Taps</h3>
+                        <div class="value" id="totalTaps">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active Cards</h3>
+                        <div class="value" id="activeCards">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Today's Taps</h3>
+                        <div class="value" id="todayTaps">0</div>
+                    </div>
+                </div>
+                <div class="analytics-chart">
+                    <h3>Recent Activity</h3>
+                    <canvas id="activityChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Cards Section -->
+            <div id="cardsSection" class="section" style="display:none;">
+                <div class="section-header">
+                    <h1>NFC Cards</h1>
+                    <button class="btn btn-primary" onclick="showAddCardModal()">
+                        <i class="fas fa-plus"></i> Add New Card
+                    </button>
+                </div>
+                <div class="search-filters">
+                    <input type="text" id="cardSearch" placeholder="Search cards...">
+                    <select id="cardFilter">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="cards-grid" id="cardsGrid">
+                    <!-- Cards will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Analytics Section -->
+            <div id="analyticsSection" class="section" style="display:none;">
+                <h1>Analytics</h1>
+                <div class="analytics-filters">
+                    <select id="timeRange">
+                        <option value="7">Last 7 days</option>
+                        <option value="30">Last 30 days</option>
+                        <option value="90">Last 90 days</option>
+                    </select>
+                </div>
+                <div class="analytics-grid">
+                    <div class="analytics-chart">
+                        <h3>Taps Over Time</h3>
+                        <canvas id="tapsChart"></canvas>
+                    </div>
+                    <div class="analytics-chart">
+                        <h3>Geographic Distribution</h3>
+                        <div id="map"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Section -->
+            <div id="usersSection" class="section" style="display:none;">
+                <div class="section-header">
+                    <h1>User Management</h1>
+                    <button class="btn btn-primary" onclick="showAddUserModal()">
+                        <i class="fas fa-plus"></i> Add User
+                    </button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Last Login</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <!-- Users will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settingsSection" class="section" style="display:none;">
+                <h1>Settings</h1>
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3>General Settings</h3>
+                        <form id="generalSettingsForm">
+                            <div class="form-group">
+                                <label for="siteName">Site Name</label>
+                                <input type="text" id="siteName">
+                            </div>
+                            <div class="form-group">
+                                <label for="defaultTheme">Default Theme</label>
+                                <select id="defaultTheme">
+                                    <option value="light">Light</option>
+                                    <option value="dark">Dark</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                    <div class="settings-card">
+                        <h3>API Settings</h3>
+                        <form id="apiSettingsForm">
+                            <div class="form-group">
+                                <label for="apiKey">API Key</label>
+                                <input type="text" id="apiKey" readonly>
+                                <button type="button" class="btn btn-secondary" onclick="regenerateApiKey()">
+                                    Regenerate
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Card Modal -->
+    <div id="addCardModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Card</h2>
+                <button class="close-modal" onclick="closeAddCardModal()">&times;</button>
+            </div>
+            <form id="addCardForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="cardName">Name</label>
+                        <input type="text" id="cardName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardTitle">Title</label>
+                        <input type="text" id="cardTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardCompany">Company</label>
+                        <input type="text" id="cardCompany" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardEmail">Email</label>
+                        <input type="email" id="cardEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardPhone">Phone</label>
+                        <input type="tel" id="cardPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardWebsite">Website</label>
+                        <input type="url" id="cardWebsite">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Social Links</label>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="cardLinkedin">LinkedIn</label>
+                            <input type="url" id="cardLinkedin">
+                        </div>
+                        <div class="form-group">
+                            <label for="cardGithub">GitHub</label>
+                            <input type="url" id="cardGithub">
+                        </div>
+                        <div class="form-group">
+                            <label for="cardTwitter">Twitter</label>
+                            <input type="url" id="cardTwitter">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Profile Picture</label>
+                    <div class="image-upload" onclick="document.getElementById('cardImage').click()">
+                        <input type="file" id="cardImage" accept="image/*" style="display:none">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload or drag and drop</p>
+                        <img id="imagePreview" class="image-preview" style="display:none">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddCardModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Card</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Card Modal -->
+    <div id="editCardModal" class="modal">
+        <!-- Similar structure to Add Card Modal -->
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New User</h2>
+                <button class="close-modal" onclick="closeAddUserModal()">&times;</button>
+            </div>
             <form id="addUserForm">
                 <div class="form-group">
-                    <label for="addName">Name:</label>
-                    <input type="text" id="addName" required>
+                    <label for="userUsername">Username</label>
+                    <input type="text" id="userUsername" required>
                 </div>
                 <div class="form-group">
-                    <label for="addEmail">Email:</label>
-                    <input type="email" id="addEmail" required>
+                    <label for="userEmail">Email</label>
+                    <input type="email" id="userEmail" required>
                 </div>
                 <div class="form-group">
-                    <label for="addPassword">Password:</label>
-                    <input type="password" id="addPassword" required>
-                </div>
-                <button type="submit">Add User</button>
-                <div id="addUserMessage"></div>
-            </form>
-        </div>
-        <div class="dashboard-card">
-            <h2>All Users</h2>
-            <table id="usersTable">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Users will be loaded here -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div id="editUserModal" class="modal" style="display:none;">
-        <div class="modal-content">
-            <span class="close" onclick="closeEditModal()">&times;</span>
-            <h3>Edit User</h3>
-            <form id="editUserForm">
-                <input type="hidden" id="editUserId">
-                <div class="form-group">
-                    <label for="editName">Name:</label>
-                    <input type="text" id="editName" required>
+                    <label for="userPassword">Password</label>
+                    <input type="password" id="userPassword" required>
                 </div>
                 <div class="form-group">
-                    <label for="editEmail">Email:</label>
-                    <input type="email" id="editEmail" required>
+                    <label for="userRole">Role</label>
+                    <select id="userRole" required>
+                        <option value="super_admin">Super Admin</option>
+                        <option value="card_manager">Card Manager</option>
+                        <option value="viewer">Viewer</option>
+                    </select>
                 </div>
-                <button type="submit">Update User</button>
-                <div id="editUserMessage"></div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddUserModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create User</button>
+                </div>
             </form>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="dashboard.js"></script>
 </body>
 </html> 

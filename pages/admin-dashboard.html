@@ -483,6 +483,46 @@
                     <div id="paginationControls" style="display:flex;justify-content:center;align-items:center;gap:0.5rem;margin-top:1rem;"></div>
                 </div>
             </div>
+            <div id="nfcCardsSection" style="display:none;">
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">NFC Card Management</h1>
+                    <div class="dashboard-actions">
+                        <button class="btn btn-primary" onclick="showAddCardModal()">
+                            <i class="fas fa-plus"></i> Add New Card
+                        </button>
+                    </div>
+                </div>
+                <!-- Search and Filter Controls -->
+                <div class="admin-card" style="margin-bottom:1rem;display:flex;flex-wrap:wrap;gap:1rem;align-items:center;">
+                    <input type="text" id="cardSearchInput" placeholder="Search by name or email..." style="flex:2 1 200px;padding:0.75rem 1rem;border:1px solid #ddd;border-radius:6px;font-size:1rem;">
+                    <select id="statusFilter" style="flex:1 1 120px;padding:0.75rem 1rem;border:1px solid #ddd;border-radius:6px;font-size:1rem;">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <!-- NFC Cards Table -->
+                <div class="admin-card">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Card ID</th>
+                                <th>Owner</th>
+                                <th>Title</th>
+                                <th>Company</th>
+                                <th>Status</th>
+                                <th>Total Taps</th>
+                                <th>Last Tap</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="nfcCardsTableBody">
+                            <!-- Cards will be loaded here dynamically -->
+                        </tbody>
+                    </table>
+                    <div id="paginationControls" style="display:flex;justify-content:center;align-items:center;gap:0.5rem;margin-top:1rem;"></div>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -566,34 +606,197 @@
         </div>
     </div>
 
+    <!-- Add Card Modal -->
+    <div id="addCardModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New NFC Card</h2>
+                <button class="close-modal" onclick="closeAddCardModal()">&times;</button>
+            </div>
+            <form id="addCardForm">
+                <div class="form-group">
+                    <label for="cardOwnerName">Owner Name</label>
+                    <input type="text" id="cardOwnerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="cardOwnerEmail">Owner Email</label>
+                    <input type="email" id="cardOwnerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="cardOwnerRole">Owner Role</label>
+                    <select id="cardOwnerRole" required>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cardTitle">Title</label>
+                    <input type="text" id="cardTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="cardCompany">Company</label>
+                    <input type="text" id="cardCompany" required>
+                </div>
+                <div class="form-group">
+                    <label for="cardPhone">Phone</label>
+                    <input type="tel" id="cardPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="cardWebsite">Website</label>
+                    <input type="url" id="cardWebsite">
+                </div>
+                <div class="form-group">
+                    <label for="cardLinkedin">LinkedIn</label>
+                    <input type="url" id="cardLinkedin">
+                </div>
+                <div class="form-group">
+                    <label for="cardProfilePicture">Profile Picture</label>
+                    <input type="file" id="cardProfilePicture" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="cardTheme">Theme</label>
+                    <select id="cardTheme" required>
+                        <option value="default">Default</option>
+                        <option value="dark">Dark</option>
+                        <option value="light">Light</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeAddCardModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Card</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Card Modal -->
+    <div id="editCardModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit NFC Card</h2>
+                <button class="close-modal" onclick="closeEditCardModal()">&times;</button>
+            </div>
+            <form id="editCardForm">
+                <input type="hidden" id="editCardId">
+                <div class="form-group">
+                    <label for="editCardOwnerName">Owner Name</label>
+                    <input type="text" id="editCardOwnerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editCardOwnerEmail">Owner Email</label>
+                    <input type="email" id="editCardOwnerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="editCardOwnerRole">Owner Role</label>
+                    <select id="editCardOwnerRole" required>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editCardTitle">Title</label>
+                    <input type="text" id="editCardTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="editCardCompany">Company</label>
+                    <input type="text" id="editCardCompany" required>
+                </div>
+                <div class="form-group">
+                    <label for="editCardPhone">Phone</label>
+                    <input type="tel" id="editCardPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="editCardWebsite">Website</label>
+                    <input type="url" id="editCardWebsite">
+                </div>
+                <div class="form-group">
+                    <label for="editCardLinkedin">LinkedIn</label>
+                    <input type="url" id="editCardLinkedin">
+                </div>
+                <div class="form-group">
+                    <label for="editCardProfilePicture">Profile Picture</label>
+                    <input type="file" id="editCardProfilePicture" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="editCardTheme">Theme</label>
+                    <select id="editCardTheme" required>
+                        <option value="default">Default</option>
+                        <option value="dark">Dark</option>
+                        <option value="light">Light</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeEditCardModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Card</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Card Analytics Modal -->
+    <div id="cardAnalyticsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Card Analytics</h2>
+                <button class="close-modal" onclick="closeCardAnalyticsModal()">&times;</button>
+            </div>
+            <div id="cardAnalyticsContent">
+                <div class="analytics-summary">
+                    <div class="analytics-card">
+                        <h3>Total Taps</h3>
+                        <p id="totalTaps">0</p>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Last Tap</h3>
+                        <p id="lastTap">Never</p>
+                    </div>
+                </div>
+                <div class="analytics-locations">
+                    <h3>Tap Locations</h3>
+                    <div id="locationsList">
+                        <!-- Locations will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="../js/admin-dashboard.js"></script>
     <script>
     // Sidebar navigation logic
     const sidebarLinks = document.querySelectorAll('.sidebar__nav-link');
     const dashboardSection = document.getElementById('dashboardSection');
     const usersSection = document.getElementById('usersSection');
+    const nfcCardsSection = document.getElementById('nfcCardsSection');
 
     sidebarLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             sidebarLinks.forEach(l => l.classList.remove('active'));
             this.classList.add('active');
+            
+            // Hide all sections
+            dashboardSection.style.display = 'none';
+            usersSection.style.display = 'none';
+            nfcCardsSection.style.display = 'none';
+            
+            // Show selected section
             if (this.textContent.trim().startsWith('Dashboard')) {
                 dashboardSection.style.display = '';
-                usersSection.style.display = 'none';
             } else if (this.textContent.trim().startsWith('Users')) {
-                dashboardSection.style.display = 'none';
                 usersSection.style.display = '';
-            } else {
-                dashboardSection.style.display = '';
-                usersSection.style.display = 'none';
+            } else if (this.textContent.trim().startsWith('NFC Cards')) {
+                nfcCardsSection.style.display = '';
+                loadNFCCards(); // Load NFC cards when section is shown
             }
         });
     });
+
     // Show dashboard by default
     window.addEventListener('DOMContentLoaded', () => {
         dashboardSection.style.display = '';
         usersSection.style.display = 'none';
+        nfcCardsSection.style.display = 'none';
     });
     </script>
 </body>

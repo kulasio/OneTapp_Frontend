@@ -464,3 +464,302 @@ function logout() {
     localStorage.removeItem('user');
     window.location.href = '/pages/admin-login.html';
 }
+
+// NFC Card Management Functions
+let nfcCards = [];
+
+// Load NFC Cards
+async function loadNFCCards() {
+    try {
+        const response = await fetch('/api/nfc-cards');
+        nfcCards = await response.json();
+        renderNFCCardsTable();
+    } catch (error) {
+        showNotification('Error loading NFC cards', 'error');
+    }
+}
+
+// Render NFC Cards Table
+function renderNFCCardsTable() {
+    const tableBody = document.getElementById('nfcCardsTableBody');
+    tableBody.innerHTML = '';
+
+    nfcCards.forEach(card => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${card.cardId}</td>
+            <td>${card.owner.name}</td>
+            <td>${card.content.title}</td>
+            <td>${card.content.company}</td>
+            <td>
+                <span class="status-badge ${card.settings.isActive ? 'active' : 'inactive'}">
+                    ${card.settings.isActive ? 'Active' : 'Inactive'}
+                </span>
+            </td>
+            <td>${card.analytics.totalTaps}</td>
+            <td>${card.analytics.lastTap ? new Date(card.analytics.lastTap).toLocaleDateString() : 'Never'}</td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn-icon btn-view" onclick="showCardAnalytics('${card.cardId}')">
+                        <i class="fas fa-chart-bar"></i>
+                    </button>
+                    <button class="btn-icon btn-edit" onclick="showEditCardModal('${card.cardId}')">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon btn-delete" onclick="deleteCard('${card.cardId}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+// Show Add Card Modal
+function showAddCardModal() {
+    document.getElementById('addCardModal').style.display = 'flex';
+}
+
+// Close Add Card Modal
+function closeAddCardModal() {
+    document.getElementById('addCardModal').style.display = 'none';
+    document.getElementById('addCardForm').reset();
+}
+
+// Show Edit Card Modal
+function showEditCardModal(cardId) {
+    const card = nfcCards.find(c => c.cardId === cardId);
+    if (!card) return;
+
+    document.getElementById('editCardId').value = card.cardId;
+    document.getElementById('editCardOwnerName').value = card.owner.name;
+    document.getElementById('editCardOwnerEmail').value = card.owner.email;
+    document.getElementById('editCardOwnerRole').value = card.owner.role;
+    document.getElementById('editCardTitle').value = card.content.title;
+    document.getElementById('editCardCompany').value = card.content.company;
+    document.getElementById('editCardPhone').value = card.content.phone;
+    document.getElementById('editCardWebsite').value = card.content.website || '';
+    document.getElementById('editCardLinkedin').value = card.content.linkedin || '';
+    document.getElementById('editCardTheme').value = card.settings.theme;
+
+    document.getElementById('editCardModal').style.display = 'flex';
+}
+
+// Close Edit Card Modal
+function closeEditCardModal() {
+    document.getElementById('editCardModal').style.display = 'none';
+    document.getElementById('editCardForm').reset();
+}
+
+// Show Card Analytics Modal
+function showCardAnalytics(cardId) {
+    const card = nfcCards.find(c => c.cardId === cardId);
+    if (!card) return;
+
+    document.getElementById('totalTaps').textContent = card.analytics.totalTaps;
+    document.getElementById('lastTap').textContent = card.analytics.lastTap 
+        ? new Date(card.analytics.lastTap).toLocaleString() 
+        : 'Never';
+
+    const locationsList = document.getElementById('locationsList');
+    locationsList.innerHTML = card.analytics.locations.length 
+        ? card.analytics.locations.map(loc => `
+            <div class="location-item">
+                <p>${loc}</p>
+            </div>
+        `).join('')
+        : '<p>No location data available</p>';
+
+    document.getElementById('cardAnalyticsModal').style.display = 'flex';
+}
+
+// Close Card Analytics Modal
+function closeCardAnalyticsModal() {
+    document.getElementById('cardAnalyticsModal').style.display = 'none';
+}
+
+// Add New Card
+async function addCard(event) {
+    event.preventDefault();
+    
+    const formData = new FormData();
+    formData.append('owner', JSON.stringify({
+        name: document.getElementById('cardOwnerName').value,
+        email: document.getElementById('cardOwnerEmail').value,
+        role: document.getElementById('cardOwnerRole').value
+    }));
+    formData.append('content', JSON.stringify({
+        name: document.getElementById('cardOwnerName').value,
+        title: document.getElementById('cardTitle').value,
+        email: document.getElementById('cardOwnerEmail').value,
+        phone: document.getElementById('cardPhone').value,
+        company: document.getElementById('cardCompany').value,
+        website: document.getElementById('cardWebsite').value,
+        linkedin: document.getElementById('cardLinkedin').value
+    }));
+    formData.append('settings', JSON.stringify({
+        theme: document.getElementById('cardTheme').value,
+        isActive: true
+    }));
+    
+    const profilePicture = document.getElementById('cardProfilePicture').files[0];
+    if (profilePicture) {
+        formData.append('profilePicture', profilePicture);
+    }
+
+    try {
+        const response = await fetch('/api/nfc-cards', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            showNotification('Card added successfully', 'success');
+            closeAddCardModal();
+            loadNFCCards();
+        } else {
+            throw new Error('Failed to add card');
+        }
+    } catch (error) {
+        showNotification('Error adding card', 'error');
+    }
+}
+
+// Update Card
+async function updateCard(event) {
+    event.preventDefault();
+    
+    const cardId = document.getElementById('editCardId').value;
+    const formData = new FormData();
+    formData.append('owner', JSON.stringify({
+        name: document.getElementById('editCardOwnerName').value,
+        email: document.getElementById('editCardOwnerEmail').value,
+        role: document.getElementById('editCardOwnerRole').value
+    }));
+    formData.append('content', JSON.stringify({
+        name: document.getElementById('editCardOwnerName').value,
+        title: document.getElementById('editCardTitle').value,
+        email: document.getElementById('editCardOwnerEmail').value,
+        phone: document.getElementById('editCardPhone').value,
+        company: document.getElementById('editCardCompany').value,
+        website: document.getElementById('editCardWebsite').value,
+        linkedin: document.getElementById('editCardLinkedin').value
+    }));
+    formData.append('settings', JSON.stringify({
+        theme: document.getElementById('editCardTheme').value,
+        isActive: true
+    }));
+    
+    const profilePicture = document.getElementById('editCardProfilePicture').files[0];
+    if (profilePicture) {
+        formData.append('profilePicture', profilePicture);
+    }
+
+    try {
+        const response = await fetch(`/api/nfc-cards/${cardId}`, {
+            method: 'PUT',
+            body: formData
+        });
+
+        if (response.ok) {
+            showNotification('Card updated successfully', 'success');
+            closeEditCardModal();
+            loadNFCCards();
+        } else {
+            throw new Error('Failed to update card');
+        }
+    } catch (error) {
+        showNotification('Error updating card', 'error');
+    }
+}
+
+// Delete Card
+async function deleteCard(cardId) {
+    if (!confirm('Are you sure you want to delete this card?')) return;
+
+    try {
+        const response = await fetch(`/api/nfc-cards/${cardId}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            showNotification('Card deleted successfully', 'success');
+            loadNFCCards();
+        } else {
+            throw new Error('Failed to delete card');
+        }
+    } catch (error) {
+        showNotification('Error deleting card', 'error');
+    }
+}
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+    // Add form submit event listeners
+    document.getElementById('addCardForm').addEventListener('submit', addCard);
+    document.getElementById('editCardForm').addEventListener('submit', updateCard);
+
+    // Add search and filter event listeners
+    document.getElementById('cardSearchInput').addEventListener('input', filterCards);
+    document.getElementById('statusFilter').addEventListener('change', filterCards);
+});
+
+// Filter Cards
+function filterCards() {
+    const searchTerm = document.getElementById('cardSearchInput').value.toLowerCase();
+    const statusFilter = document.getElementById('statusFilter').value;
+
+    const filteredCards = nfcCards.filter(card => {
+        const matchesSearch = 
+            card.owner.name.toLowerCase().includes(searchTerm) ||
+            card.owner.email.toLowerCase().includes(searchTerm) ||
+            card.content.title.toLowerCase().includes(searchTerm) ||
+            card.content.company.toLowerCase().includes(searchTerm);
+
+        const matchesStatus = !statusFilter || 
+            (statusFilter === 'active' && card.settings.isActive) ||
+            (statusFilter === 'inactive' && !card.settings.isActive);
+
+        return matchesSearch && matchesStatus;
+    });
+
+    renderFilteredCards(filteredCards);
+}
+
+// Render Filtered Cards
+function renderFilteredCards(cards) {
+    const tableBody = document.getElementById('nfcCardsTableBody');
+    tableBody.innerHTML = '';
+
+    cards.forEach(card => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${card.cardId}</td>
+            <td>${card.owner.name}</td>
+            <td>${card.content.title}</td>
+            <td>${card.content.company}</td>
+            <td>
+                <span class="status-badge ${card.settings.isActive ? 'active' : 'inactive'}">
+                    ${card.settings.isActive ? 'Active' : 'Inactive'}
+                </span>
+            </td>
+            <td>${card.analytics.totalTaps}</td>
+            <td>${card.analytics.lastTap ? new Date(card.analytics.lastTap).toLocaleDateString() : 'Never'}</td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn-icon btn-view" onclick="showCardAnalytics('${card.cardId}')">
+                        <i class="fas fa-chart-bar"></i>
+                    </button>
+                    <button class="btn-icon btn-edit" onclick="showEditCardModal('${card.cardId}')">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon btn-delete" onclick="deleteCard('${card.cardId}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
