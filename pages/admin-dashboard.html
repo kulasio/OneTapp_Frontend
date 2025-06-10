@@ -483,6 +483,235 @@
                     <div id="paginationControls" style="display:flex;justify-content:center;align-items:center;gap:0.5rem;margin-top:1rem;"></div>
                 </div>
             </div>
+            <div id="nfcCardsSection" style="display:none;">
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">NFC Cards Management</h1>
+                    <div class="dashboard-actions">
+                        <button class="btn btn-primary" onclick="showAddNFCCardModal()">
+                            <i class="fas fa-plus"></i> Add New NFC Card
+                        </button>
+                    </div>
+                </div>
+                <!-- Search and Filter Controls -->
+                <div class="admin-card" style="margin-bottom:1rem;display:flex;flex-wrap:wrap;gap:1rem;align-items:center;">
+                    <input type="text" id="nfcCardSearchInput" placeholder="Search by name or ID..." style="flex:2 1 200px;padding:0.75rem 1rem;border:1px solid #ddd;border-radius:6px;font-size:1rem;">
+                    <select id="organizationFilter" style="flex:1 1 120px;padding:0.75rem 1rem;border:1px solid #ddd;border-radius:6px;font-size:1rem;">
+                        <option value="">All Organizations</option>
+                        <option value="org1">Organization 1</option>
+                        <option value="org2">Organization 2</option>
+                    </select>
+                    <select id="statusFilter" style="flex:1 1 120px;padding:0.75rem 1rem;border:1px solid #ddd;border-radius:6px;font-size:1rem;">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <!-- NFC Cards Table -->
+                <div class="admin-card">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Card ID</th>
+                                <th>Name</th>
+                                <th>Organization</th>
+                                <th>Status</th>
+                                <th>Last Tap</th>
+                                <th>Total Taps</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="nfcCardsTableBody">
+                            <!-- NFC Cards will be loaded here dynamically -->
+                        </tbody>
+                    </table>
+                    <div id="nfcPaginationControls" style="display:flex;justify-content:center;align-items:center;gap:0.5rem;margin-top:1rem;"></div>
+                </div>
+            </div>
+            <div id="settingsSection" style="display:none;">
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">System Settings</h1>
+                </div>
+
+                <!-- Settings Navigation -->
+                <div class="admin-card" style="margin-bottom: 1.5rem;">
+                    <div class="settings-nav" style="display: flex; gap: 1rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
+                        <button class="btn btn-outline active" onclick="showSettingsTab('general')">General</button>
+                        <button class="btn btn-outline" onclick="showSettingsTab('organization')">Organization</button>
+                        <button class="btn btn-outline" onclick="showSettingsTab('cards')">Card Settings</button>
+                        <button class="btn btn-outline" onclick="showSettingsTab('security')">Security</button>
+                        <button class="btn btn-outline" onclick="showSettingsTab('notifications')">Notifications</button>
+                    </div>
+                </div>
+
+                <!-- General Settings -->
+                <div id="generalSettings" class="settings-tab">
+                    <div class="admin-card">
+                        <h2 style="margin-bottom: 1.5rem;">General Settings</h2>
+                        <form id="generalSettingsForm">
+                            <div class="form-group">
+                                <label for="siteName">Site Name</label>
+                                <input type="text" id="siteName" value="OneTapp NFC">
+                            </div>
+                            <div class="form-group">
+                                <label for="siteDescription">Site Description</label>
+                                <textarea id="siteDescription" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="timezone">Default Timezone</label>
+                                <select id="timezone" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <option value="UTC">UTC</option>
+                                    <option value="EST">Eastern Time</option>
+                                    <option value="PST">Pacific Time</option>
+                                    <!-- Add more timezones as needed -->
+                                </select>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Organization Settings -->
+                <div id="organizationSettings" class="settings-tab" style="display: none;">
+                    <div class="admin-card">
+                        <h2 style="margin-bottom: 1.5rem;">Organization Settings</h2>
+                        <form id="organizationSettingsForm">
+                            <div class="form-group">
+                                <label for="orgName">Organization Name</label>
+                                <input type="text" id="orgName">
+                            </div>
+                            <div class="form-group">
+                                <label for="orgLogo">Organization Logo</label>
+                                <input type="file" id="orgLogo" accept="image/*">
+                            </div>
+                            <div class="form-group">
+                                <label for="maxCardsPerUser">Maximum Cards Per User</label>
+                                <input type="number" id="maxCardsPerUser" min="1" value="5">
+                            </div>
+                            <div class="form-group">
+                                <label for="allowCardCreation">Allow Card Creation</label>
+                                <select id="allowCardCreation" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <option value="true">Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Card Settings -->
+                <div id="cardSettings" class="settings-tab" style="display: none;">
+                    <div class="admin-card">
+                        <h2 style="margin-bottom: 1.5rem;">Card Settings</h2>
+                        <form id="cardSettingsForm">
+                            <div class="form-group">
+                                <label for="defaultCardTemplate">Default Card Template</label>
+                                <select id="defaultCardTemplate" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <option value="template1">Template 1</option>
+                                    <option value="template2">Template 2</option>
+                                    <option value="template3">Template 3</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="allowedFileTypes">Allowed File Types</label>
+                                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="checkbox" value="jpg"> JPG
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="checkbox" value="png"> PNG
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="checkbox" value="gif"> GIF
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="maxFileSize">Maximum File Size (MB)</label>
+                                <input type="number" id="maxFileSize" min="1" max="10" value="5">
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Security Settings -->
+                <div id="securitySettings" class="settings-tab" style="display: none;">
+                    <div class="admin-card">
+                        <h2 style="margin-bottom: 1.5rem;">Security Settings</h2>
+                        <form id="securitySettingsForm">
+                            <div class="form-group">
+                                <label for="passwordPolicy">Password Policy</label>
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="checkbox" id="requireUppercase"> Require uppercase letters
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="checkbox" id="requireNumbers"> Require numbers
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="checkbox" id="requireSpecialChars"> Require special characters
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="minPasswordLength">Minimum Password Length</label>
+                                <input type="number" id="minPasswordLength" min="8" max="32" value="8">
+                            </div>
+                            <div class="form-group">
+                                <label for="sessionTimeout">Session Timeout (minutes)</label>
+                                <input type="number" id="sessionTimeout" min="5" max="1440" value="30">
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Notification Settings -->
+                <div id="notificationSettings" class="settings-tab" style="display: none;">
+                    <div class="admin-card">
+                        <h2 style="margin-bottom: 1.5rem;">Notification Settings</h2>
+                        <form id="notificationSettingsForm">
+                            <div class="form-group">
+                                <label>Email Notifications</label>
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="checkbox" id="newUserNotification"> New user registration
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="checkbox" id="cardTapNotification"> Card tap notifications
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="checkbox" id="systemAlertNotification"> System alerts
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="notificationEmail">Notification Email</label>
+                                <input type="email" id="notificationEmail">
+                            </div>
+                            <div class="form-group">
+                                <label for="emailTemplate">Email Template</label>
+                                <select id="emailTemplate" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <option value="default">Default Template</option>
+                                    <option value="custom">Custom Template</option>
+                                </select>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -566,34 +795,157 @@
         </div>
     </div>
 
+    <!-- Add NFC Card Modal -->
+    <div id="addNFCCardModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New NFC Card</h2>
+                <button class="close-modal" onclick="closeAddNFCCardModal()">&times;</button>
+            </div>
+            <form id="addNFCCardForm">
+                <div class="form-group">
+                    <label for="cardName">Name</label>
+                    <input type="text" id="cardName" required>
+                </div>
+                <div class="form-group">
+                    <label for="cardOrganization">Organization</label>
+                    <select id="cardOrganization" required>
+                        <option value="org1">Organization 1</option>
+                        <option value="org2">Organization 2</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cardImage">Card Image</label>
+                    <input type="file" id="cardImage" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="cardStatus">Status</label>
+                    <select id="cardStatus" required>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeAddNFCCardModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Card</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit NFC Card Modal -->
+    <div id="editNFCCardModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit NFC Card</h2>
+                <button class="close-modal" onclick="closeEditNFCCardModal()">&times;</button>
+            </div>
+            <form id="editNFCCardForm">
+                <input type="hidden" id="editCardId">
+                <div class="form-group">
+                    <label for="editCardName">Name</label>
+                    <input type="text" id="editCardName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editCardOrganization">Organization</label>
+                    <select id="editCardOrganization" required>
+                        <option value="org1">Organization 1</option>
+                        <option value="org2">Organization 2</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editCardImage">Card Image</label>
+                    <input type="file" id="editCardImage" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="editCardStatus">Status</label>
+                    <select id="editCardStatus" required>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeEditNFCCardModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Card</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- NFC Card Details Modal -->
+    <div id="nfcCardDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>NFC Card Details</h2>
+                <button class="close-modal" onclick="closeNFCCardDetailsModal()">&times;</button>
+            </div>
+            <div id="nfcCardDetailsContent">
+                <!-- Card details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
     <script src="../js/admin-dashboard.js"></script>
     <script>
     // Sidebar navigation logic
     const sidebarLinks = document.querySelectorAll('.sidebar__nav-link');
     const dashboardSection = document.getElementById('dashboardSection');
     const usersSection = document.getElementById('usersSection');
+    const nfcCardsSection = document.getElementById('nfcCardsSection');
+    const settingsSection = document.getElementById('settingsSection');
 
     sidebarLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             sidebarLinks.forEach(l => l.classList.remove('active'));
             this.classList.add('active');
+            
+            // Hide all sections
+            dashboardSection.style.display = 'none';
+            usersSection.style.display = 'none';
+            nfcCardsSection.style.display = 'none';
+            settingsSection.style.display = 'none';
+            
+            // Show selected section
             if (this.textContent.trim().startsWith('Dashboard')) {
                 dashboardSection.style.display = '';
-                usersSection.style.display = 'none';
             } else if (this.textContent.trim().startsWith('Users')) {
-                dashboardSection.style.display = 'none';
                 usersSection.style.display = '';
+            } else if (this.textContent.trim().startsWith('NFC Cards')) {
+                nfcCardsSection.style.display = '';
+            } else if (this.textContent.trim().startsWith('Settings')) {
+                settingsSection.style.display = '';
             } else {
                 dashboardSection.style.display = '';
-                usersSection.style.display = 'none';
             }
         });
     });
+
+    // Settings Tab Navigation
+    function showSettingsTab(tabName) {
+        // Hide all tabs
+        document.querySelectorAll('.settings-tab').forEach(tab => {
+            tab.style.display = 'none';
+        });
+        
+        // Remove active class from all buttons
+        document.querySelectorAll('.settings-nav .btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Show selected tab
+        document.getElementById(tabName + 'Settings').style.display = '';
+        
+        // Add active class to clicked button
+        event.target.classList.add('active');
+    }
+
     // Show dashboard by default
     window.addEventListener('DOMContentLoaded', () => {
         dashboardSection.style.display = '';
         usersSection.style.display = 'none';
+        nfcCardsSection.style.display = 'none';
+        settingsSection.style.display = 'none';
     });
     </script>
 </body>
