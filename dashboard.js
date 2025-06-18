@@ -1,3 +1,22 @@
+// RBAC: Only allow users with role 'user' to access this dashboard
+(function() {
+    const userStr = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
+    let user = null;
+    try {
+        user = JSON.parse(userStr);
+    } catch (e) {}
+    if (!user || !token) {
+        window.location.href = '/index.html';
+        return;
+    }
+    if (user.role === 'admin') {
+        window.location.href = '/pages/admin-dashboard.html';
+        return;
+    }
+    // Only users with role 'user' can proceed
+})();
+
 const API_BASE = 'https://onetapp-backend.onrender.com';
 
 // Load all users
