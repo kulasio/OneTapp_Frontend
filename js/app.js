@@ -343,4 +343,30 @@ window.addEventListener('scroll', function() {
     } else {
         navbar.classList.remove('scrolled');
     }
-}); 
+});
+
+// Subscription Modal Logic
+function openSubscribeModal(planName) {
+    document.getElementById('subscribePlanName').textContent = planName;
+    document.getElementById('subscribeModal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSubscribeModal() {
+    document.getElementById('subscribeModal').classList.remove('show');
+    document.body.style.overflow = 'auto';
+}
+
+// Handle subscription form submission
+const subscribeForm = document.getElementById('subscribeForm');
+if (subscribeForm) {
+    subscribeForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('subscribeEmail').value;
+        const phone = document.getElementById('subscribePhone').value;
+        const plan = document.getElementById('subscribePlanName').textContent;
+        // For now, just log the values
+        alert(`Plan: ${plan}\nEmail: ${email}\nPhone: ${phone}`);
+        closeSubscribeModal();
+    });
+} 

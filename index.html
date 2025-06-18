@@ -249,7 +249,7 @@
                     <li>Analytics: Tap count only</li>
                     <li>Email support</li>
                 </ul>
-                <button class="btn btn-primary" onclick="showSignupModal()">Subscribe Now</button>
+                <button class="btn btn-primary" onclick="openSubscribeModal('Starter Tap')">Subscribe Now</button>
             </div>
             <div class="pricing-plan">
                 <h3>Pro Tap</h3>
@@ -265,7 +265,7 @@
                     <li>Geo-tracking of scans</li>
                     <li>Priority email & chat support</li>
                 </ul>
-                <button class="btn btn-primary" onclick="showSignupModal()">Subscribe Now</button>
+                <button class="btn btn-primary" onclick="openSubscribeModal('Pro Tap')">Subscribe Now</button>
             </div>
             <div class="pricing-plan">
                 <h3>Power Tap</h3>
@@ -281,7 +281,7 @@
                     <li>Dedicated account manager</li>
                     <li>24/7 support</li>
                 </ul>
-                <button class="btn btn-primary" onclick="showSignupModal()">Subscribe Now</button>
+                <button class="btn btn-primary" onclick="openSubscribeModal('Power Tap')">Subscribe Now</button>
             </div>
         </div>
     </section>
@@ -502,6 +502,28 @@
                 <div class="login-footer">
                     Don't have an account? <a href="#" onclick="closeLoginModal(); showSignupModal();">Sign up</a>
                 </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Subscription Modal -->
+    <div id="subscribeModal" class="modal">
+        <div class="modal__content subscribe-modal">
+            <span class="modal__close" onclick="closeSubscribeModal()">&times;</span>
+            <div class="subscribe-header">
+                <h2>Subscribe to <span id="subscribePlanName"></span></h2>
+                <p>Enter your details to proceed with payment</p>
+            </div>
+            <form id="subscribeForm">
+                <div class="form-group">
+                    <label for="subscribeEmail">Email Address</label>
+                    <input type="email" id="subscribeEmail" required placeholder="Enter your email address">
+                </div>
+                <div class="form-group">
+                    <label for="subscribePhone">Mobile Number</label>
+                    <input type="tel" id="subscribePhone" required placeholder="Enter your mobile number">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Proceed to Payment</button>
             </form>
         </div>
     </div>

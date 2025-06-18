@@ -67,7 +67,53 @@ button:hover {
 
 .modal {
     display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: auto;
+    background: rgba(0,0,0,0.4);
     align-items: center;
     justify-content: center;
-    /* ...rest of your styles... */
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal__content {
+    background: #fff;
+    margin: auto;
+    padding: 30px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    min-width: 320px;
+    max-width: 95vw;
+    position: relative;
+}
+
+.modal__close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 1.5rem;
+    color: #888;
+    cursor: pointer;
+}
+
+.subscribe-header h2 {
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+.subscribe-header p {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+.btn-block {
+    width: 100%;
 } 
