@@ -530,10 +530,10 @@
                 if (response.ok) {
                     // Store the token and user data
                     localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.data));
+                    localStorage.setItem('user', JSON.stringify(data.user));
 
                     // Redirect based on role
-                    if (data.data.role === 'admin') {
+                    if (data.user.role === 'admin') {
                         window.location.href = '/pages/admin-dashboard.html';
                     } else {
                         window.location.href = '/pages/dashboard.html';
