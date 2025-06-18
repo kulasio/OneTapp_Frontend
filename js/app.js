@@ -366,30 +366,26 @@ if (subscribeForm) {
         const phone = document.getElementById('subscribePhone').value;
         const plan = document.getElementById('subscribePlanName').textContent;
         try {
-            // Show loading state (optional)
             const submitButton = this.querySelector('button[type="submit"]');
             const originalButtonText = submitButton.innerHTML;
             submitButton.innerHTML = 'Processing...';
             submitButton.disabled = true;
 
-            // Call backend to create Maya checkout
-            const response = await fetch(`${API_BASE}/api/payments/create`, {
+            // Change the URL below to your Test Payment Api backend URL
+            const response = await fetch('https://your-test-payment-api-url/maya-checkout', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, phone, plan })
             });
             const data = await response.json();
-            if (response.ok && data.checkoutUrl) {
-                window.location.href = data.checkoutUrl;
+            if (data.redirectUrl) {
+                window.location.href = data.redirectUrl;
             } else {
-                alert(data.message || 'Failed to initiate payment.');
+                alert('Payment initiation failed');
             }
         } catch (err) {
             alert('An error occurred. Please try again.');
         } finally {
-            // Reset button state
             const submitButton = this.querySelector('button[type="submit"]');
             if (submitButton) {
                 submitButton.innerHTML = 'Proceed to Payment';
