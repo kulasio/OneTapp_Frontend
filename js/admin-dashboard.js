@@ -13,6 +13,61 @@ function logout() {
     window.location.href = '/index.html';
 }
 
+// Initialize sidebar navigation
+function initializeSidebar() {
+    const sidebarLinks = document.querySelectorAll('.sidebar__nav-link');
+    const dashboardSection = document.getElementById('dashboardSection');
+    const usersSection = document.getElementById('usersSection');
+    const nfcCardsSection = document.getElementById('nfcCardsSection');
+    const settingsSection = document.getElementById('settingsSection');
+
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            sidebarLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Hide all sections
+            dashboardSection.style.display = 'none';
+            usersSection.style.display = 'none';
+            nfcCardsSection.style.display = 'none';
+            settingsSection.style.display = 'none';
+            
+            // Show selected section
+            if (this.textContent.trim().startsWith('Dashboard')) {
+                dashboardSection.style.display = '';
+            } else if (this.textContent.trim().startsWith('Users')) {
+                usersSection.style.display = '';
+            } else if (this.textContent.trim().startsWith('NFC Cards')) {
+                nfcCardsSection.style.display = '';
+            } else if (this.textContent.trim().startsWith('Settings')) {
+                settingsSection.style.display = '';
+            } else {
+                dashboardSection.style.display = '';
+            }
+        });
+    });
+}
+
+// Settings Tab Navigation
+function showSettingsTab(tabName) {
+    // Hide all tabs
+    document.querySelectorAll('.settings-tab').forEach(tab => {
+        tab.style.display = 'none';
+    });
+    
+    // Remove active class from all buttons
+    document.querySelectorAll('.settings-nav .btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Show selected tab
+    document.getElementById(tabName + 'Settings').style.display = '';
+    
+    // Add active class to clicked button
+    event.target.classList.add('active');
+}
+
 // Fetch admin dashboard data
 async function fetchDashboardData() {
     try {
@@ -235,5 +290,14 @@ document.getElementById('editUserForm').addEventListener('submit', async (e) => 
 });
 
 // Initialize dashboard
-checkAdminAuth();
-fetchDashboardData(); 
+document.addEventListener('DOMContentLoaded', () => {
+    checkAdminAuth();
+    initializeSidebar();
+    fetchDashboardData();
+    
+    // Show dashboard by default
+    document.getElementById('dashboardSection').style.display = '';
+    document.getElementById('usersSection').style.display = 'none';
+    document.getElementById('nfcCardsSection').style.display = 'none';
+    document.getElementById('settingsSection').style.display = 'none';
+}); 
