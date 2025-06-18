@@ -1,8 +1,12 @@
 // Check if user is admin
 function checkAdminAuth() {
     const user = JSON.parse(localStorage.getItem('user'));
-    if (!user || user.role !== 'admin') {
+    const token = localStorage.getItem('token');
+    
+    if (!user || !token || user.role !== 'admin') {
+        console.log('Unauthorized access attempt:', { user, hasToken: !!token });
         window.location.href = '/index.html';
+        return;
     }
 }
 

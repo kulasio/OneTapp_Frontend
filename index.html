@@ -532,8 +532,8 @@
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
 
-                    // Redirect based on role
-                    if (data.user.role === 'admin') {
+                    // Check user role and redirect accordingly
+                    if (data.user && data.user.role === 'admin') {
                         window.location.href = '/pages/admin-dashboard.html';
                     } else {
                         window.location.href = '/pages/dashboard.html';
@@ -543,6 +543,7 @@
                     errorElement.style.display = 'block';
                 }
             } catch (error) {
+                console.error('Login error:', error);
                 errorElement.textContent = 'An error occurred. Please try again.';
                 errorElement.style.display = 'block';
             }
