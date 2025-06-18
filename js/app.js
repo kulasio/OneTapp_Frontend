@@ -254,7 +254,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     };
 
     try {
-        const response = await fetch(`${API_BASE}/api/users/login`, {
+        const response = await fetch(`${API_BASE}/api/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -265,13 +265,30 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         const data = await response.json();
 
         if (response.ok) {
-            // Success
             localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
-            window.location.href = 'pages/dashboard.html';
+            localStorage.setItem('user', JSON.stringify({
+                _id: data._id,
+                username: data.username,
+                email: data.email,
+                role: data.role
+            }));
+            if (data.role === 'admin') {
+                window.location.href = 'pages/admin-dashboard.html';
+            } else {
+                window.location.href = 'pages/dashboard.html';
+            }
         } else {
-            // Error
-            alert(data.message || 'Invalid credentials');
+            // Stay on index and show error popup
+            const loginError = document.getElementById('loginError');
+            if (loginError) {
+                loginError.textContent = data.message || 'Invalid credentials';
+                loginError.style.display = 'block';
+                setTimeout(() => {
+                    loginError.style.display = 'none';
+                }, 4000);
+            } else {
+                alert(data.message || 'Invalid credentials');
+            }
         }
     } catch (error) {
         console.error('Error:', error);
