@@ -355,43 +355,4 @@ function openSubscribeModal(planName) {
 function closeSubscribeModal() {
     document.getElementById('subscribeModal').classList.remove('show');
     document.body.style.overflow = 'auto';
-}
-
-// Handle subscription form submission
-const subscribeForm = document.getElementById('subscribeForm');
-if (subscribeForm) {
-    subscribeForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const email = document.getElementById('subscribeEmail').value;
-        const phone = document.getElementById('subscribePhone').value;
-        const plan = document.getElementById('subscribePlanName').textContent;
-        try {
-            const submitButton = this.querySelector('button[type="submit"]');
-            const originalButtonText = submitButton.innerHTML;
-            submitButton.innerHTML = 'Processing...';
-            submitButton.disabled = true;
-
-            // Change the URL below to your Test Payment Api backend URL
-            const response = await fetch('https://your-test-payment-api-url/maya-checkout', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, phone, plan })
-            });
-            const data = await response.json();
-            if (data.redirectUrl) {
-                window.location.href = data.redirectUrl;
-            } else {
-                alert('Payment initiation failed');
-            }
-        } catch (err) {
-            alert('An error occurred. Please try again.');
-        } finally {
-            const submitButton = this.querySelector('button[type="submit"]');
-            if (submitButton) {
-                submitButton.innerHTML = 'Proceed to Payment';
-                submitButton.disabled = false;
-            }
-            closeSubscribeModal();
-        }
-    });
 } 
