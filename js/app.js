@@ -117,7 +117,7 @@ document.getElementById('signupForm').addEventListener('submit', async function(
     submitButton.disabled = true;
 
     try {
-        const response = await fetch(`${API_BASE}/api/users`, {
+        const response = await fetch(`${API_BASE}/api/auth/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -143,7 +143,7 @@ document.getElementById('signupForm').addEventListener('submit', async function(
             alert('Account created successfully!');
             // Automatically log in the user
             try {
-                const loginResponse = await fetch(`${API_BASE}/api/users/login`, {
+                const loginResponse = await fetch(`${API_BASE}/api/auth/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
