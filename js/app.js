@@ -360,13 +360,42 @@ function closeSubscribeModal() {
 // Handle subscription form submission
 const subscribeForm = document.getElementById('subscribeForm');
 if (subscribeForm) {
-    subscribeForm.addEventListener('submit', function(e) {
+    subscribeForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         const email = document.getElementById('subscribeEmail').value;
         const phone = document.getElementById('subscribePhone').value;
         const plan = document.getElementById('subscribePlanName').textContent;
-        // For now, just log the values
-        alert(`Plan: ${plan}\nEmail: ${email}\nPhone: ${phone}`);
-        closeSubscribeModal();
+        try {
+            // Show loading state (optional)
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.innerHTML;
+            submitButton.innerHTML = 'Processing...';
+            submitButton.disabled = true;
+
+            // Call backend to create Maya checkout
+            const response = await fetch(`${API_BASE}/api/payments/create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, phone, plan })
+            });
+            const data = await response.json();
+            if (response.ok && data.checkoutUrl) {
+                window.location.href = data.checkoutUrl;
+            } else {
+                alert(data.message || 'Failed to initiate payment.');
+            }
+        } catch (err) {
+            alert('An error occurred. Please try again.');
+        } finally {
+            // Reset button state
+            const submitButton = this.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.innerHTML = 'Proceed to Payment';
+                submitButton.disabled = false;
+            }
+            closeSubscribeModal();
+        }
     });
 } 
