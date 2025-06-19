@@ -548,6 +548,13 @@
         </div>
     </div>
 
+    <!-- Redirect pages for Maya payment outcomes -->
+    <script>
+      if (window.location.pathname === '/success' || window.location.pathname === '/failure' || window.location.pathname === '/cancel') {
+        window.location.replace('/');
+      }
+    </script>
+
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script src="js/app.js"></script>
