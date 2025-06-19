@@ -385,7 +385,7 @@ if (paymentForm) {
             submitButton.disabled = true;
 
             // Change the URL below to your backend Maya payment endpoint
-            const response = await fetch('https://your-backend-url/maya-checkout', {
+            const response = await fetch('https://onetapp-backend.onrender.com/maya-checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, phone, plan })
