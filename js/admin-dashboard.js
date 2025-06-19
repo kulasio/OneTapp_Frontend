@@ -47,4 +47,52 @@ window.addEventListener('click', (e) => {
 });
 
 // On page load, show dashboard by default
-showSection('dashboard'); 
+showSection('dashboard');
+
+// --- User Management Logic ---
+const usersTableBody = document.getElementById('usersTableBody');
+
+async function fetchUsers() {
+    try {
+        // Adjust the API URL as needed for your deployment
+        const response = await fetch('http://localhost:5000/api/users', {
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                // Add Authorization header if needed
+            }
+        });
+        if (!response.ok) throw new Error('Failed to fetch users');
+        const data = await response.json();
+        renderUsersTable(data.users);
+    } catch (err) {
+        usersTableBody.innerHTML = `<tr><td colspan="5" style="color:red;">Error loading users</td></tr>`;
+    }
+}
+
+function renderUsersTable(users) {
+    if (!users || users.length === 0) {
+        usersTableBody.innerHTML = '<tr><td colspan="5">No users found.</td></tr>';
+        return;
+    }
+    usersTableBody.innerHTML = users.map(user => `
+        <tr>
+            <td>${user.email}</td>
+            <td>${user.role}</td>
+            <td>${user.status}</td>
+            <td>${user.lastLogin ? new Date(user.lastLogin).toLocaleString() : '-'}</td>
+            <td>
+                <button class="edit-user-btn" data-id="${user._id}" style="background:#e3f2fd;color:#1976d2;border:none;padding:0.4rem 0.8rem;border-radius:6px;cursor:pointer;margin-right:0.5rem;">Edit</button>
+                <button class="delete-user-btn" data-id="${user._id}" style="background:#ffebee;color:#d32f2f;border:none;padding:0.4rem 0.8rem;border-radius:6px;cursor:pointer;">Delete</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Fetch users when Users section is shown
+usersNav.addEventListener('click', () => {
+    fetchUsers();
+});
+
+// Optionally, fetch users on page load if Users section is default
+// fetchUsers(); 
