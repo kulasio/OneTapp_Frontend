@@ -358,10 +358,19 @@ function closeSubscribeModal() {
 }
 
 // Payment Modal Functions
+function getCurrentBillingPeriod() {
+    const monthlyBtn = document.getElementById('monthlyBtn');
+    if (monthlyBtn && monthlyBtn.classList.contains('btn-primary')) {
+        return 'monthly';
+    }
+    return 'yearly';
+}
+
 function openPaymentModal(planName) {
     document.getElementById('paymentModal').classList.add('show');
     document.getElementById('paymentPlanName').textContent = planName;
     document.getElementById('paymentPlan').value = planName;
+    document.getElementById('paymentBillingPeriod').value = getCurrentBillingPeriod();
     document.body.style.overflow = 'hidden';
 }
 
@@ -378,17 +387,17 @@ if (paymentForm) {
         const email = document.getElementById('paymentEmail').value;
         const phone = document.getElementById('paymentPhone').value;
         const plan = document.getElementById('paymentPlan').value;
+        const billingPeriod = document.getElementById('paymentBillingPeriod').value;
         try {
             const submitButton = this.querySelector('button[type="submit"]');
             const originalButtonText = submitButton.innerHTML;
             submitButton.innerHTML = 'Processing...';
             submitButton.disabled = true;
 
-            // Change the URL below to your backend Maya payment endpoint
             const response = await fetch('https://onetapp-backend.onrender.com/maya-checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, phone, plan })
+                body: JSON.stringify({ email, phone, plan, billingPeriod })
             });
             const data = await response.json();
             if (data.redirectUrl) {
