@@ -55,7 +55,7 @@ const usersTableBody = document.getElementById('usersTableBody');
 async function fetchUsers() {
     try {
         // Adjust the API URL as needed for your deployment
-        const response = await fetch('http://localhost:5000/api/users', {
+        const response = await fetch('https://onetapp-backend.onrender.com/api/users', {
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
