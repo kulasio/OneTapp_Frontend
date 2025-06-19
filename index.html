@@ -249,7 +249,7 @@
                     <li>Analytics: Tap count only</li>
                     <li>Email support</li>
                 </ul>
-                <button class="btn btn-primary" onclick="openSubscribeModal('Starter Tap')">Subscribe Now</button>
+                <button class="btn btn-primary" onclick="openPaymentModal('Starter Tap')">Subscribe Now</button>
             </div>
             <div class="pricing-plan">
                 <h3>Pro Tap</h3>
@@ -265,7 +265,7 @@
                     <li>Geo-tracking of scans</li>
                     <li>Priority email & chat support</li>
                 </ul>
-                <button class="btn btn-primary" onclick="openSubscribeModal('Pro Tap')">Subscribe Now</button>
+                <button class="btn btn-primary" onclick="openPaymentModal('Pro Tap')">Subscribe Now</button>
             </div>
             <div class="pricing-plan">
                 <h3>Power Tap</h3>
@@ -281,7 +281,7 @@
                     <li>Dedicated account manager</li>
                     <li>24/7 support</li>
                 </ul>
-                <button class="btn btn-primary" onclick="openSubscribeModal('Power Tap')">Subscribe Now</button>
+                <button class="btn btn-primary" onclick="openPaymentModal('Power Tap')">Subscribe Now</button>
             </div>
         </div>
     </section>
@@ -524,6 +524,26 @@
                     <input type="tel" id="subscribePhone" required placeholder="Enter your mobile number">
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Proceed to Payment</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal__content">
+            <span class="modal__close" onclick="closePaymentModal()">&times;</span>
+            <h2>Subscribe to <span id="paymentPlanName"></span></h2>
+            <form id="paymentForm">
+                <div class="form-group">
+                    <label for="paymentEmail">Email Address</label>
+                    <input type="email" id="paymentEmail" required placeholder="Enter your email address">
+                </div>
+                <div class="form-group">
+                    <label for="paymentPhone">Phone Number</label>
+                    <input type="tel" id="paymentPhone" required placeholder="Enter your phone number">
+                </div>
+                <input type="hidden" id="paymentPlan" name="plan">
+                <button type="submit" class="btn btn-primary btn-block">Proceed to Checkout</button>
             </form>
         </div>
     </div>

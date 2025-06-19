@@ -355,4 +355,56 @@ function openSubscribeModal(planName) {
 function closeSubscribeModal() {
     document.getElementById('subscribeModal').classList.remove('show');
     document.body.style.overflow = 'auto';
+}
+
+// Payment Modal Functions
+function openPaymentModal(planName) {
+    document.getElementById('paymentModal').classList.add('show');
+    document.getElementById('paymentPlanName').textContent = planName;
+    document.getElementById('paymentPlan').value = planName;
+    document.body.style.overflow = 'hidden';
+}
+
+function closePaymentModal() {
+    document.getElementById('paymentModal').classList.remove('show');
+    document.body.style.overflow = 'auto';
+}
+
+// Payment Form Submission
+const paymentForm = document.getElementById('paymentForm');
+if (paymentForm) {
+    paymentForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const email = document.getElementById('paymentEmail').value;
+        const phone = document.getElementById('paymentPhone').value;
+        const plan = document.getElementById('paymentPlan').value;
+        try {
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.innerHTML;
+            submitButton.innerHTML = 'Processing...';
+            submitButton.disabled = true;
+
+            // Change the URL below to your backend Maya payment endpoint
+            const response = await fetch('https://your-backend-url/maya-checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, phone, plan })
+            });
+            const data = await response.json();
+            if (data.redirectUrl) {
+                window.location.href = data.redirectUrl;
+            } else {
+                alert('Payment initiation failed');
+            }
+        } catch (err) {
+            alert('An error occurred. Please try again.');
+        } finally {
+            const submitButton = this.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.innerHTML = 'Proceed to Checkout';
+                submitButton.disabled = false;
+            }
+            closePaymentModal();
+        }
+    });
 } 
