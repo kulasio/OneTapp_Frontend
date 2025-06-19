@@ -6,383 +6,191 @@
     <title>OneTapp NFC - Admin Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Reset and Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --primary: #1976d2;
+            --primary-dark: #115293;
+            --sidebar-bg: var(--primary);
+            --sidebar-text: #fff;
+            --card-bg: #fff;
+            --card-radius: 18px;
+            --card-shadow: 0 4px 24px rgba(25, 118, 210, 0.10);
+            --icon-bg: #e3f2fd;
+            --icon-color: var(--primary);
+            --body-bg: #f5f7fa;
         }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            line-height: 1.6;
-            color: #333;
+            margin: 0;
+            font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+            background: var(--body-bg);
+            color: #23294a;
         }
-
-        /* Admin Dashboard Layout */
         .admin-dashboard {
-            display: grid;
-            grid-template-columns: 250px 1fr;
+            display: flex;
             min-height: 100vh;
         }
-
-        /* Sidebar Styles */
         .sidebar {
-            background: #1a1a1a;
-            color: white;
-            padding: 2rem;
+            width: 260px;
+            background: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2.5rem 1rem 1rem 1rem;
+            box-shadow: 2px 0 12px rgba(25, 118, 210, 0.07);
         }
-
-        .sidebar__logo {
-            margin-bottom: 2rem;
-            text-align: center;
+        .sidebar__logo-material {
+            background: none;
+            border-radius: 0;
+            width: auto;
+            height: auto;
+            box-shadow: none;
+            margin-bottom: 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
-        .sidebar__logo img {
-            max-width: 150px;
+        .sidebar__logo-material img {
+            max-width: 200px;
+            max-height: 90px;
         }
-
         .sidebar__nav {
+            width: 100%;
             list-style: none;
             padding: 0;
+            margin-top: 1rem;
         }
-
-        .sidebar__nav-item {
-            margin-bottom: 0.5rem;
-        }
-
         .sidebar__nav-link {
             display: flex;
             align-items: center;
             gap: 1rem;
-            padding: 0.75rem 1rem;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: background-color 0.3s;
-        }
-
-        .sidebar__nav-link:hover,
-        .sidebar__nav-link.active {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .sidebar__nav-link i {
-            width: 20px;
-        }
-
-        /* Main Content Styles */
-        .main-content {
-            padding: 2rem;
-            background: #f5f5f5;
-        }
-
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .dashboard-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .dashboard-actions {
-            display: flex;
-            gap: 1rem;
-        }
-
-        /* Card and Table Styles */
-        .admin-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 1.5rem;
-        }
-
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .admin-table th,
-        .admin-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-
-        .admin-table th {
-            font-weight: 600;
-            color: #666;
-        }
-
-        .admin-table tr:hover {
-            background: #f9f9f9;
-        }
-
-        /* Button Styles */
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background: #1976d2;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #1565c0;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid #1976d2;
-            color: #1976d2;
-        }
-
-        .btn-outline:hover {
-            background: #1976d2;
-            color: white;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .btn-icon {
-            padding: 0.5rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .btn-edit {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-
-        .btn-delete {
-            background: #ffebee;
-            color: #d32f2f;
-        }
-
-        .btn-view {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .btn-logout {
-            background: #fff;
-            color: #222;
-            border: 1px solid #eee;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-        }
-
-        .btn-logout:hover {
-            background: #f5f5f5;
-            color: #1976d2;
-            border-color: #1976d2;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #666;
-        }
-
-        /* Form Styles */
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #666;
-            font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #1976d2;
-        }
-
-        .form-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        /* Status Badges */
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .status-badge.active {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .status-badge.inactive {
-            background: #ffebee;
-            color: #d32f2f;
-        }
-
-        /* Notifications */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
             padding: 1rem 1.5rem;
-            border-radius: 8px;
-            background: white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            color: var(--sidebar-text);
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 1.15rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: background 0.2s, color 0.2s;
+        }
+        .sidebar__nav-link.active,
+        .sidebar__nav-link:hover {
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+        }
+        .sidebar__nav-link i {
+            font-size: 1.3rem;
+        }
+        .main-content {
+            flex: 1;
+            padding: 3.5rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--body-bg);
+        }
+        .dashboard-header {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+        .dashboard-title {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            letter-spacing: -0.5px;
+        }
+        .dashboard-welcome {
+            font-size: 1.18rem;
+            color: #4a5a6a;
+            margin-bottom: 2.5rem;
+            font-weight: 400;
+        }
+        .stats-cards {
+            display: flex;
+            gap: 2rem;
+            width: 100%;
+            max-width: 900px;
+            justify-content: center;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: var(--card-radius);
+            box-shadow: var(--card-shadow);
+            padding: 2.2rem 2.5rem 1.7rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            min-width: 200px;
+            flex: 1;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .stat-card:hover {
+            box-shadow: 0 8px 32px rgba(25, 118, 210, 0.18);
+            transform: translateY(-2px) scale(1.03);
+        }
+        .stat-icon {
+            background: var(--icon-bg);
+            color: var(--icon-color);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            z-index: 1000;
-            animation: slideIn 0.3s ease-out;
-            opacity: 1;
-            transform: translateX(0);
+            justify-content: center;
+            font-size: 1.7rem;
+            margin-bottom: 1.1rem;
+            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.07);
         }
-
-        .notification.hide {
-            animation: slideOut 0.3s ease-out forwards;
+        .stat-label {
+            font-size: 1.05rem;
+            color: #7a8ca3;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
         }
-
-        .notification.success {
-            border-left: 4px solid #2e7d32;
+        .stat-value {
+            font-size: 2.1rem;
+            font-weight: 700;
+            color: var(--primary-dark);
         }
-
-        .notification.error {
-            border-left: 4px solid #d32f2f;
-        }
-
-        .notification.info {
-            border-left: 4px solid #1976d2;
-        }
-
-        .notification i {
-            font-size: 1.25rem;
-        }
-
-        .notification.success i {
-            color: #2e7d32;
-        }
-
-        .notification.error i {
-            color: #d32f2f;
-        }
-
-        .notification.info i {
-            color: #1976d2;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
+        @media (max-width: 900px) {
+            .stats-cards {
+                flex-direction: column;
+                gap: 1.5rem;
             }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .admin-dashboard {
-                grid-template-columns: 1fr;
-            }
-
-            .sidebar {
-                display: none;
-            }
-
             .main-content {
-                padding: 1rem;
+                padding: 2rem 0.5rem;
             }
-
+        }
+        @media (max-width: 600px) {
+            .sidebar {
+                width: 70px;
+                padding: 1rem 0.2rem;
+            }
+            .sidebar__logo-material {
+                width: 48px;
+                height: 48px;
+                margin-bottom: 1.2rem;
+            }
+            .sidebar__logo-material img {
+                max-width: 32px;
+                max-height: 32px;
+            }
+            .sidebar__nav-link {
+                font-size: 0.9rem;
+                padding: 0.7rem 0.5rem;
+                justify-content: center;
+            }
+            .main-content {
+                padding: 1rem 0.2rem;
+            }
             .dashboard-header {
                 flex-direction: column;
-                gap: 1rem;
                 align-items: flex-start;
-            }
-
-            .admin-table {
-                display: block;
-                overflow-x: auto;
+                gap: 1rem;
             }
         }
     </style>
@@ -391,502 +199,48 @@
     <div class="admin-dashboard">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <div class="sidebar__logo">
+            <div class="sidebar__logo-material">
                 <img src="../images/OneTapp_Logo.png" alt="OneTapp Logo">
             </div>
             <nav>
                 <ul class="sidebar__nav">
-                    <li class="sidebar__nav-item">
+                    <li>
                         <a href="#" class="sidebar__nav-link active">
                             <i class="fas fa-home"></i>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li class="sidebar__nav-item">
-                        <a href="#" class="sidebar__nav-link">
-                            <i class="fas fa-users"></i>
-                            Users
-                        </a>
-                    </li>
-                    <li class="sidebar__nav-item">
-                        <a href="#" class="sidebar__nav-link">
-                            <i class="fas fa-id-card"></i>
-                            NFC Cards
-                        </a>
-                    </li>
-                    <li class="sidebar__nav-item">
-                        <a href="#" class="sidebar__nav-link">
-                            <i class="fas fa-chart-bar"></i>
-                            Analytics
-                        </a>
-                    </li>
-                    <li class="sidebar__nav-item">
-                        <a href="#" class="sidebar__nav-link">
-                            <i class="fas fa-cog"></i>
-                            Settings
+                            <span class="sidebar__nav-text">Dashboard</span>
                         </a>
                     </li>
                 </ul>
             </nav>
-            <div class="sidebar__logout">
-                <button class="btn btn-logout" onclick="logout()" style="width:100%;margin-top:2rem;display:flex;align-items:center;gap:0.5em;justify-content:center;">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-            </div>
         </aside>
-
         <!-- Main Content -->
         <main class="main-content">
-            <div id="dashboardSection">
-                <h1 class="dashboard-title">Welcome to the Admin Dashboard</h1>
-                <p>Use the sidebar to manage users, view analytics, and configure settings.</p>
+            <div class="dashboard-header">
+                <div class="dashboard-title">Admin Dashboard</div>
             </div>
-            <div id="usersSection" style="display:none;">
-                <div class="dashboard-header">
-                    <h1 class="dashboard-title">User Management</h1>
-                    <div class="dashboard-actions">
-                        <button class="btn btn-primary" onclick="showAddUserModal()">
-                            <i class="fas fa-plus"></i> Add New User
-                        </button>
-                    </div>
-                </div>
-                <!-- Search and Filter Controls -->
-                <div class="admin-card" style="margin-bottom:1rem;display:flex;flex-wrap:wrap;gap:1rem;align-items:center;">
-                    <input type="text" id="userSearchInput" placeholder="Search by name or email..." style="flex:2 1 200px;padding:0.75rem 1rem;border:1px solid #ddd;border-radius:6px;font-size:1rem;">
-                    <select id="roleFilter" style="flex:1 1 120px;padding:0.75rem 1rem;border:1px solid #ddd;border-radius:6px;font-size:1rem;">
-                        <option value="">All Roles</option>
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                    <select id="statusFilter" style="flex:1 1 120px;padding:0.75rem 1rem;border:1px solid #ddd;border-radius:6px;font-size:1rem;">
-                        <option value="">All Status</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
-                </div>
-                <!-- Users Table -->
-                <div class="admin-card">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="usersTableBody">
-                            <!-- Users will be loaded here dynamically -->
-                        </tbody>
-                    </table>
-                    <div id="paginationControls" style="display:flex;justify-content:center;align-items:center;gap:0.5rem;margin-top:1rem;"></div>
-                </div>
+            <div class="dashboard-welcome">
+                Welcome to your new admin dashboard!<br>
+                This is a clean slate. You can add analytics, user management, or any features you need.
             </div>
-            <div id="nfcCardsSection" style="display:none;">
-                <div class="dashboard-header">
-                    <h1 class="dashboard-title">NFC Cards Management</h1>
-                    <div class="dashboard-actions">
-                        <button class="btn btn-primary" onclick="showAddNFCCardModal()">
-                            <i class="fas fa-plus"></i> Add New NFC Card
-                        </button>
-                    </div>
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-label">Total Users</div>
+                    <div class="stat-value">--</div>
                 </div>
-                <!-- Search and Filter Controls -->
-                <div class="admin-card" style="margin-bottom:1rem;display:flex;flex-wrap:wrap;gap:1rem;align-items:center;">
-                    <input type="text" id="nfcCardSearchInput" placeholder="Search by name or ID..." style="flex:2 1 200px;padding:0.75rem 1rem;border:1px solid #ddd;border-radius:6px;font-size:1rem;">
-                    <select id="organizationFilter" style="flex:1 1 120px;padding:0.75rem 1rem;border:1px solid #ddd;border-radius:6px;font-size:1rem;">
-                        <option value="">All Organizations</option>
-                        <option value="org1">Organization 1</option>
-                        <option value="org2">Organization 2</option>
-                    </select>
-                    <select id="statusFilter" style="flex:1 1 120px;padding:0.75rem 1rem;border:1px solid #ddd;border-radius:6px;font-size:1rem;">
-                        <option value="">All Status</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-id-card"></i></div>
+                    <div class="stat-label">NFC Cards</div>
+                    <div class="stat-value">--</div>
                 </div>
-                <!-- NFC Cards Table -->
-                <div class="admin-card">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Card ID</th>
-                                <th>Name</th>
-                                <th>Organization</th>
-                                <th>Status</th>
-                                <th>Last Tap</th>
-                                <th>Total Taps</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="nfcCardsTableBody">
-                            <!-- NFC Cards will be loaded here dynamically -->
-                        </tbody>
-                    </table>
-                    <div id="nfcPaginationControls" style="display:flex;justify-content:center;align-items:center;gap:0.5rem;margin-top:1rem;"></div>
-                </div>
-            </div>
-            <div id="settingsSection" style="display:none;">
-                <div class="dashboard-header">
-                    <h1 class="dashboard-title">System Settings</h1>
-                </div>
-
-                <!-- Settings Navigation -->
-                <div class="admin-card" style="margin-bottom: 1.5rem;">
-                    <div class="settings-nav" style="display: flex; gap: 1rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
-                        <button class="btn btn-outline active" onclick="showSettingsTab('general')">General</button>
-                        <button class="btn btn-outline" onclick="showSettingsTab('organization')">Organization</button>
-                        <button class="btn btn-outline" onclick="showSettingsTab('cards')">Card Settings</button>
-                        <button class="btn btn-outline" onclick="showSettingsTab('security')">Security</button>
-                        <button class="btn btn-outline" onclick="showSettingsTab('notifications')">Notifications</button>
-                    </div>
-                </div>
-
-                <!-- General Settings -->
-                <div id="generalSettings" class="settings-tab">
-                    <div class="admin-card">
-                        <h2 style="margin-bottom: 1.5rem;">General Settings</h2>
-                        <form id="generalSettingsForm">
-                            <div class="form-group">
-                                <label for="siteName">Site Name</label>
-                                <input type="text" id="siteName" value="OneTapp NFC">
-                            </div>
-                            <div class="form-group">
-                                <label for="siteDescription">Site Description</label>
-                                <textarea id="siteDescription" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="timezone">Default Timezone</label>
-                                <select id="timezone" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;">
-                                    <option value="UTC">UTC</option>
-                                    <option value="EST">Eastern Time</option>
-                                    <option value="PST">Pacific Time</option>
-                                    <!-- Add more timezones as needed -->
-                                </select>
-                            </div>
-                            <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Organization Settings -->
-                <div id="organizationSettings" class="settings-tab" style="display: none;">
-                    <div class="admin-card">
-                        <h2 style="margin-bottom: 1.5rem;">Organization Settings</h2>
-                        <form id="organizationSettingsForm">
-                            <div class="form-group">
-                                <label for="orgName">Organization Name</label>
-                                <input type="text" id="orgName">
-                            </div>
-                            <div class="form-group">
-                                <label for="orgLogo">Organization Logo</label>
-                                <input type="file" id="orgLogo" accept="image/*">
-                            </div>
-                            <div class="form-group">
-                                <label for="maxCardsPerUser">Maximum Cards Per User</label>
-                                <input type="number" id="maxCardsPerUser" min="1" value="5">
-                            </div>
-                            <div class="form-group">
-                                <label for="allowCardCreation">Allow Card Creation</label>
-                                <select id="allowCardCreation" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;">
-                                    <option value="true">Yes</option>
-                                    <option value="false">No</option>
-                                </select>
-                            </div>
-                            <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Card Settings -->
-                <div id="cardSettings" class="settings-tab" style="display: none;">
-                    <div class="admin-card">
-                        <h2 style="margin-bottom: 1.5rem;">Card Settings</h2>
-                        <form id="cardSettingsForm">
-                            <div class="form-group">
-                                <label for="defaultCardTemplate">Default Card Template</label>
-                                <select id="defaultCardTemplate" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;">
-                                    <option value="template1">Template 1</option>
-                                    <option value="template2">Template 2</option>
-                                    <option value="template3">Template 3</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="allowedFileTypes">Allowed File Types</label>
-                                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
-                                        <input type="checkbox" value="jpg"> JPG
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
-                                        <input type="checkbox" value="png"> PNG
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
-                                        <input type="checkbox" value="gif"> GIF
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="maxFileSize">Maximum File Size (MB)</label>
-                                <input type="number" id="maxFileSize" min="1" max="10" value="5">
-                            </div>
-                            <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Security Settings -->
-                <div id="securitySettings" class="settings-tab" style="display: none;">
-                    <div class="admin-card">
-                        <h2 style="margin-bottom: 1.5rem;">Security Settings</h2>
-                        <form id="securitySettingsForm">
-                            <div class="form-group">
-                                <label for="passwordPolicy">Password Policy</label>
-                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
-                                        <input type="checkbox" id="requireUppercase"> Require uppercase letters
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
-                                        <input type="checkbox" id="requireNumbers"> Require numbers
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
-                                        <input type="checkbox" id="requireSpecialChars"> Require special characters
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="minPasswordLength">Minimum Password Length</label>
-                                <input type="number" id="minPasswordLength" min="8" max="32" value="8">
-                            </div>
-                            <div class="form-group">
-                                <label for="sessionTimeout">Session Timeout (minutes)</label>
-                                <input type="number" id="sessionTimeout" min="5" max="1440" value="30">
-                            </div>
-                            <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Notification Settings -->
-                <div id="notificationSettings" class="settings-tab" style="display: none;">
-                    <div class="admin-card">
-                        <h2 style="margin-bottom: 1.5rem;">Notification Settings</h2>
-                        <form id="notificationSettingsForm">
-                            <div class="form-group">
-                                <label>Email Notifications</label>
-                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
-                                        <input type="checkbox" id="newUserNotification"> New user registration
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
-                                        <input type="checkbox" id="cardTapNotification"> Card tap notifications
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
-                                        <input type="checkbox" id="systemAlertNotification"> System alerts
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="notificationEmail">Notification Email</label>
-                                <input type="email" id="notificationEmail">
-                            </div>
-                            <div class="form-group">
-                                <label for="emailTemplate">Email Template</label>
-                                <select id="emailTemplate" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;">
-                                    <option value="default">Default Template</option>
-                                    <option value="custom">Custom Template</option>
-                                </select>
-                            </div>
-                            <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                            </div>
-                        </form>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="stat-label">Analytics</div>
+                    <div class="stat-value">--</div>
                 </div>
             </div>
         </main>
     </div>
-
-    <!-- Add User Modal -->
-    <div id="addUserModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Add New User</h2>
-                <button class="close-modal" onclick="closeAddUserModal()">&times;</button>
-            </div>
-            <form id="addUserForm">
-                <div class="form-group">
-                    <label for="userName">Name</label>
-                    <input type="text" id="userName" required>
-                </div>
-                <div class="form-group">
-                    <label for="userEmail">Email</label>
-                    <input type="email" id="userEmail" required>
-                </div>
-                <div class="form-group">
-                    <label for="userPassword">Password</label>
-                    <input type="password" id="userPassword" required>
-                </div>
-                <div class="form-group">
-                    <label for="userRole">Role</label>
-                    <select id="userRole" required>
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-outline" onclick="closeAddUserModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add User</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Edit User Modal -->
-    <div id="editUserModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Edit User</h2>
-                <button class="close-modal" onclick="closeEditUserModal()">&times;</button>
-            </div>
-            <form id="editUserForm">
-                <input type="hidden" id="editUserId">
-                <div class="form-group">
-                    <label for="editUserName">Name</label>
-                    <input type="text" id="editUserName" required>
-                </div>
-                <div class="form-group">
-                    <label for="editUserEmail">Email</label>
-                    <input type="email" id="editUserEmail" required>
-                </div>
-                <div class="form-group">
-                    <label for="editUserRole">Role</label>
-                    <select id="editUserRole" required>
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-outline" onclick="closeEditUserModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Update User</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- User Details Modal -->
-    <div id="userDetailsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>User Details</h2>
-                <button class="close-modal" onclick="closeUserDetailsModal()">&times;</button>
-            </div>
-            <div id="userDetailsContent">
-                <!-- User details will be loaded here -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Add NFC Card Modal -->
-    <div id="addNFCCardModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Add New NFC Card</h2>
-                <button class="close-modal" onclick="closeAddNFCCardModal()">&times;</button>
-            </div>
-            <form id="addNFCCardForm">
-                <div class="form-group">
-                    <label for="cardName">Name</label>
-                    <input type="text" id="cardName" required>
-                </div>
-                <div class="form-group">
-                    <label for="cardOrganization">Organization</label>
-                    <select id="cardOrganization" required>
-                        <option value="org1">Organization 1</option>
-                        <option value="org2">Organization 2</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="cardImage">Card Image</label>
-                    <input type="file" id="cardImage" accept="image/*">
-                </div>
-                <div class="form-group">
-                    <label for="cardStatus">Status</label>
-                    <select id="cardStatus" required>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-outline" onclick="closeAddNFCCardModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Card</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Edit NFC Card Modal -->
-    <div id="editNFCCardModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Edit NFC Card</h2>
-                <button class="close-modal" onclick="closeEditNFCCardModal()">&times;</button>
-            </div>
-            <form id="editNFCCardForm">
-                <input type="hidden" id="editCardId">
-                <div class="form-group">
-                    <label for="editCardName">Name</label>
-                    <input type="text" id="editCardName" required>
-                </div>
-                <div class="form-group">
-                    <label for="editCardOrganization">Organization</label>
-                    <select id="editCardOrganization" required>
-                        <option value="org1">Organization 1</option>
-                        <option value="org2">Organization 2</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="editCardImage">Card Image</label>
-                    <input type="file" id="editCardImage" accept="image/*">
-                </div>
-                <div class="form-group">
-                    <label for="editCardStatus">Status</label>
-                    <select id="editCardStatus" required>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-outline" onclick="closeEditNFCCardModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Update Card</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- NFC Card Details Modal -->
-    <div id="nfcCardDetailsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>NFC Card Details</h2>
-                <button class="close-modal" onclick="closeNFCCardDetailsModal()">&times;</button>
-            </div>
-            <div id="nfcCardDetailsContent">
-                <!-- Card details will be loaded here -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
     <script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script>
-    <script src="../js/admin-dashboard.js"></script>
 </body>
 </html> 
