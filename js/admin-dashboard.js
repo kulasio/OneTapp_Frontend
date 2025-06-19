@@ -54,12 +54,11 @@ const usersTableBody = document.getElementById('usersTableBody');
 
 async function fetchUsers() {
     try {
-        // Adjust the API URL as needed for your deployment
+        const token = localStorage.getItem('adminToken');
         const response = await fetch('https://onetapp-backend.onrender.com/api/users', {
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                // Add Authorization header if needed
+                'Authorization': `Bearer ${token}`,
             }
         });
         if (!response.ok) throw new Error('Failed to fetch users');
