@@ -270,9 +270,14 @@ addSubscriptionForm.addEventListener('submit', async (e) => {
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
 
+    const submitButton = e.target.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    submitButton.textContent = 'Processing...';
+
     try {
         const token = localStorage.getItem('adminToken');
-        const response = await fetch('https://onetapp-backend.onrender.com/api/subscriptions', {
+        // Call the new payment initiation endpoint
+        const response = await fetch('https://onetapp-backend.onrender.com/api/payments/initiate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -281,20 +286,23 @@ addSubscriptionForm.addEventListener('submit', async (e) => {
             body: JSON.stringify(data),
         });
 
+        const responseData = await response.json();
+
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: 'Failed to create subscription.' }));
-            throw new Error(errorData.message);
+            throw new Error(responseData.message || 'Failed to initiate payment.');
         }
 
-        // Close the modal
-        addSubscriptionModal.style.display = 'none';
-        // Refresh the subscriptions list
-        fetchSubscriptions();
-        // Clear the form
-        e.target.reset();
+        // If successful, redirect the user to the Maya payment page
+        if (responseData.redirectUrl) {
+            window.location.href = responseData.redirectUrl;
+        } else {
+            throw new Error('Could not retrieve payment URL.');
+        }
 
     } catch (err) {
-        alert(`Error: ${err.message}`); // Simple error feedback
+        alert(`Error: ${err.message}`); // Provide feedback
+        submitButton.disabled = false;
+        submitButton.textContent = 'Add'; // Reset button
     }
 });
 
