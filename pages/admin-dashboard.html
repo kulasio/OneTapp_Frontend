@@ -324,6 +324,12 @@
                             <span class="sidebar__nav-text">Users</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="#" class="sidebar__nav-link" id="cardsNav">
+                            <i class="fas fa-id-card"></i>
+                            <span class="sidebar__nav-text">Cards</span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
         </aside>
@@ -393,6 +399,33 @@
                     </table>
                 </div>
             </div>
+
+            <!-- Card Management Section -->
+            <div id="cardsSection" style="display:none; width:100%; max-width:1000px;">
+                <div class="users-header">
+                    <div class="dashboard-title">Card Management</div>
+                    <button class="btn-add" id="addCardBtn">
+                        <i class="fas fa-plus"></i> Add Card
+                    </button>
+                </div>
+                <div class="user-table-container">
+                    <table class="user-table">
+                        <thead>
+                            <tr>
+                                <th>Card UID</th>
+                                <th>Assigned To</th>
+                                <th>Status</th>
+                                <th>Created At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cardsTableBody">
+                            <!-- Cards will be loaded here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- Add User Modal -->
             <div id="addUserModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);z-index:1000;align-items:center;justify-content:center;">
                 <div style="background:#fff;padding:2rem 2.5rem;border-radius:16px;max-width:400px;width:100%;box-shadow:0 4px 24px rgba(25,118,210,0.15);position:relative;">
