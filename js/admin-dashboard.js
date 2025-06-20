@@ -263,6 +263,38 @@ window.addEventListener('click', (e) => {
     }
 });
 
+const addSubscriptionForm = document.getElementById('addSubscriptionForm');
+
+addSubscriptionForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(addSubscriptionForm);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+        const token = localStorage.getItem('adminToken');
+        const response = await fetch('https://onetapp-backend.onrender.com/api/subscriptions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: 'Failed to add subscription.' }));
+            throw new Error(errorData.message);
+        }
+
+        addSubscriptionModal.style.display = 'none';
+        addSubscriptionForm.reset();
+        await fetchSubscriptions(); // Refresh the table
+
+    } catch (err) {
+        alert(`Error: ${err.message}`); // Simple error feedback
+    }
+});
+
 async function fetchSubscriptions() {
     try {
         const token = localStorage.getItem('adminToken');
