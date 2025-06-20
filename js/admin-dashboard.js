@@ -143,6 +143,7 @@ showSection('dashboard');
 
 // --- User Management Logic ---
 const usersTableBody = document.getElementById('usersTableBody');
+let allUsers = [];
 
 async function fetchUsers() {
     try {
@@ -155,7 +156,8 @@ async function fetchUsers() {
         });
         if (!response.ok) throw new Error('Failed to fetch users');
         const data = await response.json();
-        renderUsersTable(data.users);
+        allUsers = data.users;
+        renderUsersTable(allUsers);
     } catch (err) {
         usersTableBody.innerHTML = `<tr><td colspan="5" style="color:red;">Error loading users</td></tr>`;
     }
@@ -179,6 +181,16 @@ function renderUsersTable(users) {
         </tr>
     `).join('');
 }
+
+// Filter users by email
+const userEmailFilter = document.getElementById('userEmailFilter');
+userEmailFilter.addEventListener('input', function() {
+    const filterValue = this.value.trim().toLowerCase();
+    const filtered = allUsers.filter(user =>
+        user.email && user.email.toLowerCase().includes(filterValue)
+    );
+    renderUsersTable(filterValue ? filtered : allUsers);
+});
 
 // Fetch users when Users section is shown
 usersNav.addEventListener('click', () => {
@@ -470,6 +482,8 @@ addSubscriptionForm.addEventListener('submit', async (e) => {
     }
 });
 
+let allSubscriptions = [];
+
 async function fetchSubscriptions() {
     try {
         const token = localStorage.getItem('adminToken');
@@ -484,7 +498,8 @@ async function fetchSubscriptions() {
             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        renderSubscriptionsTable(data.subscriptions);
+        allSubscriptions = data.subscriptions;
+        renderSubscriptionsTable(allSubscriptions);
     } catch (err) {
         subscriptionsTableBody.innerHTML = `<tr><td colspan="7" style="color:red;">Error loading subscriptions: ${err.message}</td></tr>`;
     }
@@ -514,6 +529,16 @@ function renderSubscriptionsTable(subscriptions) {
         </tr>
     `}).join('');
 }
+
+// Filter subscriptions by email
+const subscriptionEmailFilter = document.getElementById('subscriptionEmailFilter');
+subscriptionEmailFilter.addEventListener('input', function() {
+    const filterValue = this.value.trim().toLowerCase();
+    const filtered = allSubscriptions.filter(subscription =>
+        subscription.email && subscription.email.toLowerCase().includes(filterValue)
+    );
+    renderSubscriptionsTable(filterValue ? filtered : allSubscriptions);
+});
 
 // Optionally, fetch subscriptions on page load if Subscriptions section is default
 // fetchSubscriptions(); 
