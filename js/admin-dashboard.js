@@ -2,18 +2,39 @@
 const dashboardNav = document.getElementById('dashboardNav');
 const usersNav = document.getElementById('usersNav');
 const cardsNav = document.getElementById('cardsNav');
+const analyticsNav = document.getElementById('analyticsNav');
+const templatesNav = document.getElementById('templatesNav');
+const reportsNav = document.getElementById('reportsNav');
+const settingsNav = document.getElementById('settingsNav');
+
 const dashboardSection = document.getElementById('dashboardSection');
 const usersSection = document.getElementById('usersSection');
 const cardsSection = document.getElementById('cardsSection');
+const analyticsSection = document.getElementById('analyticsSection');
+const templatesSection = document.getElementById('templatesSection');
+const reportsSection = document.getElementById('reportsSection');
+const settingsSection = document.getElementById('settingsSection');
 
 function showSection(section) {
+    // Hide all sections
     dashboardSection.style.display = 'none';
     usersSection.style.display = 'none';
     cardsSection.style.display = 'none';
+    analyticsSection.style.display = 'none';
+    templatesSection.style.display = 'none';
+    reportsSection.style.display = 'none';
+    settingsSection.style.display = 'none';
+
+    // Remove active class from all nav items
     dashboardNav.classList.remove('active');
     usersNav.classList.remove('active');
     cardsNav.classList.remove('active');
+    analyticsNav.classList.remove('active');
+    templatesNav.classList.remove('active');
+    reportsNav.classList.remove('active');
+    settingsNav.classList.remove('active');
 
+    // Show selected section and activate nav item
     if (section === 'dashboard') {
         dashboardSection.style.display = '';
         dashboardNav.classList.add('active');
@@ -23,6 +44,18 @@ function showSection(section) {
     } else if (section === 'cards') {
         cardsSection.style.display = '';
         cardsNav.classList.add('active');
+    } else if (section === 'analytics') {
+        analyticsSection.style.display = '';
+        analyticsNav.classList.add('active');
+    } else if (section === 'templates') {
+        templatesSection.style.display = '';
+        templatesNav.classList.add('active');
+    } else if (section === 'reports') {
+        reportsSection.style.display = '';
+        reportsNav.classList.add('active');
+    } else if (section === 'settings') {
+        settingsSection.style.display = '';
+        settingsNav.classList.add('active');
     }
 }
 
@@ -30,13 +63,48 @@ dashboardNav.addEventListener('click', (e) => {
     e.preventDefault();
     showSection('dashboard');
 });
+
 usersNav.addEventListener('click', (e) => {
     e.preventDefault();
     showSection('users');
 });
+
 cardsNav.addEventListener('click', (e) => {
     e.preventDefault();
     showSection('cards');
+});
+
+analyticsNav.addEventListener('click', (e) => {
+    e.preventDefault();
+    showSection('analytics');
+});
+
+templatesNav.addEventListener('click', (e) => {
+    e.preventDefault();
+    showSection('templates');
+});
+
+reportsNav.addEventListener('click', (e) => {
+    e.preventDefault();
+    showSection('reports');
+});
+
+settingsNav.addEventListener('click', (e) => {
+    e.preventDefault();
+    showSection('settings');
+});
+
+// Logout functionality
+const logoutBtn = document.getElementById('logoutBtn');
+
+logoutBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    // Clear the admin token from localStorage
+    localStorage.removeItem('adminToken');
+    
+    // Redirect to admin login page
+    window.location.href = './admin-login.html';
 });
 
 // Modal logic
