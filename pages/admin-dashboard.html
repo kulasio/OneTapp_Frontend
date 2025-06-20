@@ -417,24 +417,17 @@
                         <i class="fas fa-user-plus"></i> Add User
                     </button>
                 </div>
-                <div style="display:flex;gap:1rem;margin-bottom:1.5rem;align-items:center;flex-wrap:wrap;">
-                    <input type="text" id="userSearchInput" placeholder="Search by email..." style="flex:2 1 200px;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
-                    <select id="roleFilter" style="flex:1 1 120px;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                <div class="user-management-header" style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
+                    <input type="text" id="userEmailFilter" placeholder="Filter by email..." style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc; width:250px;">
+                    <select id="roleFilter" style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc;">
                         <option value="">All Roles</option>
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
                     </select>
-                    <select id="statusFilter" style="flex:1 1 120px;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                    <select id="statusFilter" style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc;">
                         <option value="">All Status</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
                     </select>
+                    <button class="btn-add" id="addUserBtn" style="margin-left:auto;"><i class="fas fa-user-plus"></i> Add User</button>
                 </div>
                 <div class="user-table-container">
-                    <!-- Filter by Email -->
-                    <div style="margin-bottom:1rem;">
-                        <input type="text" id="userEmailFilter" placeholder="Filter by email..." style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc; width:250px;">
-                    </div>
                     <table class="user-table">
                         <thead>
                             <tr>
