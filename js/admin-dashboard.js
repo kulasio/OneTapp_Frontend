@@ -71,18 +71,18 @@ async function fetchUsers() {
 
 function renderUsersTable(users) {
     if (!users || users.length === 0) {
-        usersTableBody.innerHTML = '<tr><td colspan="5">No users found.</td></tr>';
+        usersTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem;">No users found.</td></tr>';
         return;
     }
     usersTableBody.innerHTML = users.map(user => `
         <tr>
             <td>${user.email}</td>
             <td>${user.role}</td>
-            <td>${user.status}</td>
-            <td>${user.lastLogin ? new Date(user.lastLogin).toLocaleString() : '-'}</td>
-            <td>
-                <button class="edit-user-btn" data-id="${user._id}" style="background:#e3f2fd;color:#1976d2;border:none;padding:0.4rem 0.8rem;border-radius:6px;cursor:pointer;margin-right:0.5rem;">Edit</button>
-                <button class="delete-user-btn" data-id="${user._id}" style="background:#ffebee;color:#d32f2f;border:none;padding:0.4rem 0.8rem;border-radius:6px;cursor:pointer;">Delete</button>
+            <td><span class="status-badge status-${user.status}">${user.status}</span></td>
+            <td>${user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Never'}</td>
+            <td class="actions-cell">
+                <button class="btn-action btn-edit" data-id="${user._id}">Edit</button>
+                <button class="btn-action btn-delete" data-id="${user._id}">Delete</button>
             </td>
         </tr>
     `).join('');
