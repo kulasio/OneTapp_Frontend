@@ -248,9 +248,41 @@ const subscriptionsTableBody = document.getElementById('subscriptionsTableBody')
 const addSubscriptionBtn = document.getElementById('addSubscriptionBtn');
 const addSubscriptionModal = document.getElementById('addSubscriptionModal');
 const editSubscriptionModal = document.getElementById('editSubscriptionModal');
+const addSubscriptionForm = document.getElementById('addSubscriptionForm');
 
 addSubscriptionBtn.addEventListener('click', () => {
     addSubscriptionModal.style.display = 'flex';
+});
+
+addSubscriptionForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+        const token = localStorage.getItem('adminToken');
+        const response = await fetch('https://onetapp-backend.onrender.com/api/subscriptions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to create subscription.');
+        }
+
+        // Close modal and refresh table
+        addSubscriptionModal.style.display = 'none';
+        e.target.reset(); // Clear the form
+        fetchSubscriptions(); // Refresh the list
+
+    } catch (err) {
+        alert(`Error: ${err.message}`); // Simple error feedback
+    }
 });
 
 // Close subscription modals when clicking outside modal content
@@ -260,49 +292,6 @@ window.addEventListener('click', (e) => {
     }
     if (e.target === editSubscriptionModal) {
         editSubscriptionModal.style.display = 'none';
-    }
-});
-
-const addSubscriptionForm = document.getElementById('addSubscriptionForm');
-
-addSubscriptionForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData.entries());
-
-    const submitButton = e.target.querySelector('button[type="submit"]');
-    submitButton.disabled = true;
-    submitButton.textContent = 'Processing...';
-
-    try {
-        const token = localStorage.getItem('adminToken');
-        // Call the new payment initiation endpoint
-        const response = await fetch('https://onetapp-backend.onrender.com/api/payments/initiate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify(data),
-        });
-
-        const responseData = await response.json();
-
-        if (!response.ok) {
-            throw new Error(responseData.message || 'Failed to initiate payment.');
-        }
-
-        // If successful, redirect the user to the Maya payment page
-        if (responseData.redirectUrl) {
-            window.location.href = responseData.redirectUrl;
-        } else {
-            throw new Error('Could not retrieve payment URL.');
-        }
-
-    } catch (err) {
-        alert(`Error: ${err.message}`); // Provide feedback
-        submitButton.disabled = false;
-        submitButton.textContent = 'Add'; // Reset button
     }
 });
 
