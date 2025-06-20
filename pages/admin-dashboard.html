@@ -474,6 +474,29 @@
                 </div>
             </div>
 
+            <!-- Edit Card Modal -->
+            <div id="editCardModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3); align-items:center; justify-content:center; z-index:1000;">
+                <div class="modal-content" style="background:#fff; padding:2rem; border-radius:12px; min-width:320px; max-width:90vw;">
+                    <h2>Edit Card</h2>
+                    <form id="editCardForm">
+                        <input type="hidden" name="cardId">
+                        <div class="form-group">
+                            <label for="nfcId">Card UID</label>
+                            <input type="text" name="nfcId" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="isActive">Active</label>
+                            <input type="checkbox" name="isActive">
+                        </div>
+                        <!-- Add more fields as needed -->
+                        <div style="margin-top:1.5rem; display:flex; gap:1rem;">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-outline" onclick="document.getElementById('editCardModal').style.display='none'">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             <!-- Subscription Management Section -->
             <div id="subscriptionsSection" style="display:none; width:100%; max-width:1000px;">
                 <div class="users-header">

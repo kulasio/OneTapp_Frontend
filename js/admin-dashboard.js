@@ -329,6 +329,82 @@ subscriptionsNav.addEventListener('click', () => {
     fetchSubscriptions();
 });
 
+// Event delegation for card actions (Edit, Delete)
+cardsTableBody.addEventListener('click', async (e) => {
+    const target = e.target;
+    const id = target.dataset.id;
+    const token = localStorage.getItem('adminToken');
+
+    if (target.classList.contains('btn-delete')) {
+        if (confirm('Are you sure you want to delete this card?')) {
+            try {
+                const response = await fetch(`https://onetapp-backend.onrender.com/api/cards/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ message: 'Failed to delete card.' }));
+                    throw new Error(errorData.message);
+                }
+                await fetchCards(); // Refresh the table
+            } catch (err) {
+                alert(`Error: ${err.message}`);
+            }
+        }
+    }
+
+    if (target.classList.contains('btn-edit')) {
+        try {
+            const response = await fetch(`https://onetapp-backend.onrender.com/api/cards/${id}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ message: 'Failed to fetch card data.' }));
+                throw new Error(errorData.message);
+            }
+            const card = await response.json();
+            // Populate and show the modal
+            const form = document.getElementById('editCardForm');
+            form.elements.cardId.value = card._id;
+            form.elements.nfcId.value = card.nfcId;
+            form.elements.isActive.checked = card.isActive;
+            // Add more fields as needed
+            document.getElementById('editCardModal').style.display = 'flex';
+        } catch (err) {
+            alert(`Error: ${err.message}`);
+        }
+    }
+});
+
+// Handle card edit form submission
+const editCardForm = document.getElementById('editCardForm');
+editCardForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const cardId = editCardForm.elements.cardId.value;
+    const nfcId = editCardForm.elements.nfcId.value;
+    const isActive = editCardForm.elements.isActive.checked;
+    // Add more fields as needed
+    const token = localStorage.getItem('adminToken');
+    try {
+        const response = await fetch(`https://onetapp-backend.onrender.com/api/cards/${cardId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ nfcId, isActive })
+        });
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: 'Failed to update card.' }));
+            throw new Error(errorData.message);
+        }
+        document.getElementById('editCardModal').style.display = 'none';
+        await fetchCards(); // Refresh the table
+    } catch (err) {
+        alert(`Error: ${err.message}`);
+    }
+});
+
 // --- Subscription Management Logic ---
 const subscriptionsTableBody = document.getElementById('subscriptionsTableBody');
 const addSubscriptionBtn = document.getElementById('addSubscriptionBtn');
