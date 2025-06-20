@@ -297,7 +297,7 @@ function renderSubscriptionsTable(subscriptions) {
             <td>${subscription.email}</td>
             <td>${subscription.phone || 'N/A'}</td>
             <td>${subscription.plan}</td>
-            <td>${subscription.billingCycle}</td>
+            <td>${subscription.billingPeriod}</td>
             <td><span class="status-badge status-${statusClass}">${subscription.status}</span></td>
             <td>${subscription.nextBilling ? new Date(subscription.nextBilling).toLocaleDateString() : 'N/A'}</td>
             <td class="actions-cell">
