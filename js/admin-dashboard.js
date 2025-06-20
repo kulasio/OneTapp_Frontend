@@ -123,6 +123,7 @@ logoutBtn.addEventListener('click', (e) => {
 const addUserBtn = document.getElementById('addUserBtn');
 const addUserModal = document.getElementById('addUserModal');
 const editUserModal = document.getElementById('editUserModal');
+const editUserForm = document.getElementById('editUserForm');
 
 addUserBtn.addEventListener('click', () => {
     addUserModal.style.display = 'flex';
@@ -183,6 +184,94 @@ function renderUsersTable(users) {
 // Fetch users when Users section is shown
 usersNav.addEventListener('click', () => {
     fetchUsers();
+});
+
+usersTableBody.addEventListener('click', async (e) => {
+    const target = e.target;
+    const userId = target.dataset.id;
+    if (!userId) return;
+
+    // Handle Edit
+    if (target.classList.contains('btn-edit')) {
+        try {
+            const token = localStorage.getItem('adminToken');
+            // Fetch the single user's data to populate the modal
+            // Note: We need a backend route for GET /api/users/:id
+            const response = await fetch(`https://onetapp-backend.onrender.com/api/users/${userId}`, {
+                 headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!response.ok) throw new Error('Failed to fetch user data.');
+            
+            const { user } = await response.json();
+
+            // Populate the modal
+            editUserForm.querySelector('[name="userId"]').value = user._id;
+            editUserForm.querySelector('[name="email"]').value = user.email;
+            editUserForm.querySelector('[name="role"]').value = user.role;
+            editUserForm.querySelector('[name="status"]').value = user.status;
+
+            editUserModal.style.display = 'flex';
+
+        } catch (err) {
+            alert(`Error: ${err.message}`);
+        }
+    }
+
+    // Handle Delete
+    if (target.classList.contains('btn-delete')) {
+        if (confirm('Are you sure you want to delete this user?')) {
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`https://onetapp-backend.onrender.com/api/users/${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to delete user.');
+                }
+
+                alert('User deleted successfully.');
+                fetchUsers(); // Refresh the table
+            } catch (err) {
+                alert(`Error: ${err.message}`);
+            }
+        }
+    }
+});
+
+editUserForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const userId = e.target.querySelector('[name="userId"]').value;
+    const role = e.target.querySelector('[name="role"]').value;
+    const status = e.target.querySelector('[name="status"]').value;
+
+    try {
+        const token = localStorage.getItem('adminToken');
+        const response = await fetch(`https://onetapp-backend.onrender.com/api/users/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ role, status })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to update user.');
+        }
+
+        alert('User updated successfully!');
+        editUserModal.style.display = 'none';
+        fetchUsers(); // Refresh table
+    } catch (err) {
+        alert(`Error: ${err.message}`);
+    }
 });
 
 // Optionally, fetch users on page load if Users section is default
