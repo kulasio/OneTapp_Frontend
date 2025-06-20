@@ -500,33 +500,21 @@
 
             <!-- Subscription Management Section -->
             <div id="subscriptionsSection" style="display:none; width:100%; max-width:1000px;">
-                <div class="users-header">
+                <div class="users-header" style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
                     <div class="dashboard-title">Subscription Management</div>
-                    <button class="btn-add" id="addSubscriptionBtn">
-                        <i class="fas fa-plus"></i> Add Subscription
-                    </button>
-                </div>
-                <div style="display:flex;gap:1rem;margin-bottom:1.5rem;align-items:center;flex-wrap:wrap;">
-                    <input type="text" id="subscriptionSearchInput" placeholder="Search by email..." style="flex:2 1 200px;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
-                    <select id="planFilter" style="flex:1 1 120px;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                    <input type="text" id="subscriptionEmailFilter" placeholder="Filter by email..." style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc; width:250px;">
+                    <select id="planFilter" style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc;">
                         <option value="">All Plans</option>
-                        <option value="basic">Basic</option>
-                        <option value="premium">Premium</option>
-                        <option value="enterprise">Enterprise</option>
+                        <!-- Add plan options dynamically if needed -->
                     </select>
-                    <select id="subscriptionStatusFilter" style="flex:1 1 120px;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                    <select id="subscriptionStatusFilter" style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc;">
                         <option value="">All Status</option>
-                        <option value="active">Active</option>
-                        <option value="pending">Pending</option>
-                        <option value="cancelled">Cancelled</option>
-                        <option value="expired">Expired</option>
+                        <!-- Add status options dynamically if needed -->
                     </select>
+                    <button class="btn-add" id="addSubscriptionBtn" style="margin-left:auto;"><i class="fas fa-plus"></i> Add Subscription</button>
                 </div>
                 <div class="user-table-container">
-                    <!-- Filter by Email -->
-                    <div style="margin-bottom:1rem;">
-                        <input type="text" id="subscriptionEmailFilter" placeholder="Filter by email..." style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc; width:250px;">
-                    </div>
+                    <!-- (Remove the filter input here) -->
                     <table class="user-table">
                         <thead>
                             <tr>
