@@ -355,37 +355,20 @@ cardsTableBody.addEventListener('click', async (e) => {
 
     if (target.classList.contains('btn-edit')) {
         try {
-            // Fetch card data
-            const cardRes = await fetch(`https://onetapp-backend.onrender.com/api/cards/${id}`, {
+            const response = await fetch(`https://onetapp-backend.onrender.com/api/cards/${id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            if (!cardRes.ok) {
-                const errorData = await cardRes.json().catch(() => ({ message: 'Failed to fetch card data.' }));
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ message: 'Failed to fetch card data.' }));
                 throw new Error(errorData.message);
             }
-            const cardData = await cardRes.json();
-            const card = cardData.card || cardData; // support both {card} and direct
-
-            // Fetch all users
-            const usersRes = await fetch('https://onetapp-backend.onrender.com/api/users', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (!usersRes.ok) {
-                const errorData = await usersRes.json().catch(() => ({ message: 'Failed to fetch users.' }));
-                throw new Error(errorData.message);
-            }
-            const usersData = await usersRes.json();
-            const users = usersData.users || usersData;
-
-            // Populate dropdown
-            const select = document.getElementById('assignedUserSelect');
-            select.innerHTML = users.map(user => `<option value="${user._id}">${user.email}</option>`).join('');
-            // Set selected value to card's assigned user
-            select.value = card.user ? card.user._id : '';
-
-            // Set other fields
-            editCardForm.elements.cardId.value = card._id;
-            editCardForm.elements.isActive.checked = card.isActive;
+            const card = await response.json();
+            // Populate and show the modal
+            const form = document.getElementById('editCardForm');
+            form.elements.cardId.value = card._id;
+            form.elements.nfcId.value = card.nfcId;
+            form.elements.isActive.checked = card.isActive;
+            // Add more fields as needed
             document.getElementById('editCardModal').style.display = 'flex';
         } catch (err) {
             alert(`Error: ${err.message}`);
@@ -398,7 +381,7 @@ const editCardForm = document.getElementById('editCardForm');
 editCardForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const cardId = editCardForm.elements.cardId.value;
-    const user = editCardForm.elements.assignedUser.value;
+    const nfcId = editCardForm.elements.nfcId.value;
     const isActive = editCardForm.elements.isActive.checked;
     // Add more fields as needed
     const token = localStorage.getItem('adminToken');
@@ -409,7 +392,7 @@ editCardForm.addEventListener('submit', async (e) => {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ user, isActive })
+            body: JSON.stringify({ nfcId, isActive })
         });
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({ message: 'Failed to update card.' }));
