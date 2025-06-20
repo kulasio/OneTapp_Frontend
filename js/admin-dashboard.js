@@ -276,6 +276,7 @@ editUserForm.addEventListener('submit', async (e) => {
 
 // --- Card Management Logic ---
 const cardsTableBody = document.getElementById('cardsTableBody');
+let allCards = [];
 
 async function fetchCards() {
     try {
@@ -292,7 +293,8 @@ async function fetchCards() {
             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        renderCardsTable(data.cards);
+        allCards = data.cards;
+        renderCardsTable(allCards);
     } catch (err) {
         cardsTableBody.innerHTML = `<tr><td colspan="5" style="color:red;">Error loading cards: ${err.message}</td></tr>`;
     }
@@ -318,6 +320,16 @@ function renderCardsTable(cards) {
         </tr>
     `}).join('');
 }
+
+// Filter cards by assigned user's email
+const cardEmailFilter = document.getElementById('cardEmailFilter');
+cardEmailFilter.addEventListener('input', function() {
+    const filterValue = this.value.trim().toLowerCase();
+    const filtered = allCards.filter(card =>
+        card.user && card.user.email && card.user.email.toLowerCase().includes(filterValue)
+    );
+    renderCardsTable(filterValue ? filtered : allCards);
+});
 
 // Fetch cards when Cards section is shown
 cardsNav.addEventListener('click', () => {
