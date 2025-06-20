@@ -81,6 +81,33 @@
         .sidebar__nav-link i {
             font-size: 1.3rem;
         }
+        .users-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+        .btn-add {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.1);
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+            transition: all 0.2s ease;
+        }
+        .btn-add:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
+        }
         .main-content {
             flex: 1;
             padding: 3.5rem 2.5rem;
@@ -257,9 +284,9 @@
             </div>
             <!-- User Management Section -->
             <div id="usersSection" style="display:none; width:100%; max-width:1000px;">
-                <div class="dashboard-header">
+                <div class="users-header">
                     <div class="dashboard-title">User Management</div>
-                    <button class="sidebar__nav-link" id="addUserBtn" style="background:var(--primary);color:#fff;border:none;box-shadow:0 2px 8px rgba(25,118,210,0.10);font-size:1rem;padding:0.7rem 1.5rem;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:0.7rem;">
+                    <button class="btn-add" id="addUserBtn">
                         <i class="fas fa-user-plus"></i> Add User
                     </button>
                 </div>
