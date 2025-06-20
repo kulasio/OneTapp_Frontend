@@ -194,6 +194,14 @@
             }
         }
     </style>
+    <script>
+        const token = localStorage.getItem('adminToken');
+        // Simple check: if no token, redirect to login page.
+        // A more robust solution would be to verify the token with the backend.
+        if (!token) {
+            window.location.href = './admin-login.html';
+        }
+    </script>
 </head>
 <body>
     <div class="admin-dashboard">
@@ -294,62 +302,62 @@
                         <div style="margin-bottom:1rem;">
                             <label>Email</label>
                             <input type="email" name="email" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
-                        </div>
+                    </div>
                         <div style="margin-bottom:1rem;">
                             <label>Password</label>
                             <input type="password" name="password" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
-                        </div>
+                </div>
                         <div style="margin-bottom:1rem;">
                             <label>Role</label>
                             <select name="role" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
                                 <option value="user">User</option>
                                 <option value="admin">Admin</option>
-                            </select>
+                    </select>
                         </div>
                         <div style="margin-bottom:1rem;">
                             <label>Status</label>
                             <select name="status" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                            </select>
-                        </div>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
                         <div style="display:flex;justify-content:flex-end;gap:1rem;">
                             <button type="button" onclick="document.getElementById('addUserModal').style.display='none'" style="background:#eee;color:#1976d2;border:none;padding:0.7rem 1.5rem;border-radius:8px;cursor:pointer;">Cancel</button>
                             <button type="submit" style="background:#1976d2;color:#fff;border:none;padding:0.7rem 1.5rem;border-radius:8px;cursor:pointer;">Add</button>
-                        </div>
-                    </form>
+                            </div>
+                        </form>
                 </div>
             </div>
-            <!-- Edit User Modal -->
+    <!-- Edit User Modal -->
             <div id="editUserModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);z-index:1000;align-items:center;justify-content:center;">
                 <div style="background:#fff;padding:2rem 2.5rem;border-radius:16px;max-width:400px;width:100%;box-shadow:0 4px 24px rgba(25,118,210,0.15);position:relative;">
                     <button onclick="document.getElementById('editUserModal').style.display='none'" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.5rem;color:#888;cursor:pointer;">&times;</button>
                     <h2 style="margin-bottom:1.5rem;color:#1976d2;">Edit User</h2>
-                    <form id="editUserForm">
+            <form id="editUserForm">
                         <input type="hidden" name="userId">
                         <div style="margin-bottom:1rem;">
                             <label>Email</label>
                             <input type="email" name="email" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;" disabled>
-                        </div>
+                </div>
                         <div style="margin-bottom:1rem;">
                             <label>Role</label>
                             <select name="role" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
-                                <option value="user">User</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                        </div>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
                         <div style="margin-bottom:1rem;">
                             <label>Status</label>
                             <select name="status" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                            </select>
-                        </div>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
                         <div style="display:flex;justify-content:flex-end;gap:1rem;">
                             <button type="button" onclick="document.getElementById('editUserModal').style.display='none'" style="background:#eee;color:#1976d2;border:none;padding:0.7rem 1.5rem;border-radius:8px;cursor:pointer;">Cancel</button>
                             <button type="submit" style="background:#1976d2;color:#fff;border:none;padding:0.7rem 1.5rem;border-radius:8px;cursor:pointer;">Save</button>
-                        </div>
-                    </form>
+                </div>
+            </form>
                 </div>
             </div>
         </main>
