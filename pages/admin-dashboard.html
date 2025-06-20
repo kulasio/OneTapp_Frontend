@@ -267,6 +267,18 @@
             background: #ffebee;
             color: #c62828;
         }
+        .status-badge.pending {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        .status-badge.cancelled {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+        .status-badge.expired {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
         .actions-cell {
             display: flex;
             gap: 0.5rem;
@@ -328,6 +340,12 @@
                         <a href="#" class="sidebar__nav-link" id="cardsNav">
                             <i class="fas fa-id-card"></i>
                             <span class="sidebar__nav-text">Cards</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="sidebar__nav-link" id="subscriptionsNav">
+                            <i class="fas fa-credit-card"></i>
+                            <span class="sidebar__nav-text">Subscriptions</span>
                         </a>
                     </li>
                     <li>
@@ -457,6 +475,50 @@
                 </div>
             </div>
 
+            <!-- Subscription Management Section -->
+            <div id="subscriptionsSection" style="display:none; width:100%; max-width:1000px;">
+                <div class="users-header">
+                    <div class="dashboard-title">Subscription Management</div>
+                    <button class="btn-add" id="addSubscriptionBtn">
+                        <i class="fas fa-plus"></i> Add Subscription
+                    </button>
+                </div>
+                <div style="display:flex;gap:1rem;margin-bottom:1.5rem;align-items:center;flex-wrap:wrap;">
+                    <input type="text" id="subscriptionSearchInput" placeholder="Search by email..." style="flex:2 1 200px;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                    <select id="planFilter" style="flex:1 1 120px;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                        <option value="">All Plans</option>
+                        <option value="basic">Basic</option>
+                        <option value="premium">Premium</option>
+                        <option value="enterprise">Enterprise</option>
+                    </select>
+                    <select id="subscriptionStatusFilter" style="flex:1 1 120px;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="pending">Pending</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="expired">Expired</option>
+                    </select>
+                </div>
+                <div class="user-table-container">
+                    <table class="user-table">
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Plan</th>
+                                <th>Billing</th>
+                                <th>Status</th>
+                                <th>Next Billing</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subscriptionsTableBody">
+                            <!-- Subscriptions will be loaded here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- Analytics Section -->
             <div id="analyticsSection" style="display:none; width:100%; max-width:1000px;">
                 <div class="users-header">
@@ -573,6 +635,98 @@
                         </div>
                         <div style="display:flex;justify-content:flex-end;gap:1rem;">
                             <button type="button" onclick="document.getElementById('editUserModal').style.display='none'" style="background:#eee;color:#1976d2;border:none;padding:0.7rem 1.5rem;border-radius:8px;cursor:pointer;">Cancel</button>
+                            <button type="submit" style="background:#1976d2;color:#fff;border:none;padding:0.7rem 1.5rem;border-radius:8px;cursor:pointer;">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Add Subscription Modal -->
+            <div id="addSubscriptionModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);z-index:1000;align-items:center;justify-content:center;">
+                <div style="background:#fff;padding:2rem 2.5rem;border-radius:16px;max-width:500px;width:100%;box-shadow:0 4px 24px rgba(25,118,210,0.15);position:relative;">
+                    <button onclick="document.getElementById('addSubscriptionModal').style.display='none'" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.5rem;color:#888;cursor:pointer;">&times;</button>
+                    <h2 style="margin-bottom:1.5rem;color:#1976d2;">Add Subscription</h2>
+                    <form id="addSubscriptionForm">
+                        <div style="margin-bottom:1rem;">
+                            <label>Email</label>
+                            <input type="email" name="email" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                        </div>
+                        <div style="margin-bottom:1rem;">
+                            <label>Phone</label>
+                            <input type="tel" name="phone" style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                        </div>
+                        <div style="margin-bottom:1rem;">
+                            <label>Plan</label>
+                            <select name="plan" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                                <option value="basic">Basic</option>
+                                <option value="premium">Premium</option>
+                                <option value="enterprise">Enterprise</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom:1rem;">
+                            <label>Billing Cycle</label>
+                            <select name="billingCycle" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom:1rem;">
+                            <label>Status</label>
+                            <select name="status" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                                <option value="active">Active</option>
+                                <option value="pending">Pending</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div style="display:flex;justify-content:flex-end;gap:1rem;">
+                            <button type="button" onclick="document.getElementById('addSubscriptionModal').style.display='none'" style="background:#eee;color:#1976d2;border:none;padding:0.7rem 1.5rem;border-radius:8px;cursor:pointer;">Cancel</button>
+                            <button type="submit" style="background:#1976d2;color:#fff;border:none;padding:0.7rem 1.5rem;border-radius:8px;cursor:pointer;">Add</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Edit Subscription Modal -->
+            <div id="editSubscriptionModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);z-index:1000;align-items:center;justify-content:center;">
+                <div style="background:#fff;padding:2rem 2.5rem;border-radius:16px;max-width:500px;width:100%;box-shadow:0 4px 24px rgba(25,118,210,0.15);position:relative;">
+                    <button onclick="document.getElementById('editSubscriptionModal').style.display='none'" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.5rem;color:#888;cursor:pointer;">&times;</button>
+                    <h2 style="margin-bottom:1.5rem;color:#1976d2;">Edit Subscription</h2>
+                    <form id="editSubscriptionForm">
+                        <input type="hidden" name="subscriptionId">
+                        <div style="margin-bottom:1rem;">
+                            <label>Email</label>
+                            <input type="email" name="email" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;" disabled>
+                        </div>
+                        <div style="margin-bottom:1rem;">
+                            <label>Phone</label>
+                            <input type="tel" name="phone" style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                        </div>
+                        <div style="margin-bottom:1rem;">
+                            <label>Plan</label>
+                            <select name="plan" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                                <option value="basic">Basic</option>
+                                <option value="premium">Premium</option>
+                                <option value="enterprise">Enterprise</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom:1rem;">
+                            <label>Billing Cycle</label>
+                            <select name="billingCycle" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom:1rem;">
+                            <label>Status</label>
+                            <select name="status" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                                <option value="active">Active</option>
+                                <option value="pending">Pending</option>
+                                <option value="cancelled">Cancelled</option>
+                                <option value="expired">Expired</option>
+                            </select>
+                        </div>
+                        <div style="display:flex;justify-content:flex-end;gap:1rem;">
+                            <button type="button" onclick="document.getElementById('editSubscriptionModal').style.display='none'" style="background:#eee;color:#1976d2;border:none;padding:0.7rem 1.5rem;border-radius:8px;cursor:pointer;">Cancel</button>
                             <button type="submit" style="background:#1976d2;color:#fff;border:none;padding:0.7rem 1.5rem;border-radius:8px;cursor:pointer;">Save</button>
                         </div>
                     </form>
