@@ -263,6 +263,49 @@ window.addEventListener('click', (e) => {
     }
 });
 
+const addSubscriptionForm = document.getElementById('addSubscriptionForm');
+
+addSubscriptionForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    const submitButton = e.target.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    submitButton.textContent = 'Processing...';
+
+    try {
+        const token = localStorage.getItem('adminToken');
+        // Call the new payment initiation endpoint
+        const response = await fetch('https://onetapp-backend.onrender.com/api/payments/initiate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(data),
+        });
+
+        const responseData = await response.json();
+
+        if (!response.ok) {
+            throw new Error(responseData.message || 'Failed to initiate payment.');
+        }
+
+        // If successful, redirect the user to the Maya payment page
+        if (responseData.redirectUrl) {
+            window.location.href = responseData.redirectUrl;
+        } else {
+            throw new Error('Could not retrieve payment URL.');
+        }
+
+    } catch (err) {
+        alert(`Error: ${err.message}`); // Provide feedback
+        submitButton.disabled = false;
+        submitButton.textContent = 'Add'; // Reset button
+    }
+});
+
 async function fetchSubscriptions() {
     try {
         const token = localStorage.getItem('adminToken');
@@ -299,7 +342,7 @@ function renderSubscriptionsTable(subscriptions) {
             <td>${subscription.plan}</td>
             <td>${subscription.billingPeriod}</td>
             <td><span class="status-badge status-${statusClass}">${subscription.status}</span></td>
-            <td>${subscription.nextBilling ? new Date(subscription.nextBilling).toLocaleDateString() : 'N/A'}</td>
+            <td>${subscription.nextBillingDate ? new Date(subscription.nextBillingDate).toLocaleDateString() : 'N/A'}</td>
             <td class="actions-cell">
                 <button class="btn-action btn-edit" data-id="${subscription._id}">Edit</button>
                 <button class="btn-action btn-delete" data-id="${subscription._id}">Delete</button>
