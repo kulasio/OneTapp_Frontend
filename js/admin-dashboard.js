@@ -362,7 +362,8 @@ cardsTableBody.addEventListener('click', async (e) => {
                 const errorData = await response.json().catch(() => ({ message: 'Failed to fetch card data.' }));
                 throw new Error(errorData.message);
             }
-            const card = await response.json();
+            const data = await response.json();
+            const card = data.card;
             // Populate and show the modal
             const form = document.getElementById('editCardForm');
             form.elements.cardId.value = card._id;
