@@ -411,13 +411,7 @@
             </div>
             <!-- User Management Section -->
             <div id="usersSection" style="display:none; width:100%; max-width:1000px;">
-                <div class="users-header">
-                    <div class="dashboard-title">User Management</div>
-                    <button class="btn-add" id="addUserBtn">
-                        <i class="fas fa-user-plus"></i> Add User
-                    </button>
-                </div>
-                <div class="user-management-header" style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
+                <div class="section-header" style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
                     <input type="text" id="userEmailFilter" placeholder="Filter by email..." style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc; width:250px;">
                     <select id="roleFilter" style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc;">
                         <option value="">All Roles</option>
@@ -447,15 +441,9 @@
 
             <!-- Card Management Section -->
             <div id="cardsSection" style="display:none; width:100%; max-width:1000px;">
-                <div class="users-header">
-                    <div class="dashboard-title">Card Management</div>
-                    <button class="btn-add" id="addCardBtn">
-                        <i class="fas fa-plus"></i> Add Card
-                    </button>
-                </div>
-                <!-- Filter by Email -->
-                <div style="margin-bottom:1rem;">
+                <div class="section-header" style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
                     <input type="text" id="cardEmailFilter" placeholder="Filter by assigned email..." style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc; width:250px;">
+                    <button class="btn-add" id="addCardBtn" style="margin-left:auto;"><i class="fas fa-plus"></i> Add Card</button>
                 </div>
                 <div class="user-table-container">
                     <table class="user-table">
@@ -500,21 +488,17 @@
 
             <!-- Subscription Management Section -->
             <div id="subscriptionsSection" style="display:none; width:100%; max-width:1000px;">
-                <div class="users-header" style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
-                    <div class="dashboard-title">Subscription Management</div>
+                <div class="section-header" style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
                     <input type="text" id="subscriptionEmailFilter" placeholder="Filter by email..." style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc; width:250px;">
                     <select id="planFilter" style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc;">
                         <option value="">All Plans</option>
-                        <!-- Add plan options dynamically if needed -->
                     </select>
                     <select id="subscriptionStatusFilter" style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc;">
                         <option value="">All Status</option>
-                        <!-- Add status options dynamically if needed -->
                     </select>
                     <button class="btn-add" id="addSubscriptionBtn" style="margin-left:auto;"><i class="fas fa-plus"></i> Add Subscription</button>
                 </div>
                 <div class="user-table-container">
-                    <!-- (Remove the filter input here) -->
                     <table class="user-table">
                         <thead>
                             <tr>
