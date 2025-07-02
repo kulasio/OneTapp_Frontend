@@ -464,7 +464,16 @@ cardEmailFilter.addEventListener('input', function() {
 
 // Fetch cards and users/profiles on page load for the Cards section
 function showCardsSection() {
-    hideAllSections && hideAllSections();
+    // Hide all sections
+    dashboardSection.style.display = 'none';
+    usersSection.style.display = 'none';
+    cardsSection.style.display = 'none';
+    analyticsSection.style.display = 'none';
+    templatesSection.style.display = 'none';
+    reportsSection.style.display = 'none';
+    settingsSection.style.display = 'none';
+    profilesSection.style.display = 'none';
+
     cardsSection.style.display = 'block';
     Promise.all([fetchUsersForCardDropdown(), fetchProfilesForCardDropdown()]).then(fetchAndRenderCards);
 }
