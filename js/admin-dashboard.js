@@ -573,4 +573,137 @@ addUserForm.addEventListener('submit', async (e) => {
     } catch (err) {
         alert(`Error: ${err.message}`);
     }
-}); 
+});
+
+// --- Profiles Section Logic ---
+const profilesSection = document.getElementById('profilesSection');
+const profilesTableBody = document.getElementById('profilesTableBody');
+const addProfileBtn = document.getElementById('addProfileBtn');
+const addEditProfileModal = document.getElementById('addEditProfileModal');
+const addEditProfileForm = document.getElementById('addEditProfileForm');
+const profileNameFilter = document.getElementById('profileNameFilter');
+const profileModalTitle = document.getElementById('profileModalTitle');
+
+let allProfiles = [];
+
+function showProfilesSection() {
+    hideAllSections();
+    profilesSection.style.display = 'block';
+    fetchAndRenderProfiles();
+    fetchUsersForProfileDropdown();
+}
+
+function fetchAndRenderProfiles() {
+    fetch('/api/profiles')
+        .then(res => res.json())
+        .then(data => {
+            allProfiles = data;
+            renderProfilesTable(data);
+        });
+}
+
+function fetchUsersForProfileDropdown() {
+    fetch('/api/users')
+        .then(res => res.json())
+        .then(users => {
+            allUsers = users;
+            const userSelect = addEditProfileForm.elements['userId'];
+            userSelect.innerHTML = '';
+            users.forEach(user => {
+                const opt = document.createElement('option');
+                opt.value = user._id;
+                opt.textContent = user.username + ' (' + user.email + ')';
+                userSelect.appendChild(opt);
+            });
+        });
+}
+
+function renderProfilesTable(profiles) {
+    profilesTableBody.innerHTML = '';
+    profiles.forEach(profile => {
+        const user = allUsers.find(u => u._id === profile.userId);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${profile.fullName || ''}</td>
+            <td>${user ? user.username : ''}</td>
+            <td>${profile.jobTitle || ''}</td>
+            <td>${profile.company || ''}</td>
+            <td>${profile.updatedAt ? new Date(profile.updatedAt).toLocaleString() : ''}</td>
+            <td>
+                <button class="btn-edit" onclick="openEditProfileModal('${profile._id}')"><i class="fas fa-edit"></i></button>
+                <button class="btn-delete" onclick="deleteProfile('${profile._id}')"><i class="fas fa-trash"></i></button>
+            </td>
+        `;
+        profilesTableBody.appendChild(tr);
+    });
+}
+
+addProfileBtn.addEventListener('click', () => {
+    openAddProfileModal();
+});
+
+function openAddProfileModal() {
+    addEditProfileForm.reset();
+    addEditProfileForm.elements['profileId'].value = '';
+    profileModalTitle.textContent = 'Add Profile';
+    addEditProfileModal.style.display = 'flex';
+}
+
+window.openEditProfileModal = function(profileId) {
+    const profile = allProfiles.find(p => p._id === profileId);
+    if (!profile) return;
+    addEditProfileForm.reset();
+    addEditProfileForm.elements['profileId'].value = profile._id;
+    addEditProfileForm.elements['userId'].value = profile.userId;
+    addEditProfileForm.elements['fullName'].value = profile.fullName || '';
+    addEditProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
+    addEditProfileForm.elements['company'].value = profile.company || '';
+    addEditProfileForm.elements['bio'].value = profile.bio || '';
+    addEditProfileForm.elements['contactEmail'].value = profile.contactEmail || '';
+    addEditProfileForm.elements['contactPhone'].value = profile.contactPhone || '';
+    addEditProfileForm.elements['contactLocation'].value = profile.contactLocation || '';
+    addEditProfileForm.elements['linkedin'].value = profile.linkedin || '';
+    addEditProfileForm.elements['twitter'].value = profile.twitter || '';
+    addEditProfileForm.elements['github'].value = profile.github || '';
+    addEditProfileForm.elements['website'].value = profile.website || '';
+    addEditProfileForm.elements['profileImageUrl'].value = profile.profileImageUrl || '';
+    addEditProfileForm.elements['qrUrl'].value = profile.qrUrl || '';
+    profileModalTitle.textContent = 'Edit Profile';
+    addEditProfileModal.style.display = 'flex';
+}
+
+addEditProfileForm.onsubmit = function(e) {
+    e.preventDefault();
+    const formData = new FormData(addEditProfileForm);
+    const data = Object.fromEntries(formData.entries());
+    const method = data.profileId ? 'PUT' : 'POST';
+    const url = data.profileId ? `/api/profiles/${data.profileId}` : '/api/profiles';
+    fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(() => {
+        addEditProfileModal.style.display = 'none';
+        fetchAndRenderProfiles();
+    });
+};
+
+window.deleteProfile = function(profileId) {
+    if (!confirm('Are you sure you want to delete this profile?')) return;
+    fetch(`/api/profiles/${profileId}`, { method: 'DELETE' })
+        .then(res => res.json())
+        .then(() => fetchAndRenderProfiles());
+};
+
+profileNameFilter.addEventListener('input', function() {
+    const val = this.value.toLowerCase();
+    renderProfilesTable(allProfiles.filter(p => (p.fullName || '').toLowerCase().includes(val)));
+});
+
+// Add logic to show the Profiles section when sidebar option is clicked
+const profilesSidebarBtn = document.getElementById('profilesNav');
+if (profilesSidebarBtn) {
+    profilesSidebarBtn.addEventListener('click', showProfilesSection);
+} 
