@@ -293,65 +293,174 @@ editUserForm.addEventListener('submit', async (e) => {
 
 // --- Card Management Logic ---
 const cardsTableBody = document.getElementById('cardsTableBody');
-let allCards = [];
+const addCardBtn = document.getElementById('addCardBtn');
+const addEditCardModal = document.getElementById('addEditCardModal');
+const addEditCardForm = document.getElementById('addEditCardForm');
+const cardModalTitle = document.getElementById('cardModalTitle');
 
-async function fetchCards() {
-    try {
-        const token = localStorage.getItem('adminToken');
-        const response = await fetch(`${API_BASE}/cards`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            }
+let allCards = [];
+let allCardUsers = [];
+let allCardProfiles = [];
+
+function fetchAndRenderCards() {
+    const token = localStorage.getItem('adminToken');
+    fetch(`${API_BASE}/cards`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    })
+        .then(res => res.json())
+        .then(data => {
+            allCards = data.cards || data;
+            renderCardsTable(allCards);
         });
-        if (!response.ok) {
-            // Try to get a more detailed error from the response body
-            const errorData = await response.json().catch(() => ({ message: 'Failed to fetch cards and could not parse error response.' }));
-            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        allCards = data.cards;
-        renderCardsTable(allCards);
-    } catch (err) {
-        cardsTableBody.innerHTML = `<tr><td colspan="5" style="color:red;">Error loading cards: ${err.message}</td></tr>`;
-    }
 }
 
 function renderCardsTable(cards) {
-    if (!cards || cards.length === 0) {
-        cardsTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem;">No cards found.</td></tr>';
-        return;
-    }
-    cardsTableBody.innerHTML = cards.map(card => {
-        const status = card.isActive ? 'active' : 'inactive';
-        return `
-        <tr>
-            <td>${card.nfcId}</td>
-            <td>${card.user ? card.user.email : 'Unassigned'}</td>
-            <td><span class="status-badge status-${status}">${status}</span></td>
-            <td>${new Date(card.createdAt).toLocaleDateString()}</td>
-            <td class="actions-cell">
-                <button class="btn-action btn-edit" data-id="${card._id}">Edit</button>
-                <button class="btn-action btn-delete" data-id="${card._id}">Delete</button>
+    cardsTableBody.innerHTML = '';
+    cards.forEach(card => {
+        const user = allCardUsers.find(u => u._id === card.userId);
+        const profile = allCardProfiles.find(p => p._id === card.defaultProfileId);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${card.cardUid || ''}</td>
+            <td>${user ? user.username + ' (' + user.email + ')' : ''}</td>
+            <td>${card.label || ''}</td>
+            <td>${card.assignedUrl || ''}</td>
+            <td>${card.status || ''}</td>
+            <td>${card.createdAt ? new Date(card.createdAt).toLocaleString() : ''}</td>
+            <td>
+                <button class="btn-edit" onclick="openEditCardModal('${card._id}')"><i class="fas fa-edit"></i></button>
+                <button class="btn-delete" onclick="deleteCard('${card._id}')"><i class="fas fa-trash"></i></button>
             </td>
-        </tr>
-    `}).join('');
+        `;
+        cardsTableBody.appendChild(tr);
+    });
 }
+
+function fetchUsersForCardDropdown() {
+    const token = localStorage.getItem('adminToken');
+    return fetch(`${API_BASE}/users`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    })
+        .then(res => res.json())
+        .then(data => {
+            const users = data.users || data;
+            allCardUsers = users;
+            const userSelect = addEditCardForm.elements['userId'];
+            userSelect.innerHTML = '';
+            users.forEach(user => {
+                const opt = document.createElement('option');
+                opt.value = user._id;
+                opt.textContent = user.username + ' (' + user.email + ')';
+                userSelect.appendChild(opt);
+            });
+        });
+}
+
+function fetchProfilesForCardDropdown() {
+    const token = localStorage.getItem('adminToken');
+    return fetch(`${API_BASE}/profiles`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    })
+        .then(res => res.json())
+        .then(data => {
+            const profiles = data;
+            allCardProfiles = profiles;
+            const profileSelect = addEditCardForm.elements['defaultProfileId'];
+            profileSelect.innerHTML = '<option value="">None</option>';
+            profiles.forEach(profile => {
+                const opt = document.createElement('option');
+                opt.value = profile._id;
+                opt.textContent = profile.fullName + (profile.jobTitle ? ' - ' + profile.jobTitle : '');
+                profileSelect.appendChild(opt);
+            });
+        });
+}
+
+addCardBtn.addEventListener('click', async () => {
+    addEditCardForm.reset();
+    addEditCardForm.elements['cardId'].value = '';
+    cardModalTitle.textContent = 'Add Card';
+    await fetchUsersForCardDropdown();
+    await fetchProfilesForCardDropdown();
+    addEditCardModal.style.display = 'flex';
+});
+
+window.openEditCardModal = async function(cardId) {
+    const card = allCards.find(c => c._id === cardId);
+    if (!card) return;
+    addEditCardForm.reset();
+    addEditCardForm.elements['cardId'].value = card._id;
+    await fetchUsersForCardDropdown();
+    await fetchProfilesForCardDropdown();
+    addEditCardForm.elements['userId'].value = card.userId;
+    addEditCardForm.elements['cardUid'].value = card.cardUid || '';
+    addEditCardForm.elements['label'].value = card.label || '';
+    addEditCardForm.elements['assignedUrl'].value = card.assignedUrl || '';
+    addEditCardForm.elements['defaultProfileId'].value = card.defaultProfileId || '';
+    addEditCardForm.elements['status'].value = card.status || 'active';
+    cardModalTitle.textContent = 'Edit Card';
+    addEditCardModal.style.display = 'flex';
+};
+
+addEditCardForm.onsubmit = function(e) {
+    e.preventDefault();
+    const formData = new FormData(addEditCardForm);
+    const cardId = formData.get('cardId');
+    const method = cardId ? 'PUT' : 'POST';
+    const url = cardId ? `${API_BASE}/cards/${cardId}` : `${API_BASE}/cards`;
+    const data = {};
+    formData.forEach((value, key) => {
+        if (value) data[key] = value;
+    });
+    // Remove cardId from data
+    delete data.cardId;
+    fetch(url, {
+        method,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(() => {
+        addEditCardModal.style.display = 'none';
+        fetchAndRenderCards();
+    });
+};
+
+window.deleteCard = function(cardId) {
+    if (!confirm('Are you sure you want to delete this card?')) return;
+    fetch(`${API_BASE}/cards/${cardId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
+    })
+        .then(res => res.json())
+        .then(() => fetchAndRenderCards());
+};
 
 // Filter cards by assigned user's email
 const cardEmailFilter = document.getElementById('cardEmailFilter');
 cardEmailFilter.addEventListener('input', function() {
     const filterValue = this.value.trim().toLowerCase();
-    const filtered = allCards.filter(card =>
-        card.user && card.user.email && card.user.email.toLowerCase().includes(filterValue)
-    );
+    const filtered = allCards.filter(card => {
+        const user = allCardUsers.find(u => u._id === card.userId);
+        return user && user.email && user.email.toLowerCase().includes(filterValue);
+    });
     renderCardsTable(filterValue ? filtered : allCards);
 });
 
-// Fetch cards when Cards section is shown
-cardsNav.addEventListener('click', () => {
-    fetchCards();
-});
+// Fetch cards and users/profiles on page load for the Cards section
+function showCardsSection() {
+    hideAllSections && hideAllSections();
+    cardsSection.style.display = 'block';
+    Promise.all([fetchUsersForCardDropdown(), fetchProfilesForCardDropdown()]).then(fetchAndRenderCards);
+}
+
+const cardsSidebarBtn = document.getElementById('cardsNav');
+if (cardsSidebarBtn) {
+    cardsSidebarBtn.addEventListener('click', showCardsSection);
+}
 
 // --- Profiles Section Logic ---
 const profilesTableBody = document.getElementById('profilesTableBody');
