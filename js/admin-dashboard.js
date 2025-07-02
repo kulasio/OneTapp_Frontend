@@ -7,6 +7,7 @@ const analyticsNav = document.getElementById('analyticsNav');
 const templatesNav = document.getElementById('templatesNav');
 const reportsNav = document.getElementById('reportsNav');
 const settingsNav = document.getElementById('settingsNav');
+const profilesNav = document.getElementById('profilesNav');
 
 const dashboardSection = document.getElementById('dashboardSection');
 const usersSection = document.getElementById('usersSection');
@@ -16,6 +17,7 @@ const analyticsSection = document.getElementById('analyticsSection');
 const templatesSection = document.getElementById('templatesSection');
 const reportsSection = document.getElementById('reportsSection');
 const settingsSection = document.getElementById('settingsSection');
+const profilesSection = document.getElementById('profilesSection');
 
 function showSection(section) {
     // Hide all sections
@@ -27,6 +29,7 @@ function showSection(section) {
     templatesSection.style.display = 'none';
     reportsSection.style.display = 'none';
     settingsSection.style.display = 'none';
+    profilesSection.style.display = 'none';
 
     // Remove active class from all nav items
     dashboardNav.classList.remove('active');
@@ -37,6 +40,7 @@ function showSection(section) {
     templatesNav.classList.remove('active');
     reportsNav.classList.remove('active');
     settingsNav.classList.remove('active');
+    profilesNav.classList.remove('active');
 
     // Show selected section and activate nav item
     if (section === 'dashboard') {
@@ -63,6 +67,11 @@ function showSection(section) {
     } else if (section === 'settings') {
         settingsSection.style.display = '';
         settingsNav.classList.add('active');
+    } else if (section === 'profiles') {
+        profilesSection.style.display = '';
+        profilesNav.classList.add('active');
+        fetchAndRenderProfiles();
+        fetchUsersForProfileDropdown();
     }
 }
 
@@ -104,6 +113,11 @@ reportsNav.addEventListener('click', (e) => {
 settingsNav.addEventListener('click', (e) => {
     e.preventDefault();
     showSection('settings');
+});
+
+profilesNav.addEventListener('click', (e) => {
+    e.preventDefault();
+    showSection('profiles');
 });
 
 // Logout functionality
@@ -576,7 +590,6 @@ addUserForm.addEventListener('submit', async (e) => {
 });
 
 // --- Profiles Section Logic ---
-const profilesSection = document.getElementById('profilesSection');
 const profilesTableBody = document.getElementById('profilesTableBody');
 const addProfileBtn = document.getElementById('addProfileBtn');
 const addEditProfileModal = document.getElementById('addEditProfileModal');
