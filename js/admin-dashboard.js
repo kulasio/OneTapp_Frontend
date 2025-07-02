@@ -317,7 +317,8 @@ function fetchAndRenderCards() {
 function renderCardsTable(cards) {
     cardsTableBody.innerHTML = '';
     cards.forEach(card => {
-        const user = allCardUsers.find(u => String(u._id) === String(card.userId));
+        // Use populated userId object
+        const user = card.userId;
         const profile = allCardProfiles.find(p => p._id === card.defaultProfileId);
         const tr = document.createElement('tr');
         tr.innerHTML = `
