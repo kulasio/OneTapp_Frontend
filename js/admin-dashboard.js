@@ -165,11 +165,12 @@ async function fetchUsers() {
 
 function renderUsersTable(users) {
     if (!users || users.length === 0) {
-        usersTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem;">No users found.</td></tr>';
+        usersTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2rem;">No users found.</td></tr>';
         return;
     }
     usersTableBody.innerHTML = users.map(user => `
         <tr>
+            <td>${user.username}</td>
             <td>${user.email}</td>
             <td>${user.role}</td>
             <td><span class="status-badge status-${user.status}">${user.status}</span></td>
