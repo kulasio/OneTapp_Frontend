@@ -458,7 +458,6 @@ window.openEditProfileModal = function(profileId) {
     addEditProfileForm.elements['twitter'].value = profile.twitter || '';
     addEditProfileForm.elements['github'].value = profile.github || '';
     addEditProfileForm.elements['website'].value = profile.website || '';
-    addEditProfileForm.elements['profileImageUrl'].value = profile.profileImageUrl || '';
     addEditProfileForm.elements['qrUrl'].value = profile.qrUrl || '';
     profileModalTitle.textContent = 'Edit Profile';
     addEditProfileModal.style.display = 'flex';
@@ -467,20 +466,19 @@ window.openEditProfileModal = function(profileId) {
 addEditProfileForm.onsubmit = function(e) {
     e.preventDefault();
     const formData = new FormData(addEditProfileForm);
-    const data = Object.fromEntries(formData.entries());
-    // Map contact and socialLinks fields for backend
-    data.contactEmail = data.contactEmail || '';
-    data.contactPhone = data.contactPhone || '';
-    data.contactLocation = data.contactLocation || '';
-    data.linkedin = data.linkedin || '';
-    data.twitter = data.twitter || '';
-    data.github = data.github || '';
-    const method = data.profileId ? 'PUT' : 'POST';
-    const url = data.profileId ? `${API_BASE}/profiles/${data.profileId}` : `${API_BASE}/profiles`;
+    // Remove profileImageUrl from FormData if present
+    formData.delete('profileImageUrl');
+    // Set up method and URL
+    const profileId = formData.get('profileId');
+    const method = profileId ? 'PUT' : 'POST';
+    const url = profileId ? `${API_BASE}/profiles/${profileId}` : `${API_BASE}/profiles`;
     fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        headers: {
+            // 'Content-Type' is NOT set here so browser uses multipart/form-data
+            'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        },
+        body: formData
     })
     .then(res => res.json())
     .then(() => {
