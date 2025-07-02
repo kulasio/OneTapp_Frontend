@@ -542,3 +542,34 @@ subscriptionEmailFilter.addEventListener('input', function() {
 
 // Optionally, fetch subscriptions on page load if Subscriptions section is default
 // fetchSubscriptions(); 
+
+const addUserForm = document.getElementById('addUserForm');
+addUserForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const username = form.elements.username.value.trim();
+    const email = form.elements.email.value.trim();
+    const password = form.elements.password.value;
+    const role = form.elements.role.value;
+    const status = form.elements.status.value;
+    const token = localStorage.getItem('adminToken');
+    try {
+        const response = await fetch('https://onetapp-backend.onrender.com/api/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ username, email, password, role, status })
+        });
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: 'Failed to add user.' }));
+            throw new Error(errorData.message);
+        }
+        addUserModal.style.display = 'none';
+        form.reset();
+        await fetchUsers();
+    } catch (err) {
+        alert(`Error: ${err.message}`);
+    }
+}); 
