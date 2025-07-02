@@ -376,9 +376,21 @@ function fetchProfilesForCardDropdown() {
         });
 }
 
+// Generate a random 10-character hex UID
+function generateCardUid(length = 10) {
+    const chars = '0123456789ABCDEF';
+    let uid = '';
+    for (let i = 0; i < length; i++) {
+        uid += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return uid;
+}
+
 addCardBtn.addEventListener('click', async () => {
     addEditCardForm.reset();
     addEditCardForm.elements['cardId'].value = '';
+    // Auto-generate cardUid
+    addEditCardForm.elements['cardUid'].value = generateCardUid(10);
     cardModalTitle.textContent = 'Add Card';
     await fetchUsersForCardDropdown();
     await fetchProfilesForCardDropdown();
