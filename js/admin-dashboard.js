@@ -1,3 +1,5 @@
+const API_BASE = "https://onetapp-backend.onrender.com/api"; // or your deployed backend URL
+
 // Sidebar navigation
 const dashboardNav = document.getElementById('dashboardNav');
 const usersNav = document.getElementById('usersNav');
@@ -162,7 +164,7 @@ let allUsers = [];
 async function fetchUsers() {
     try {
         const token = localStorage.getItem('adminToken');
-        const response = await fetch('https://onetapp-backend.onrender.com/api/users', {
+        const response = await fetch(`${API_BASE}/users`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
@@ -221,7 +223,7 @@ usersTableBody.addEventListener('click', async (e) => {
     if (target.classList.contains('btn-delete')) {
         if (confirm('Are you sure you want to delete this user?')) {
             try {
-                const response = await fetch(`https://onetapp-backend.onrender.com/api/users/${id}`, {
+                const response = await fetch(`${API_BASE}/users/${id}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -240,7 +242,7 @@ usersTableBody.addEventListener('click', async (e) => {
 
     if (target.classList.contains('btn-edit')) {
         try {
-            const response = await fetch(`https://onetapp-backend.onrender.com/api/users/${id}`, {
+            const response = await fetch(`${API_BASE}/users/${id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -276,7 +278,7 @@ editUserForm.addEventListener('submit', async (e) => {
     const token = localStorage.getItem('adminToken');
 
     try {
-        const response = await fetch(`https://onetapp-backend.onrender.com/api/users/${userId}`, {
+        const response = await fetch(`${API_BASE}/users/${userId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -308,7 +310,7 @@ let allCards = [];
 async function fetchCards() {
     try {
         const token = localStorage.getItem('adminToken');
-        const response = await fetch('https://onetapp-backend.onrender.com/api/cards', {
+        const response = await fetch(`${API_BASE}/cards`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
@@ -377,7 +379,7 @@ cardsTableBody.addEventListener('click', async (e) => {
     if (target.classList.contains('btn-delete')) {
         if (confirm('Are you sure you want to delete this card?')) {
             try {
-                const response = await fetch(`https://onetapp-backend.onrender.com/api/cards/${id}`, {
+                const response = await fetch(`${API_BASE}/cards/${id}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -394,7 +396,7 @@ cardsTableBody.addEventListener('click', async (e) => {
 
     if (target.classList.contains('btn-edit')) {
         try {
-            const response = await fetch(`https://onetapp-backend.onrender.com/api/cards/${id}`, {
+            const response = await fetch(`${API_BASE}/cards/${id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (!response.ok) {
@@ -426,7 +428,7 @@ editCardForm.addEventListener('submit', async (e) => {
     // Add more fields as needed
     const token = localStorage.getItem('adminToken');
     try {
-        const response = await fetch(`https://onetapp-backend.onrender.com/api/cards/${cardId}`, {
+        const response = await fetch(`${API_BASE}/cards/${cardId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -474,7 +476,7 @@ addSubscriptionForm.addEventListener('submit', async (e) => {
 
     try {
         const token = localStorage.getItem('adminToken');
-        const response = await fetch('https://onetapp-backend.onrender.com/api/subscriptions', {
+        const response = await fetch(`${API_BASE}/subscriptions`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -502,7 +504,7 @@ let allSubscriptions = [];
 async function fetchSubscriptions() {
     try {
         const token = localStorage.getItem('adminToken');
-        const response = await fetch('https://onetapp-backend.onrender.com/api/subscriptions', {
+        const response = await fetch(`${API_BASE}/subscriptions`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
@@ -569,7 +571,7 @@ addUserForm.addEventListener('submit', async (e) => {
     const status = form.elements.status.value;
     const token = localStorage.getItem('adminToken');
     try {
-        const response = await fetch('https://onetapp-backend.onrender.com/api/users', {
+        const response = await fetch(`${API_BASE}/users`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -607,7 +609,7 @@ function showProfilesSection() {
 }
 
 function fetchAndRenderProfiles() {
-    fetch('/api/profiles')
+    fetch(`${API_BASE}/profiles`)
         .then(res => res.json())
         .then(data => {
             allProfiles = data;
@@ -616,7 +618,7 @@ function fetchAndRenderProfiles() {
 }
 
 function fetchUsersForProfileDropdown() {
-    fetch('/api/users')
+    fetch(`${API_BASE}/users`)
         .then(res => res.json())
         .then(users => {
             allUsers = users;
@@ -697,7 +699,7 @@ addEditProfileForm.onsubmit = function(e) {
     data.twitter = data.twitter || '';
     data.github = data.github || '';
     const method = data.profileId ? 'PUT' : 'POST';
-    const url = data.profileId ? `/api/profiles/${data.profileId}` : '/api/profiles';
+    const url = data.profileId ? `${API_BASE}/profiles/${data.profileId}` : `${API_BASE}/profiles`;
     fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
@@ -712,7 +714,7 @@ addEditProfileForm.onsubmit = function(e) {
 
 window.deleteProfile = function(profileId) {
     if (!confirm('Are you sure you want to delete this profile?')) return;
-    fetch(`/api/profiles/${profileId}`, { method: 'DELETE' })
+    fetch(`${API_BASE}/profiles/${profileId}`, { method: 'DELETE' })
         .then(res => res.json())
         .then(() => fetchAndRenderProfiles());
 };
