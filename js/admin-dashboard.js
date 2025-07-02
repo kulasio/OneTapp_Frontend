@@ -689,6 +689,13 @@ addEditProfileForm.onsubmit = function(e) {
     e.preventDefault();
     const formData = new FormData(addEditProfileForm);
     const data = Object.fromEntries(formData.entries());
+    // Map contact and socialLinks fields for backend
+    data.contactEmail = data.contactEmail || '';
+    data.contactPhone = data.contactPhone || '';
+    data.contactLocation = data.contactLocation || '';
+    data.linkedin = data.linkedin || '';
+    data.twitter = data.twitter || '';
+    data.github = data.github || '';
     const method = data.profileId ? 'PUT' : 'POST';
     const url = data.profileId ? `/api/profiles/${data.profileId}` : '/api/profiles';
     fetch(url, {
