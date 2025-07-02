@@ -618,7 +618,12 @@ function fetchAndRenderProfiles() {
 }
 
 function fetchUsersForProfileDropdown() {
-    fetch(`${API_BASE}/users`)
+    const token = localStorage.getItem('adminToken');
+    fetch(`${API_BASE}/users`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(res => res.json())
         .then(users => {
             allUsers = users;
