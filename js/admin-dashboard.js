@@ -364,7 +364,16 @@ const profileModalTitle = document.getElementById('profileModalTitle');
 let allProfiles = [];
 
 function showProfilesSection() {
-    hideAllSections();
+    // Hide all sections (replace hideAllSections)
+    dashboardSection.style.display = 'none';
+    usersSection.style.display = 'none';
+    cardsSection.style.display = 'none';
+    analyticsSection.style.display = 'none';
+    templatesSection.style.display = 'none';
+    reportsSection.style.display = 'none';
+    settingsSection.style.display = 'none';
+    profilesSection.style.display = 'none';
+    // Show profiles section
     profilesSection.style.display = 'block';
     fetchAndRenderProfiles();
     fetchUsersForProfileDropdown();
@@ -387,7 +396,8 @@ function fetchUsersForProfileDropdown() {
         }
     })
         .then(res => res.json())
-        .then(users => {
+        .then(data => {
+            const users = data.users || data; // Support both array and object response
             allUsers = users;
             const userSelect = addEditProfileForm.elements['userId'];
             userSelect.innerHTML = '';
