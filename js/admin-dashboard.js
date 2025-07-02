@@ -4,7 +4,6 @@ const API_BASE = "https://onetapp-backend.onrender.com/api"; // or your deployed
 const dashboardNav = document.getElementById('dashboardNav');
 const usersNav = document.getElementById('usersNav');
 const cardsNav = document.getElementById('cardsNav');
-const subscriptionsNav = document.getElementById('subscriptionsNav');
 const analyticsNav = document.getElementById('analyticsNav');
 const templatesNav = document.getElementById('templatesNav');
 const reportsNav = document.getElementById('reportsNav');
@@ -14,7 +13,6 @@ const profilesNav = document.getElementById('profilesNav');
 const dashboardSection = document.getElementById('dashboardSection');
 const usersSection = document.getElementById('usersSection');
 const cardsSection = document.getElementById('cardsSection');
-const subscriptionsSection = document.getElementById('subscriptionsSection');
 const analyticsSection = document.getElementById('analyticsSection');
 const templatesSection = document.getElementById('templatesSection');
 const reportsSection = document.getElementById('reportsSection');
@@ -26,7 +24,6 @@ function showSection(section) {
     dashboardSection.style.display = 'none';
     usersSection.style.display = 'none';
     cardsSection.style.display = 'none';
-    subscriptionsSection.style.display = 'none';
     analyticsSection.style.display = 'none';
     templatesSection.style.display = 'none';
     reportsSection.style.display = 'none';
@@ -37,7 +34,6 @@ function showSection(section) {
     dashboardNav.classList.remove('active');
     usersNav.classList.remove('active');
     cardsNav.classList.remove('active');
-    subscriptionsNav.classList.remove('active');
     analyticsNav.classList.remove('active');
     templatesNav.classList.remove('active');
     reportsNav.classList.remove('active');
@@ -54,9 +50,6 @@ function showSection(section) {
     } else if (section === 'cards') {
         cardsSection.style.display = '';
         cardsNav.classList.add('active');
-    } else if (section === 'subscriptions') {
-        subscriptionsSection.style.display = '';
-        subscriptionsNav.classList.add('active');
     } else if (section === 'analytics') {
         analyticsSection.style.display = '';
         analyticsNav.classList.add('active');
@@ -90,11 +83,6 @@ usersNav.addEventListener('click', (e) => {
 cardsNav.addEventListener('click', (e) => {
     e.preventDefault();
     showSection('cards');
-});
-
-subscriptionsNav.addEventListener('click', (e) => {
-    e.preventDefault();
-    showSection('subscriptions');
 });
 
 analyticsNav.addEventListener('click', (e) => {
@@ -363,232 +351,6 @@ cardEmailFilter.addEventListener('input', function() {
 // Fetch cards when Cards section is shown
 cardsNav.addEventListener('click', () => {
     fetchCards();
-});
-
-// Fetch subscriptions when Subscriptions section is shown
-subscriptionsNav.addEventListener('click', () => {
-    fetchSubscriptions();
-});
-
-// Event delegation for card actions (Edit, Delete)
-cardsTableBody.addEventListener('click', async (e) => {
-    const target = e.target;
-    const id = target.dataset.id;
-    const token = localStorage.getItem('adminToken');
-
-    if (target.classList.contains('btn-delete')) {
-        if (confirm('Are you sure you want to delete this card?')) {
-            try {
-                const response = await fetch(`${API_BASE}/cards/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ message: 'Failed to delete card.' }));
-                    throw new Error(errorData.message);
-                }
-                await fetchCards(); // Refresh the table
-            } catch (err) {
-                alert(`Error: ${err.message}`);
-            }
-        }
-    }
-
-    if (target.classList.contains('btn-edit')) {
-        try {
-            const response = await fetch(`${API_BASE}/cards/${id}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ message: 'Failed to fetch card data.' }));
-                throw new Error(errorData.message);
-            }
-            const data = await response.json();
-            const card = data.card;
-            // Populate and show the modal
-            const form = document.getElementById('editCardForm');
-            form.elements.cardId.value = card._id;
-            form.elements.nfcId.value = card.nfcId;
-            form.elements.isActive.checked = card.isActive;
-            // Add more fields as needed
-            document.getElementById('editCardModal').style.display = 'flex';
-        } catch (err) {
-            alert(`Error: ${err.message}`);
-        }
-    }
-});
-
-// Handle card edit form submission
-const editCardForm = document.getElementById('editCardForm');
-editCardForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const cardId = editCardForm.elements.cardId.value;
-    const nfcId = editCardForm.elements.nfcId.value;
-    const isActive = editCardForm.elements.isActive.checked;
-    // Add more fields as needed
-    const token = localStorage.getItem('adminToken');
-    try {
-        const response = await fetch(`${API_BASE}/cards/${cardId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ nfcId, isActive })
-        });
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: 'Failed to update card.' }));
-            throw new Error(errorData.message);
-        }
-        document.getElementById('editCardModal').style.display = 'none';
-        await fetchCards(); // Refresh the table
-    } catch (err) {
-        alert(`Error: ${err.message}`);
-    }
-});
-
-// --- Subscription Management Logic ---
-const subscriptionsTableBody = document.getElementById('subscriptionsTableBody');
-const addSubscriptionBtn = document.getElementById('addSubscriptionBtn');
-const addSubscriptionModal = document.getElementById('addSubscriptionModal');
-const editSubscriptionModal = document.getElementById('editSubscriptionModal');
-
-addSubscriptionBtn.addEventListener('click', () => {
-    addSubscriptionModal.style.display = 'flex';
-});
-
-// Close subscription modals when clicking outside modal content
-window.addEventListener('click', (e) => {
-    if (e.target === addSubscriptionModal) {
-        addSubscriptionModal.style.display = 'none';
-    }
-    if (e.target === editSubscriptionModal) {
-        editSubscriptionModal.style.display = 'none';
-    }
-});
-
-const addSubscriptionForm = document.getElementById('addSubscriptionForm');
-
-addSubscriptionForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(addSubscriptionForm);
-    const data = Object.fromEntries(formData.entries());
-
-    try {
-        const token = localStorage.getItem('adminToken');
-        const response = await fetch(`${API_BASE}/subscriptions`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: 'Failed to add subscription.' }));
-            throw new Error(errorData.message);
-        }
-
-        addSubscriptionModal.style.display = 'none';
-        addSubscriptionForm.reset();
-        await fetchSubscriptions(); // Refresh the table
-
-    } catch (err) {
-        alert(`Error: ${err.message}`); // Simple error feedback
-    }
-});
-
-let allSubscriptions = [];
-
-async function fetchSubscriptions() {
-    try {
-        const token = localStorage.getItem('adminToken');
-        const response = await fetch(`${API_BASE}/subscriptions`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            }
-        });
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: 'Failed to fetch subscriptions and could not parse error response.' }));
-            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        allSubscriptions = data.subscriptions;
-        renderSubscriptionsTable(allSubscriptions);
-    } catch (err) {
-        subscriptionsTableBody.innerHTML = `<tr><td colspan="7" style="color:red;">Error loading subscriptions: ${err.message}</td></tr>`;
-    }
-}
-
-function renderSubscriptionsTable(subscriptions) {
-    if (!subscriptions || subscriptions.length === 0) {
-        subscriptionsTableBody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 2rem;">No subscriptions found.</td></tr>';
-        return;
-    }
-    subscriptionsTableBody.innerHTML = subscriptions.map(subscription => {
-        const statusClass = subscription.status === 'active' ? 'active' : 
-                           subscription.status === 'pending' ? 'pending' : 
-                           subscription.status === 'cancelled' ? 'cancelled' : 'expired';
-        return `
-        <tr>
-            <td>${subscription.email}</td>
-            <td>${subscription.phone || 'N/A'}</td>
-            <td>${subscription.plan}</td>
-            <td>${subscription.billingPeriod}</td>
-            <td><span class="status-badge status-${statusClass}">${subscription.status}</span></td>
-            <td>${subscription.nextBillingDate ? new Date(subscription.nextBillingDate).toLocaleDateString() : 'N/A'}</td>
-            <td class="actions-cell">
-                <button class="btn-action btn-edit" data-id="${subscription._id}">Edit</button>
-                <button class="btn-action btn-delete" data-id="${subscription._id}">Delete</button>
-            </td>
-        </tr>
-    `}).join('');
-}
-
-// Filter subscriptions by email
-const subscriptionEmailFilter = document.getElementById('subscriptionEmailFilter');
-subscriptionEmailFilter.addEventListener('input', function() {
-    const filterValue = this.value.trim().toLowerCase();
-    const filtered = allSubscriptions.filter(subscription =>
-        subscription.email && subscription.email.toLowerCase().includes(filterValue)
-    );
-    renderSubscriptionsTable(filterValue ? filtered : allSubscriptions);
-});
-
-// Optionally, fetch subscriptions on page load if Subscriptions section is default
-// fetchSubscriptions(); 
-
-const addUserForm = document.getElementById('addUserForm');
-addUserForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const username = form.elements.username.value.trim();
-    const email = form.elements.email.value.trim();
-    const password = form.elements.password.value;
-    const role = form.elements.role.value;
-    const status = form.elements.status.value;
-    const token = localStorage.getItem('adminToken');
-    try {
-        const response = await fetch(`${API_BASE}/users`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ username, email, password, role, status })
-        });
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: 'Failed to add user.' }));
-            throw new Error(errorData.message);
-        }
-        addUserModal.style.display = 'none';
-        form.reset();
-        await fetchUsers();
-    } catch (err) {
-        alert(`Error: ${err.message}`);
-    }
 });
 
 // --- Profiles Section Logic ---

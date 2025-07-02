@@ -348,12 +348,6 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="sidebar__nav-link" id="subscriptionsNav">
-                            <i class="fas fa-credit-card"></i>
-                            <span class="sidebar__nav-text">Subscriptions</span>
-                        </a>
-                    </li>
-                    <li>
                         <a href="#" class="sidebar__nav-link" id="analyticsNav">
                             <i class="fas fa-chart-line"></i>
                             <span class="sidebar__nav-text">Analytics</span>
@@ -490,38 +484,6 @@
                             <button type="button" class="btn btn-outline" onclick="document.getElementById('editCardModal').style.display='none'">Cancel</button>
                         </div>
                     </form>
-                </div>
-            </div>
-
-            <!-- Subscription Management Section -->
-            <div id="subscriptionsSection" style="display:none; width:100%; max-width:1000px;">
-                <div class="section-header" style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
-                    <input type="text" id="subscriptionEmailFilter" placeholder="Filter by email..." style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc; width:250px;">
-                    <select id="planFilter" style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc;">
-                        <option value="">All Plans</option>
-                    </select>
-                    <select id="subscriptionStatusFilter" style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc;">
-                        <option value="">All Status</option>
-                    </select>
-                    <button class="btn-add" id="addSubscriptionBtn" style="margin-left:auto;"><i class="fas fa-plus"></i> Add Subscription</button>
-                </div>
-                <div class="user-table-container">
-                    <table class="user-table">
-                        <thead>
-                            <tr>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Plan</th>
-                                <th>Billing Period</th>
-                                <th>Status</th>
-                                <th>Next Billing</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="subscriptionsTableBody">
-                            <!-- Subscriptions will be loaded here dynamically -->
-                        </tbody>
-                    </table>
                 </div>
             </div>
 
