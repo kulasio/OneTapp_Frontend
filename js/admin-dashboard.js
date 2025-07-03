@@ -5,7 +5,6 @@ const dashboardNav = document.getElementById('dashboardNav');
 const usersNav = document.getElementById('usersNav');
 const cardsNav = document.getElementById('cardsNav');
 const analyticsNav = document.getElementById('analyticsNav');
-const templatesNav = document.getElementById('templatesNav');
 const reportsNav = document.getElementById('reportsNav');
 const settingsNav = document.getElementById('settingsNav');
 const profilesNav = document.getElementById('profilesNav');
@@ -14,7 +13,6 @@ const dashboardSection = document.getElementById('dashboardSection');
 const usersSection = document.getElementById('usersSection');
 const cardsSection = document.getElementById('cardsSection');
 const analyticsSection = document.getElementById('analyticsSection');
-const templatesSection = document.getElementById('templatesSection');
 const reportsSection = document.getElementById('reportsSection');
 const settingsSection = document.getElementById('settingsSection');
 const profilesSection = document.getElementById('profilesSection');
@@ -25,7 +23,6 @@ function showSection(section) {
     usersSection.style.display = 'none';
     cardsSection.style.display = 'none';
     analyticsSection.style.display = 'none';
-    templatesSection.style.display = 'none';
     reportsSection.style.display = 'none';
     settingsSection.style.display = 'none';
     profilesSection.style.display = 'none';
@@ -35,7 +32,6 @@ function showSection(section) {
     usersNav.classList.remove('active');
     cardsNav.classList.remove('active');
     analyticsNav.classList.remove('active');
-    templatesNav.classList.remove('active');
     reportsNav.classList.remove('active');
     settingsNav.classList.remove('active');
     profilesNav.classList.remove('active');
@@ -53,9 +49,6 @@ function showSection(section) {
     } else if (section === 'analytics') {
         analyticsSection.style.display = '';
         analyticsNav.classList.add('active');
-    } else if (section === 'templates') {
-        templatesSection.style.display = '';
-        templatesNav.classList.add('active');
     } else if (section === 'reports') {
         reportsSection.style.display = '';
         reportsNav.classList.add('active');
@@ -88,11 +81,6 @@ cardsNav.addEventListener('click', (e) => {
 analyticsNav.addEventListener('click', (e) => {
     e.preventDefault();
     showSection('analytics');
-});
-
-templatesNav.addEventListener('click', (e) => {
-    e.preventDefault();
-    showSection('templates');
 });
 
 reportsNav.addEventListener('click', (e) => {
@@ -470,7 +458,6 @@ function showCardsSection() {
     usersSection.style.display = 'none';
     cardsSection.style.display = 'none';
     analyticsSection.style.display = 'none';
-    templatesSection.style.display = 'none';
     reportsSection.style.display = 'none';
     settingsSection.style.display = 'none';
     profilesSection.style.display = 'none';
@@ -500,7 +487,6 @@ function showProfilesSection() {
     usersSection.style.display = 'none';
     cardsSection.style.display = 'none';
     analyticsSection.style.display = 'none';
-    templatesSection.style.display = 'none';
     reportsSection.style.display = 'none';
     settingsSection.style.display = 'none';
     profilesSection.style.display = 'none';
