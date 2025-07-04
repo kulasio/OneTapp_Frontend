@@ -576,6 +576,16 @@ window.openEditProfileModal = function(profileId) {
     addEditProfileForm.elements['github'].value = profile.github || '';
     addEditProfileForm.elements['website'].value = profile.website || '';
     addEditProfileForm.elements['qrUrl'].value = profile.qrUrl || '';
+    addEditProfileForm.elements['facebook'].value = profile.facebook || '';
+    addEditProfileForm.elements['instagram'].value = profile.instagram || '';
+    addEditProfileForm.elements['tiktok'].value = profile.tiktok || '';
+    addEditProfileForm.elements['youtube'].value = profile.youtube || '';
+    addEditProfileForm.elements['whatsapp'].value = profile.whatsapp || '';
+    addEditProfileForm.elements['telegram'].value = profile.telegram || '';
+    addEditProfileForm.elements['snapchat'].value = profile.snapchat || '';
+    addEditProfileForm.elements['pinterest'].value = profile.pinterest || '';
+    addEditProfileForm.elements['reddit'].value = profile.reddit || '';
+    addEditProfileForm.elements['other'].value = profile.other || '';
     profileModalTitle.textContent = 'Edit Profile';
     addEditProfileModal.style.display = 'flex';
 }
