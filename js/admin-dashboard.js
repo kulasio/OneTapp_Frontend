@@ -539,6 +539,8 @@ window.openEditProfileModal = function(profileId) {
     if (!profile) return;
     addEditProfileForm.reset();
     addEditProfileForm.elements['profileId'].value = profile._id;
+    // Set hidden userId field
+    addEditProfileForm.elements['userId'].value = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
     addEditProfileForm.elements['fullName'].value = profile.fullName || '';
     addEditProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
     addEditProfileForm.elements['company'].value = profile.company || '';
