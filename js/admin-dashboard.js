@@ -59,7 +59,6 @@ function showSection(section) {
         profilesSection.style.display = '';
         profilesNav.classList.add('active');
         fetchAndRenderProfiles();
-        fetchUsersForProfileDropdown();
     }
 }
 
@@ -493,7 +492,6 @@ function showProfilesSection() {
     // Show profiles section
     profilesSection.style.display = 'block';
     fetchAndRenderProfiles();
-    fetchUsersForProfileDropdown();
 }
 
 function fetchAndRenderProfiles() {
@@ -502,28 +500,6 @@ function fetchAndRenderProfiles() {
         .then(data => {
             allProfiles = data;
             renderProfilesTable(data);
-        });
-}
-
-function fetchUsersForProfileDropdown() {
-    const token = localStorage.getItem('adminToken');
-    fetch(`${API_BASE}/users`, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    })
-        .then(res => res.json())
-        .then(data => {
-            const users = data.users || data; // Support both array and object response
-            allUsers = users;
-            const userSelect = addEditProfileForm.elements['userId'];
-            userSelect.innerHTML = '';
-            users.forEach(user => {
-                const opt = document.createElement('option');
-                opt.value = user._id;
-                opt.textContent = user.username + ' (' + user.email + ')';
-                userSelect.appendChild(opt);
-            });
         });
 }
 
