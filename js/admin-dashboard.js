@@ -531,7 +531,8 @@ function openAddProfileModal() {
     addEditProfileForm.reset();
     addEditProfileForm.elements['profileId'].value = '';
     profileModalTitle.textContent = 'Add Profile';
-    addEditProfileModal.style.display = 'flex';
+    const modal = new bootstrap.Modal(document.getElementById('addEditProfileModal'));
+    modal.show();
 }
 
 window.openEditProfileModal = function(profileId) {
@@ -563,7 +564,8 @@ window.openEditProfileModal = function(profileId) {
     addEditProfileForm.elements['github'].value = (profile.socialLinks && profile.socialLinks.github) || '';
     addEditProfileForm.elements['website'].value = (profile.socialLinks && profile.socialLinks.website) || profile.website || '';
     profileModalTitle.textContent = 'Edit Profile';
-    addEditProfileModal.style.display = 'flex';
+    const modal = new bootstrap.Modal(document.getElementById('addEditProfileModal'));
+    modal.show();
 }
 
 addEditProfileForm.onsubmit = function(e) {
