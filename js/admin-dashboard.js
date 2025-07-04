@@ -587,7 +587,9 @@ addEditProfileForm.onsubmit = function(e) {
     })
     .then(res => res.json())
     .then(() => {
-        addEditProfileModal.style.display = 'none';
+        const modalEl = document.getElementById('addEditProfileModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
         fetchAndRenderProfiles();
     });
 };
