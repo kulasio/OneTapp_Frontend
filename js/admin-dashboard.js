@@ -563,9 +563,6 @@ window.openEditProfileModal = function(profileId) {
     if (!profile) return;
     addEditProfileForm.reset();
     addEditProfileForm.elements['profileId'].value = profile._id;
-    // Set user dropdown to correct user
-    const userIdValue = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId;
-    addEditProfileForm.elements['userId'].value = userIdValue || '';
     addEditProfileForm.elements['fullName'].value = profile.fullName || '';
     addEditProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
     addEditProfileForm.elements['company'].value = profile.company || '';
