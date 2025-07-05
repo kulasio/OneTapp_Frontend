@@ -5,163 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OneTapp NFC - Admin Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         :root {
             --primary: #1976d2;
             --primary-dark: #115293;
             --sidebar-bg: var(--primary);
             --sidebar-text: #fff;
-            --card-bg: #fff;
-            --card-radius: 18px;
-            --card-shadow: 0 4px 24px rgba(25, 118, 210, 0.10);
-            --icon-bg: #e3f2fd;
-            --icon-color: var(--primary);
-            --body-bg: #f5f7fa;
         }
+        
         body {
-            margin: 0;
             font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
-            background: var(--body-bg);
-            color: #23294a;
+            background-color: #f5f7fa;
         }
-        .admin-dashboard {
-            display: flex;
-            min-height: 100vh;
-        }
+        
         .sidebar {
-            width: 260px;
             background: var(--sidebar-bg);
             color: var(--sidebar-text);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 2.5rem 1rem 1rem 1rem;
+            min-height: 100vh;
             box-shadow: 2px 0 12px rgba(25, 118, 210, 0.07);
         }
-        .sidebar__logo-material {
-            background: none;
-            border-radius: 0;
-            width: auto;
-            height: auto;
-            box-shadow: none;
-            margin-bottom: 3.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        
         .sidebar__logo-material img {
             max-width: 200px;
             max-height: 90px;
         }
-        .sidebar__nav {
-            width: 100%;
-            list-style: none;
-            padding: 0;
-            margin-top: 1rem;
-        }
+        
         .sidebar__nav-link {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem 1.5rem;
             color: var(--sidebar-text);
             text-decoration: none;
             border-radius: 10px;
-            font-size: 1.15rem;
-            margin-bottom: 0.5rem;
             font-weight: 500;
-            letter-spacing: 0.02em;
             transition: background 0.2s, color 0.2s;
         }
+        
         .sidebar__nav-link.active,
         .sidebar__nav-link:hover {
             background: rgba(255,255,255,0.12);
             color: #fff;
         }
-        .sidebar__nav-link i {
-            font-size: 1.3rem;
-        }
-        .users-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 1.5rem;
-        }
-        .btn-add {
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.1);
-            font-size: 1rem;
-            font-weight: 500;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.7rem;
-            transition: all 0.2s ease;
-        }
-        .btn-add:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
-        }
-        .main-content {
-            flex: 1;
-            padding: 3.5rem 2.5rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: var(--body-bg);
-        }
-        .dashboard-header {
-            width: 100%;
-            max-width: 900px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2.5rem;
-        }
-        .dashboard-title {
-            font-size: 2.4rem;
-            font-weight: 700;
-            color: var(--primary-dark);
-            letter-spacing: -0.5px;
-        }
-        .dashboard-welcome {
-            font-size: 1.18rem;
-            color: #4a5a6a;
-            margin-bottom: 2.5rem;
-            font-weight: 400;
-        }
-        .stats-cards {
-            display: flex;
-            gap: 2rem;
-            width: 100%;
-            max-width: 900px;
-            justify-content: center;
-        }
+        
         .stat-card {
-            background: var(--card-bg);
-            border-radius: var(--card-radius);
-            box-shadow: var(--card-shadow);
-            padding: 2.2rem 2.5rem 1.7rem 2.5rem;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            min-width: 200px;
-            flex: 1;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(25, 118, 210, 0.10);
             transition: box-shadow 0.2s, transform 0.2s;
         }
+        
         .stat-card:hover {
             box-shadow: 0 8px 32px rgba(25, 118, 210, 0.18);
             transform: translateY(-2px) scale(1.03);
         }
+        
         .stat-icon {
-            background: var(--icon-bg);
-            color: var(--icon-color);
+            background: #e3f2fd;
+            color: var(--primary);
             border-radius: 50%;
             width: 48px;
             height: 48px;
@@ -169,88 +69,9 @@
             align-items: center;
             justify-content: center;
             font-size: 1.7rem;
-            margin-bottom: 1.1rem;
             box-shadow: 0 2px 8px rgba(25, 118, 210, 0.07);
         }
-        .stat-label {
-            font-size: 1.05rem;
-            color: #7a8ca3;
-            margin-bottom: 0.4rem;
-            font-weight: 500;
-        }
-        .stat-value {
-            font-size: 2.1rem;
-            font-weight: 700;
-            color: var(--primary-dark);
-        }
-        @media (max-width: 900px) {
-            .stats-cards {
-                flex-direction: column;
-                gap: 1.5rem;
-            }
-            .main-content {
-                padding: 2rem 0.5rem;
-            }
-        }
-        @media (max-width: 600px) {
-            .sidebar {
-                width: 70px;
-                padding: 1rem 0.2rem;
-            }
-            .sidebar__logo-material {
-                width: 48px;
-                height: 48px;
-                margin-bottom: 1.2rem;
-            }
-            .sidebar__logo-material img {
-                max-width: 32px;
-                max-height: 32px;
-            }
-            .sidebar__nav-link {
-                font-size: 0.9rem;
-                padding: 0.7rem 0.5rem;
-                justify-content: center;
-            }
-            .main-content {
-                padding: 1rem 0.2rem;
-            }
-            .dashboard-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-        }
-        /* User Table Styles */
-        .user-table-container {
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 2px 12px rgba(25, 118, 210, 0.07);
-            padding: 1rem 0;
-            overflow-x: hidden;
-        }
-        .user-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .user-table th,
-        .user-table td {
-            padding: 1rem 1.2rem;
-            text-align: left;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .user-table th {
-            color: var(--primary-dark);
-            font-weight: 600;
-            font-size: 0.95rem;
-            background: #f9fafb;
-        }
-        .user-table tr:last-child td {
-            border-bottom: none;
-        }
-        .user-table td {
-            color: #4a5a6a;
-            font-weight: 500;
-        }
+        
         .status-badge {
             padding: 0.3rem 0.8rem;
             border-radius: 12px;
@@ -258,505 +79,582 @@
             font-weight: 600;
             text-transform: capitalize;
         }
+        
         .status-badge.active {
             background: #e8f5e9;
             color: #2e7d32;
         }
+        
         .status-badge.inactive {
             background: #ffebee;
             color: #c62828;
         }
+        
         .status-badge.pending {
             background: #fff3e0;
             color: #ef6c00;
         }
+        
         .status-badge.cancelled {
             background: #fce4ec;
             color: #c2185b;
         }
+        
         .status-badge.expired {
             background: #f3e5f5;
             color: #7b1fa2;
         }
-        .actions-cell {
-            display: flex;
-            gap: 0.5rem;
+        
+        .table-container {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(25, 118, 210, 0.07);
+            overflow: hidden;
         }
-        .btn-action {
-            border: none;
-            padding: 0.4rem 0.9rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-        .btn-edit {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-        .btn-edit:hover {
-            background: #bbdefb;
-        }
-        .btn-delete {
-            background: #ffebee;
-            color: #d32f2f;
-        }
-        .btn-delete:hover {
-            background: #ffcdd2;
+        
+        @media (max-width: 768px) {
+            .sidebar__logo-material img {
+                max-width: 32px;
+                max-height: 32px;
+            }
         }
     </style>
     <script>
         const token = localStorage.getItem('adminToken');
-        // Simple check: if no token, redirect to login page.
-        // A more robust solution would be to verify the token with the backend.
         if (!token) {
             window.location.href = './admin-login.html';
         }
     </script>
-    <!-- Bootstrap 5 CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <div class="admin-dashboard">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar__logo-material">
-                <img src="../images/OneTapp_Logo.png" alt="OneTapp Logo">
-            </div>
-            <nav>
-                <ul class="sidebar__nav">
-                    <li>
-                        <a href="#" class="sidebar__nav-link active" id="dashboardNav">
-                            <i class="fas fa-home"></i>
-                            <span class="sidebar__nav-text">Dashboard</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="sidebar__nav-link" id="usersNav">
-                            <i class="fas fa-users"></i>
-                            <span class="sidebar__nav-text">Users</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="sidebar__nav-link" id="profilesNav">
-                            <i class="fas fa-id-badge"></i>
-                            <span class="sidebar__nav-text">Profiles</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="sidebar__nav-link" id="cardsNav">
-                            <i class="fas fa-id-card"></i>
-                            <span class="sidebar__nav-text">Cards</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="sidebar__nav-link" id="analyticsNav">
-                            <i class="fas fa-chart-line"></i>
-                            <span class="sidebar__nav-text">Analytics</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="sidebar__nav-link" id="reportsNav">
-                            <i class="fas fa-file-alt"></i>
-                            <span class="sidebar__nav-text">Reports</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="sidebar__nav-link" id="settingsNav">
-                            <i class="fas fa-cog"></i>
-                            <span class="sidebar__nav-text">Settings</span>
-                        </a>
-                    </li>
-                </ul>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <div class="text-center mb-4">
+                        <div class="sidebar__logo-material">
+                            <img src="../images/OneTapp_Logo.png" alt="OneTapp Logo" class="img-fluid">
+                        </div>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link sidebar__nav-link active" id="dashboardNav">
+                                <i class="fas fa-home me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link sidebar__nav-link" id="usersNav">
+                                <i class="fas fa-users me-2"></i>
+                                Users
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link sidebar__nav-link" id="profilesNav">
+                                <i class="fas fa-id-badge me-2"></i>
+                                Profiles
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link sidebar__nav-link" id="cardsNav">
+                                <i class="fas fa-id-card me-2"></i>
+                                Cards
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link sidebar__nav-link" id="analyticsNav">
+                                <i class="fas fa-chart-line me-2"></i>
+                                Analytics
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link sidebar__nav-link" id="reportsNav">
+                                <i class="fas fa-file-alt me-2"></i>
+                                Reports
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link sidebar__nav-link" id="settingsNav">
+                                <i class="fas fa-cog me-2"></i>
+                                Settings
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <!-- Logout Section -->
+                    <hr class="my-4">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link sidebar__nav-link" id="logoutBtn">
+                                <i class="fas fa-sign-out-alt me-2"></i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </nav>
-            <!-- Logout Section -->
-            <div style="margin-top: auto; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
-                <a href="#" class="sidebar__nav-link" id="logoutBtn" style="color: #f5f5f5; margin-bottom: 0;">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span class="sidebar__nav-text">Logout</span>
-                </a>
-            </div>
-        </aside>
-        <!-- Main Content -->
-        <main class="main-content">
-            <div id="dashboardSection">
-                <div class="dashboard-header">
-                    <div class="dashboard-title">Admin Dashboard</div>
-                </div>
-                <div class="dashboard-welcome">
-                    Welcome to your new admin dashboard!<br>
-                    This is a clean slate. You can add analytics, user management, or any features you need.
-                </div>
-                <div class="stats-cards">
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-users"></i></div>
-                        <div class="stat-label">Total Users</div>
-                        <div class="stat-value">--</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-id-card"></i></div>
-                        <div class="stat-label">NFC Cards</div>
-                        <div class="stat-value">--</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
-                        <div class="stat-label">Analytics</div>
-                        <div class="stat-value">--</div>
-                    </div>
-                </div>
-            </div>
-            <!-- User Management Section -->
-            <div id="usersSection" style="display:none; width:100%; max-width:1000px;">
-                <div class="section-header" style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
-                    <input type="text" id="userEmailFilter" placeholder="Filter by email..." style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc; width:250px;">
-                    <select id="roleFilter" style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc;">
-                        <option value="">All Roles</option>
-                    </select>
-                    <select id="statusFilter" style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc;">
-                        <option value="">All Status</option>
-                    </select>
-                    <button class="btn-add" id="addUserBtn" style="margin-left:auto;"><i class="fas fa-user-plus"></i> Add User</button>
-                </div>
-                <div class="user-table-container">
-                    <table class="user-table">
-                        <thead>
-                            <tr>
-                                <th>Username</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Status</th>
-                                <th>Last Login</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="usersTableBody">
-                            <!-- Users will be loaded here dynamically -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
 
-            <!-- Card Management Section -->
-            <div id="cardsSection" style="display:none; width:100%; max-width:1000px;">
-                <div class="section-header" style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
-                    <input type="text" id="cardEmailFilter" placeholder="Filter by assigned email..." style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc; width:250px;">
-                    <button class="btn-add" id="addCardBtn" style="margin-left:auto;"><i class="fas fa-plus"></i> Add Card</button>
-                </div>
-                <div class="user-table-container">
-                    <table class="user-table">
-                        <thead>
-                            <tr>
-                                <th>Card UID</th>
-                                <th>Assigned To</th>
-                                <th>Label</th>
-                                <th>Assigned URL</th>
-                                <th>Status</th>
-                                <th>Created At</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="cardsTableBody">
-                            <!-- Cards will be loaded here dynamically -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="pt-3 pb-2 mb-3">
+                    <!-- Dashboard Section -->
+                    <div id="dashboardSection">
+                        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                            <h1 class="h2 text-primary">Admin Dashboard</h1>
+                        </div>
+                        
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Welcome to your new admin dashboard! This is a clean slate. You can add analytics, user management, or any features you need.
+                        </div>
+                        
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-4">
+                                <div class="stat-card p-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="stat-icon me-3">
+                                            <i class="fas fa-users"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="text-muted mb-0">Total Users</h6>
+                                            <h3 class="text-primary mb-0">--</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-card p-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="stat-icon me-3">
+                                            <i class="fas fa-id-card"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="text-muted mb-0">NFC Cards</h6>
+                                            <h3 class="text-primary mb-0">--</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-card p-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="stat-icon me-3">
+                                            <i class="fas fa-chart-line"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="text-muted mb-0">Analytics</h6>
+                                            <h3 class="text-primary mb-0">--</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-            <!-- Add/Edit Card Modal -->
-            <div id="addEditCardModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);z-index:1000;align-items:center;justify-content:center;">
-                <div style="background:#fff;padding:2rem 2.5rem;border-radius:16px;max-width:500px;width:100%;box-shadow:0 4px 24px rgba(25,118,210,0.15);position:relative;max-height:90vh;overflow-y:auto;">
-                    <button onclick="document.getElementById('addEditCardModal').style.display='none'" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.5rem;color:#888;cursor:pointer;">&times;</button>
-                    <h2 id="cardModalTitle" style="margin-bottom:1.5rem;color:#1976d2;">Add Card</h2>
+                    <!-- User Management Section -->
+                    <div id="usersSection" style="display:none;">
+                        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                            <h1 class="h2 text-primary">User Management</h1>
+                            <button class="btn btn-primary" id="addUserBtn">
+                                <i class="fas fa-user-plus me-2"></i>Add User
+                            </button>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <input type="text" id="userEmailFilter" class="form-control" placeholder="Filter by email...">
+                            </div>
+                            <div class="col-md-3">
+                                <select id="roleFilter" class="form-select">
+                                    <option value="">All Roles</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select id="statusFilter" class="form-select">
+                                    <option value="">All Status</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="table-container">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>Email</th>
+                                            <th>Role</th>
+                                            <th>Status</th>
+                                            <th>Last Login</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="usersTableBody">
+                                        <!-- Users will be loaded here dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Management Section -->
+                    <div id="cardsSection" style="display:none;">
+                        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                            <h1 class="h2 text-primary">Card Management</h1>
+                            <button class="btn btn-primary" id="addCardBtn">
+                                <i class="fas fa-plus me-2"></i>Add Card
+                            </button>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <input type="text" id="cardEmailFilter" class="form-control" placeholder="Filter by assigned email...">
+                            </div>
+                        </div>
+                        
+                        <div class="table-container">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Card UID</th>
+                                            <th>Assigned To</th>
+                                            <th>Label</th>
+                                            <th>Assigned URL</th>
+                                            <th>Status</th>
+                                            <th>Created At</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cardsTableBody">
+                                        <!-- Cards will be loaded here dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profiles Management Section -->
+                    <div id="profilesSection" style="display:none;">
+                        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                            <h1 class="h2 text-primary">Profile Management</h1>
+                            <button class="btn btn-primary" id="addProfileBtn">
+                                <i class="fas fa-user-plus me-2"></i>Add Profile
+                            </button>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <input type="text" id="profileNameFilter" class="form-control" placeholder="Filter by full name...">
+                            </div>
+                        </div>
+                        
+                        <div class="table-container">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Full Name</th>
+                                            <th>User</th>
+                                            <th>Job Title</th>
+                                            <th>Company</th>
+                                            <th>Last Updated</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="profilesTableBody">
+                                        <!-- Profiles will be loaded here dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analytics Section -->
+                    <div id="analyticsSection" style="display:none;">
+                        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                            <h1 class="h2 text-primary">Analytics</h1>
+                        </div>
+                        <div class="text-center py-5">
+                            <i class="fas fa-chart-line text-primary" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                            <h3>Analytics Dashboard</h3>
+                            <p class="text-muted">Card views, shares, and performance metrics will be displayed here.</p>
+                        </div>
+                    </div>
+
+                    <!-- Reports Section -->
+                    <div id="reportsSection" style="display:none;">
+                        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                            <h1 class="h2 text-primary">Reports</h1>
+                            <button class="btn btn-primary" id="generateReportBtn">
+                                <i class="fas fa-download me-2"></i>Generate Report
+                            </button>
+                        </div>
+                        <div class="text-center py-5">
+                            <i class="fas fa-file-alt text-primary" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                            <h3>Reports & Analytics</h3>
+                            <p class="text-muted">Generate and export user and card reports will be available here.</p>
+                        </div>
+                    </div>
+
+                    <!-- Settings Section -->
+                    <div id="settingsSection" style="display:none;">
+                        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                            <h1 class="h2 text-primary">System Settings</h1>
+                        </div>
+                        <div class="text-center py-5">
+                            <i class="fas fa-cog text-primary" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                            <h3>System Configuration</h3>
+                            <p class="text-muted">Admin settings, system configuration, and account management will be here.</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add/Edit Card Modal -->
+    <div class="modal fade" id="addEditCardModal" tabindex="-1" aria-labelledby="cardModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-primary" id="cardModalTitle">Add Card</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
                     <form id="addEditCardForm">
                         <input type="hidden" name="cardId">
-                        <div style="margin-bottom:1rem;">
-                            <label>User</label>
-                            <select name="userId" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                        <div class="mb-3">
+                            <label class="form-label">User</label>
+                            <select name="userId" class="form-select" required>
                                 <!-- User options will be loaded dynamically -->
                             </select>
                         </div>
-                        <div style="margin-bottom:1rem;">
-                            <label>Card UID</label>
-                            <input type="text" name="cardUid" style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                        <div class="mb-3">
+                            <label class="form-label">Card UID</label>
+                            <input type="text" name="cardUid" class="form-control">
                         </div>
-                        <div style="margin-bottom:1rem;">
-                            <label>Label</label>
-                            <input type="text" name="label" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                        <div class="mb-3">
+                            <label class="form-label">Label</label>
+                            <input type="text" name="label" class="form-control" required>
                         </div>
-                        <div style="margin-bottom:1rem;">
-                            <label>Assigned URL</label>
-                            <input type="url" name="assignedUrl" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                        <div class="mb-3">
+                            <label class="form-label">Assigned URL</label>
+                            <input type="url" name="assignedUrl" class="form-control" required>
                         </div>
-                        <div style="margin-bottom:1rem;">
-                            <label>Default Profile (optional)</label>
-                            <select name="defaultProfileId" style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                        <div class="mb-3">
+                            <label class="form-label">Default Profile (optional)</label>
+                            <select name="defaultProfileId" class="form-select">
                                 <option value="">None</option>
                                 <!-- Profile options will be loaded dynamically -->
                             </select>
                         </div>
-                        <div style="margin-bottom:1rem;">
-                            <label>Status</label>
-                            <select name="status" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select name="status" class="form-select" required>
                                 <option value="active">Active</option>
                                 <option value="disabled">Disabled</option>
                                 <option value="lost">Lost</option>
                             </select>
                         </div>
-                        <div style="display:flex;justify-content:flex-end;gap:1rem;">
-                            <button type="button" onclick="document.getElementById('addEditCardModal').style.display='none'" style="background:#eee;color:#1976d2;border:none;padding:0.7rem 1.5rem;border-radius:8px;cursor:pointer;">Cancel</button>
-                            <button type="submit" style="background:#1976d2;color:#fff;border:none;padding:0.7rem 1.5rem;border-radius:8px;cursor:pointer;">Save</button>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
                         </div>
                     </form>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Analytics Section -->
-            <div id="analyticsSection" style="display:none; width:100%; max-width:1000px;">
-                <div class="users-header">
-                    <div class="dashboard-title">Analytics</div>
+    <!-- Add/Edit Profile Modal -->
+    <div class="modal fade" id="addEditProfileModal" tabindex="-1" aria-labelledby="profileModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-primary" id="profileModalTitle">Edit Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div style="text-align:center; padding: 3rem; color: #666;">
-                    <i class="fas fa-chart-line" style="font-size: 4rem; margin-bottom: 1rem; color: #1976d2;"></i>
-                    <h3>Analytics Dashboard</h3>
-                    <p>Card views, shares, and performance metrics will be displayed here.</p>
-                </div>
-            </div>
-
-            <!-- Reports Section -->
-            <div id="reportsSection" style="display:none; width:100%; max-width:1000px;">
-                <div class="users-header">
-                    <div class="dashboard-title">Reports</div>
-                    <button class="btn-add" id="generateReportBtn">
-                        <i class="fas fa-download"></i> Generate Report
-                    </button>
-                </div>
-                <div style="text-align:center; padding: 3rem; color: #666;">
-                    <i class="fas fa-file-alt" style="font-size: 4rem; margin-bottom: 1rem; color: #1976d2;"></i>
-                    <h3>Reports & Analytics</h3>
-                    <p>Generate and export user and card reports will be available here.</p>
-                </div>
-            </div>
-
-            <!-- Settings Section -->
-            <div id="settingsSection" style="display:none; width:100%; max-width:1000px;">
-                <div class="users-header">
-                    <div class="dashboard-title">System Settings</div>
-                </div>
-                <div style="text-align:center; padding: 3rem; color: #666;">
-                    <i class="fas fa-cog" style="font-size: 4rem; margin-bottom: 1rem; color: #1976d2;"></i>
-                    <h3>System Configuration</h3>
-                    <p>Admin settings, system configuration, and account management will be here.</p>
-                </div>
-            </div>
-
-            <!-- Profiles Management Section -->
-            <div id="profilesSection" style="display:none; width:100%; max-width:1000px;">
-                <div class="section-header" style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
-                    <input type="text" id="profileNameFilter" placeholder="Filter by full name..." style="padding:0.5rem 1rem; border-radius:6px; border:1px solid #ccc; width:250px;">
-                    <button class="btn-add" id="addProfileBtn" style="margin-left:auto;"><i class="fas fa-user-plus"></i> Add Profile</button>
-                </div>
-                <div class="user-table-container">
-                    <table class="user-table">
-                        <thead>
-                            <tr>
-                                <th>Full Name</th>
-                                <th>User</th>
-                                <th>Job Title</th>
-                                <th>Company</th>
-                                <th>Last Updated</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="profilesTableBody">
-                            <!-- Profiles will be loaded here dynamically -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Add/Edit Profile Modal (Bootstrap modal structure) -->
-            <div class="modal fade" id="addEditProfileModal" tabindex="-1" aria-labelledby="profileModalTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" style="max-width: 600px; width: 100%;">
-                    <div class="modal-content p-3">
-                        <div class="modal-header border-0">
-                            <h2 id="profileModalTitle" class="modal-title text-primary">Edit Profile</h2>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-body">
+                    <form id="addEditProfileForm">
+                        <input type="hidden" name="profileId">
+                        <input type="hidden" name="userId">
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" name="fullName" class="form-control" required>
                         </div>
-                        <div class="modal-body">
-                            <form id="addEditProfileForm">
-                                <input type="hidden" name="profileId">
-                                <input type="hidden" name="userId">
-                                <div class="mb-3">
-                                    <label class="form-label">Full Name</label>
-                                    <input type="text" name="fullName" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Job Title</label>
-                                    <input type="text" name="jobTitle" class="form-control">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Company</label>
-                                    <input type="text" name="company" class="form-control">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Bio</label>
-                                    <textarea name="bio" rows="2" class="form-control"></textarea>
-                                </div>
-                                <hr>
-                                <h5 class="text-secondary mb-3"><i class="fas fa-address-book me-2"></i>Contact Info</h5>
-                                <div class="mb-3">
-                                    <label class="form-label">Contact Email</label>
-                                    <input type="email" name="contactEmail" class="form-control">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Contact Phone</label>
-                                    <input type="text" name="contactPhone" class="form-control">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Location</label>
-                                    <input type="text" name="contactLocation" class="form-control">
-                                </div>
-                                <hr>
-                                <h5 class="text-secondary mb-3"><i class="fas fa-share-alt me-2"></i>Social Links</h5>
-                                <div class="row g-2">
-                                    <div class="col-md-6 mb-2">
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fab fa-linkedin"></i></span>
-                                            <input type="url" name="linkedin" class="form-control" placeholder="LinkedIn">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-2">
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fab fa-twitter"></i></span>
-                                            <input type="url" name="twitter" class="form-control" placeholder="Twitter">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-2">
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fab fa-github"></i></span>
-                                            <input type="url" name="github" class="form-control" placeholder="GitHub">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-2">
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fab fa-facebook"></i></span>
-                                            <input type="url" name="facebook" class="form-control" placeholder="Facebook">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-2">
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fab fa-instagram"></i></span>
-                                            <input type="url" name="instagram" class="form-control" placeholder="Instagram">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-2">
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fab fa-tiktok"></i></span>
-                                            <input type="url" name="tiktok" class="form-control" placeholder="TikTok">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-2">
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fab fa-youtube"></i></span>
-                                            <input type="url" name="youtube" class="form-control" placeholder="YouTube">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-2">
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fab fa-whatsapp"></i></span>
-                                            <input type="url" name="whatsapp" class="form-control" placeholder="WhatsApp">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-2">
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fab fa-telegram"></i></span>
-                                            <input type="url" name="telegram" class="form-control" placeholder="Telegram">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-2">
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fab fa-snapchat"></i></span>
-                                            <input type="url" name="snapchat" class="form-control" placeholder="Snapchat">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-2">
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fab fa-pinterest"></i></span>
-                                            <input type="url" name="pinterest" class="form-control" placeholder="Pinterest">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-2">
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fab fa-reddit"></i></span>
-                                            <input type="url" name="reddit" class="form-control" placeholder="Reddit">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-2">
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fas fa-globe"></i></span>
-                                            <input type="url" name="website" class="form-control" placeholder="Website">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-2">
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fas fa-link"></i></span>
-                                            <input type="url" name="other" class="form-control" placeholder="Other">
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="mb-3">
-                                    <label class="form-label">Profile Image</label>
-                                    <input type="file" name="profileImage" accept="image/*" class="form-control">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">QR URL</label>
-                                    <input type="url" name="qrUrl" class="form-control">
-                                </div>
-                                <div class="d-flex justify-content-end gap-2 mt-4">
-                                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-primary">Save</button>
-                                </div>
-                            </form>
+                        <div class="mb-3">
+                            <label class="form-label">Job Title</label>
+                            <input type="text" name="jobTitle" class="form-control">
                         </div>
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label">Company</label>
+                            <input type="text" name="company" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Bio</label>
+                            <textarea name="bio" rows="2" class="form-control"></textarea>
+                        </div>
+                        <hr>
+                        <h6 class="text-secondary mb-3"><i class="fas fa-address-book me-2"></i>Contact Info</h6>
+                        <div class="mb-3">
+                            <label class="form-label">Contact Email</label>
+                            <input type="email" name="contactEmail" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Contact Phone</label>
+                            <input type="text" name="contactPhone" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Location</label>
+                            <input type="text" name="contactLocation" class="form-control">
+                        </div>
+                        <hr>
+                        <h6 class="text-secondary mb-3"><i class="fas fa-share-alt me-2"></i>Social Links</h6>
+                        <div class="row g-2">
+                            <div class="col-md-6 mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fab fa-linkedin"></i></span>
+                                    <input type="url" name="linkedin" class="form-control" placeholder="LinkedIn">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fab fa-twitter"></i></span>
+                                    <input type="url" name="twitter" class="form-control" placeholder="Twitter">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fab fa-github"></i></span>
+                                    <input type="url" name="github" class="form-control" placeholder="GitHub">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fab fa-facebook"></i></span>
+                                    <input type="url" name="facebook" class="form-control" placeholder="Facebook">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fab fa-instagram"></i></span>
+                                    <input type="url" name="instagram" class="form-control" placeholder="Instagram">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fab fa-tiktok"></i></span>
+                                    <input type="url" name="tiktok" class="form-control" placeholder="TikTok">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fab fa-youtube"></i></span>
+                                    <input type="url" name="youtube" class="form-control" placeholder="YouTube">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fab fa-whatsapp"></i></span>
+                                    <input type="url" name="whatsapp" class="form-control" placeholder="WhatsApp">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fab fa-telegram"></i></span>
+                                    <input type="url" name="telegram" class="form-control" placeholder="Telegram">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fab fa-snapchat"></i></span>
+                                    <input type="url" name="snapchat" class="form-control" placeholder="Snapchat">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fab fa-pinterest"></i></span>
+                                    <input type="url" name="pinterest" class="form-control" placeholder="Pinterest">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fab fa-reddit"></i></span>
+                                    <input type="url" name="reddit" class="form-control" placeholder="Reddit">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                                    <input type="url" name="website" class="form-control" placeholder="Website">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-link"></i></span>
+                                    <input type="url" name="other" class="form-control" placeholder="Other">
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <label class="form-label">Profile Image</label>
+                            <input type="file" name="profileImage" accept="image/*" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">QR URL</label>
+                            <input type="url" name="qrUrl" class="form-control">
+                        </div>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Edit User Modal -->
-            <div id="editUserModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);z-index:1000;align-items:center;justify-content:center;">
-                <div style="background:#fff;padding:2rem 2.5rem;border-radius:16px;max-width:400px;width:100%;box-shadow:0 4px 24px rgba(25,118,210,0.15);position:relative;">
-                    <button onclick="document.getElementById('editUserModal').style.display='none'" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.5rem;color:#888;cursor:pointer;">&times;</button>
-                    <h2 style="margin-bottom:1.5rem;color:#1976d2;">Edit User</h2>
+    <!-- Edit User Modal -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-primary" id="editUserModalTitle">Edit User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
                     <form id="editUserForm">
                         <input type="hidden" name="userId">
-                        <div style="margin-bottom:1rem;">
-                            <label>Email</label>
-                            <input type="email" name="email" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;" disabled>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" required disabled>
                         </div>
-                        <div style="margin-bottom:1rem;">
-                            <label>Role</label>
-                            <select name="role" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                        <div class="mb-3">
+                            <label class="form-label">Role</label>
+                            <select name="role" class="form-select" required>
                                 <option value="user">User</option>
                                 <option value="admin">Admin</option>
                             </select>
                         </div>
-                        <div style="margin-bottom:1rem;">
-                            <label>Status</label>
-                            <select name="status" required style="width:100%;padding:0.7rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;">
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select name="status" class="form-select" required>
                                 <option value="active">Active</option>
                                 <option value="inactive">Inactive</option>
                             </select>
                         </div>
-                        <div style="display:flex;justify-content:flex-end;gap:1rem;">
-                            <button type="button" onclick="document.getElementById('editUserModal').style.display='none'" style="background:#eee;color:#1976d2;border:none;padding:0.7rem 1.5rem;border-radius:8px;cursor:pointer;">Cancel</button>
-                            <button type="submit" style="background:#1976d2;color:#fff;border:none;padding:0.7rem 1.5rem;border-radius:8px;cursor:pointer;">Save</button>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
                         </div>
                     </form>
                 </div>
             </div>
-        </main>
+        </div>
     </div>
 </body>
 <script src="../js/admin-dashboard.js"></script>
