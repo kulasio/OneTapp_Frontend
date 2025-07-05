@@ -220,16 +220,17 @@ usersTableBody.addEventListener('click', async (e) => {
                 throw new Error(errorData.message);
             }
 
-            const user = await response.json();
+            // Support both { user: {...} } and { ... } response formats
+            const userResponse = await response.json();
+            const user = userResponse.user || userResponse;
             
             // Populate and show the modal
             const form = document.getElementById('editUserForm');
-            form.elements.userId.value = user._id;
-            form.elements.email.value = user.email;
-            form.elements.role.value = user.role;
-            form.elements.status.value = user.status;
+            form.elements.userId.value = user._id || '';
+            form.elements.email.value = user.email || '';
+            form.elements.role.value = user.role || '';
+            form.elements.status.value = user.status || '';
             
-            // editUserModal.style.display = 'flex';
             const modal = new bootstrap.Modal(document.getElementById('editUserModal'));
             modal.show();
 
