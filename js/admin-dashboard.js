@@ -116,18 +116,12 @@ const addUserModal = document.getElementById('addUserModal');
 const editUserModal = document.getElementById('editUserModal');
 
 addUserBtn.addEventListener('click', () => {
-    addUserModal.style.display = 'flex';
+    // addUserModal.style.display = 'flex';
+    // (Assuming addUserModal is not used, as there is no add user modal in the HTML)
 });
 
-// Close modals when clicking outside modal content
-window.addEventListener('click', (e) => {
-    if (e.target === addUserModal) {
-        addUserModal.style.display = 'none';
-    }
-    if (e.target === editUserModal) {
-        editUserModal.style.display = 'none';
-    }
-});
+// Remove old window click handler for modals (Bootstrap handles this)
+// window.addEventListener('click', (e) => { ... });
 
 // On page load, show dashboard by default
 showSection('dashboard');
@@ -235,7 +229,9 @@ usersTableBody.addEventListener('click', async (e) => {
             form.elements.role.value = user.role;
             form.elements.status.value = user.status;
             
-            editUserModal.style.display = 'flex';
+            // editUserModal.style.display = 'flex';
+            const modal = new bootstrap.Modal(document.getElementById('editUserModal'));
+            modal.show();
 
         } catch (err) {
             alert(`Error: ${err.message}`);
@@ -267,7 +263,9 @@ editUserForm.addEventListener('submit', async (e) => {
             throw new Error(errorData.message);
         }
 
-        editUserModal.style.display = 'none';
+        // editUserModal.style.display = 'none';
+        const modal = bootstrap.Modal.getInstance(document.getElementById('editUserModal'));
+        if (modal) modal.hide();
         await fetchUsers(); // Refresh the table
 
     } catch (err) {
@@ -382,7 +380,9 @@ addCardBtn.addEventListener('click', async () => {
     cardModalTitle.textContent = 'Add Card';
     await fetchUsersForCardDropdown();
     await fetchProfilesForCardDropdown();
-    addEditCardModal.style.display = 'flex';
+    // addEditCardModal.style.display = 'flex';
+    const modal = new bootstrap.Modal(document.getElementById('addEditCardModal'));
+    modal.show();
 });
 
 window.openEditCardModal = async function(cardId) {
@@ -399,7 +399,9 @@ window.openEditCardModal = async function(cardId) {
     addEditCardForm.elements['defaultProfileId'].value = card.defaultProfileId || '';
     addEditCardForm.elements['status'].value = card.status || 'active';
     cardModalTitle.textContent = 'Edit Card';
-    addEditCardModal.style.display = 'flex';
+    // addEditCardModal.style.display = 'flex';
+    const modal = new bootstrap.Modal(document.getElementById('addEditCardModal'));
+    modal.show();
 };
 
 addEditCardForm.onsubmit = function(e) {
@@ -424,7 +426,9 @@ addEditCardForm.onsubmit = function(e) {
     })
     .then(res => res.json())
     .then(() => {
-        addEditCardModal.style.display = 'none';
+        // addEditCardModal.style.display = 'none';
+        const modal = bootstrap.Modal.getInstance(document.getElementById('addEditCardModal'));
+        if (modal) modal.hide();
         fetchAndRenderCards();
     });
 };
