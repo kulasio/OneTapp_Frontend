@@ -590,22 +590,25 @@ function renderProfilesTable(profiles) {
 }
 
 addProfileBtn.addEventListener('click', async () => {
-    try {
-        addEditProfileForm.reset();
-        addEditProfileForm.elements['profileId'].value = '';
-        profileModalTitle.textContent = 'Add Profile';
-        await fetchUsersForProfileDropdown();
-        // Hide the hidden userId input if present
-        if (addEditProfileForm.querySelector('input[name="userId"]')) {
-            addEditProfileForm.querySelector('input[name="userId"]').style.display = 'none';
-        }
-        profileUserSelect.style.display = '';
-        const modal = new bootstrap.Modal(document.getElementById('addEditProfileModal'));
-        modal.show();
-    } catch (err) {
-        console.error('Error opening Add Profile modal:', err);
-        alert('Error opening Add Profile modal: ' + err.message);
+    addEditProfileForm.reset();
+    addEditProfileForm.elements['profileId'].value = '';
+    profileModalTitle.textContent = 'Add Profile';
+    await fetchUsersForProfileDropdown();
+    profileUserSelect.style.display = '';
+    // Show the dropdown, hide the plain text
+    let userDisplay = addEditProfileForm.querySelector('[name="userDisplay"]');
+    if (!userDisplay) {
+        userDisplay = document.createElement('input');
+        userDisplay.type = 'text';
+        userDisplay.name = 'userDisplay';
+        userDisplay.className = 'form-control';
+        userDisplay.disabled = true;
+        userDisplay.style.display = 'none';
+        profileUserSelect.parentNode.appendChild(userDisplay);
     }
+    userDisplay.style.display = 'none';
+    const modal = new bootstrap.Modal(document.getElementById('addEditProfileModal'));
+    modal.show();
 });
 
 window.openEditProfileModal = async function(profileId) {
@@ -614,14 +617,22 @@ window.openEditProfileModal = async function(profileId) {
     addEditProfileForm.reset();
     addEditProfileForm.elements['profileId'].value = profile._id;
     await fetchUsersForProfileDropdown();
-    // Set the user dropdown to the correct user
-    let userId = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
-    profileUserSelect.value = userId;
-    // Hide the hidden userId input if present
-    if (addEditProfileForm.querySelector('input[name="userId"]')) {
-        addEditProfileForm.querySelector('input[name="userId"]').style.display = 'none';
+    // Hide the dropdown, show the plain text
+    profileUserSelect.style.display = 'none';
+    let userDisplay = addEditProfileForm.querySelector('[name="userDisplay"]');
+    if (!userDisplay) {
+        userDisplay = document.createElement('input');
+        userDisplay.type = 'text';
+        userDisplay.name = 'userDisplay';
+        userDisplay.className = 'form-control';
+        userDisplay.disabled = true;
+        profileUserSelect.parentNode.appendChild(userDisplay);
     }
-    profileUserSelect.style.display = '';
+    // Set the plain text value to the user's name/email
+    let userId = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
+    let user = allUsers.find(u => u._id === userId);
+    userDisplay.value = user ? (user.username + ' (' + user.email + ')') : '';
+    userDisplay.style.display = '';
     addEditProfileForm.elements['fullName'].value = profile.fullName || '';
     addEditProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
     addEditProfileForm.elements['company'].value = profile.company || '';
