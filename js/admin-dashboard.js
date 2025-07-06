@@ -529,7 +529,6 @@ const profileUserSelect = addEditProfileForm.elements['userId'];
 let allProfiles = [];
 
 async function fetchUsersForProfileDropdown() {
-    // Use the same API as for cards
     const token = localStorage.getItem('adminToken');
     const res = await fetch(`${API_BASE}/users`, {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -543,6 +542,8 @@ async function fetchUsersForProfileDropdown() {
         opt.textContent = user.username + ' (' + user.email + ')';
         profileUserSelect.appendChild(opt);
     });
+    // Always update the global allUsers array
+    allUsers = users;
     return users;
 }
 
