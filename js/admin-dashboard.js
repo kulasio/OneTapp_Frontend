@@ -116,8 +116,40 @@ const addUserModal = document.getElementById('addUserModal');
 const editUserModal = document.getElementById('editUserModal');
 
 addUserBtn.addEventListener('click', () => {
-    // addUserModal.style.display = 'flex';
-    // (Assuming addUserModal is not used, as there is no add user modal in the HTML)
+    const modal = new bootstrap.Modal(document.getElementById('addUserModal'));
+    modal.show();
+});
+
+const addUserForm = document.getElementById('addUserForm');
+addUserForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(addUserForm);
+    const data = {
+        username: formData.get('username'),
+        email: formData.get('email'),
+        password: formData.get('password'),
+        role: formData.get('role')
+    };
+    const token = localStorage.getItem('adminToken');
+    try {
+        const response = await fetch(`${API_BASE}/users`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(data)
+        });
+        if (!response.ok) throw new Error('Failed to add user');
+        // Hide modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+        if (modal) modal.hide();
+        // Refresh user list
+        fetchUsers();
+        addUserForm.reset();
+    } catch (err) {
+        alert('Error: ' + err.message);
+    }
 });
 
 // Remove old window click handler for modals (Bootstrap handles this)
