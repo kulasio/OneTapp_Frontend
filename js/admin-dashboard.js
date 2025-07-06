@@ -590,17 +590,22 @@ function renderProfilesTable(profiles) {
 }
 
 addProfileBtn.addEventListener('click', async () => {
-    addEditProfileForm.reset();
-    addEditProfileForm.elements['profileId'].value = '';
-    profileModalTitle.textContent = 'Add Profile';
-    await fetchUsersForProfileDropdown();
-    // Hide the hidden userId input if present
-    if (addEditProfileForm.querySelector('input[name="userId"]')) {
-        addEditProfileForm.querySelector('input[name="userId"]').style.display = 'none';
+    try {
+        addEditProfileForm.reset();
+        addEditProfileForm.elements['profileId'].value = '';
+        profileModalTitle.textContent = 'Add Profile';
+        await fetchUsersForProfileDropdown();
+        // Hide the hidden userId input if present
+        if (addEditProfileForm.querySelector('input[name="userId"]')) {
+            addEditProfileForm.querySelector('input[name="userId"]').style.display = 'none';
+        }
+        profileUserSelect.style.display = '';
+        const modal = new bootstrap.Modal(document.getElementById('addEditProfileModal'));
+        modal.show();
+    } catch (err) {
+        console.error('Error opening Add Profile modal:', err);
+        alert('Error opening Add Profile modal: ' + err.message);
     }
-    profileUserSelect.style.display = '';
-    const modal = new bootstrap.Modal(document.getElementById('addEditProfileModal'));
-    modal.show();
 });
 
 window.openEditProfileModal = async function(profileId) {
