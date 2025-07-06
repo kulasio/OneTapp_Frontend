@@ -426,11 +426,10 @@
                 <div class="modal-body">
                     <form id="addEditCardForm">
                         <input type="hidden" name="cardId">
-                        <div class="mb-3">
+                        <div class="mb-3" id="userFieldContainer">
                             <label class="form-label">User</label>
-                            <select name="userId" class="form-select" required>
-                                <!-- User options will be loaded dynamically -->
-                            </select>
+                            <select name="userId" class="form-select" required></select>
+                            <input type="text" name="userDisplay" class="form-control" disabled style="display:none; margin-top: 0.5rem;">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Card UID</label>

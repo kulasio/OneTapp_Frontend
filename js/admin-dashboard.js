@@ -381,7 +381,9 @@ addCardBtn.addEventListener('click', async () => {
     cardModalTitle.textContent = 'Add Card';
     await fetchUsersForCardDropdown();
     await fetchProfilesForCardDropdown();
-    // addEditCardModal.style.display = 'flex';
+    // Show dropdown, hide plain text
+    addEditCardForm.elements['userId'].style.display = '';
+    addEditCardForm.elements['userDisplay'].style.display = 'none';
     const modal = new bootstrap.Modal(document.getElementById('addEditCardModal'));
     modal.show();
 });
@@ -393,14 +395,21 @@ window.openEditCardModal = async function(cardId) {
     addEditCardForm.elements['cardId'].value = card._id;
     await fetchUsersForCardDropdown();
     await fetchProfilesForCardDropdown();
-    addEditCardForm.elements['userId'].value = card.userId;
+    // Hide dropdown, show plain text
+    addEditCardForm.elements['userId'].style.display = 'none';
+    addEditCardForm.elements['userDisplay'].style.display = '';
+    // Find user object
+    let user = card.userId;
+    if (!user && allCardUsers && card.userId) {
+        user = allCardUsers.find(u => u._id === card.userId);
+    }
+    addEditCardForm.elements['userDisplay'].value = user ? (user.username + ' (' + user.email + ')') : '';
     addEditCardForm.elements['cardUid'].value = card.cardUid || '';
     addEditCardForm.elements['label'].value = card.label || '';
     addEditCardForm.elements['assignedUrl'].value = card.assignedUrl || '';
     addEditCardForm.elements['defaultProfileId'].value = card.defaultProfileId || '';
     addEditCardForm.elements['status'].value = card.status || 'active';
     cardModalTitle.textContent = 'Edit Card';
-    // addEditCardModal.style.display = 'flex';
     const modal = new bootstrap.Modal(document.getElementById('addEditCardModal'));
     modal.show();
 };
