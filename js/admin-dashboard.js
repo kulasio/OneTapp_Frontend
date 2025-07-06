@@ -128,7 +128,8 @@ addUserForm.addEventListener('submit', async (e) => {
         username: formData.get('username'),
         email: formData.get('email'),
         password: formData.get('password'),
-        role: formData.get('role')
+        role: formData.get('role'),
+        status: 'active' // Always set status for new users
     };
     const token = localStorage.getItem('adminToken');
     try {
