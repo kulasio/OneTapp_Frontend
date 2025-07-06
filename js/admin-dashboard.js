@@ -524,8 +524,27 @@ const addEditProfileModal = document.getElementById('addEditProfileModal');
 const addEditProfileForm = document.getElementById('addEditProfileForm');
 const profileNameFilter = document.getElementById('profileNameFilter');
 const profileModalTitle = document.getElementById('profileModalTitle');
+const profileUserSelect = addEditProfileForm.elements['userId'];
 
 let allProfiles = [];
+
+async function fetchUsersForProfileDropdown() {
+    // Use the same API as for cards
+    const token = localStorage.getItem('adminToken');
+    const res = await fetch(`${API_BASE}/users`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await res.json();
+    const users = data.users || data;
+    profileUserSelect.innerHTML = '';
+    users.forEach(user => {
+        const opt = document.createElement('option');
+        opt.value = user._id;
+        opt.textContent = user.username + ' (' + user.email + ')';
+        profileUserSelect.appendChild(opt);
+    });
+    return users;
+}
 
 function showProfilesSection() {
     // Hide all sections (replace hideAllSections)
@@ -570,25 +589,34 @@ function renderProfilesTable(profiles) {
     });
 }
 
-addProfileBtn.addEventListener('click', () => {
-    openAddProfileModal();
-});
-
-function openAddProfileModal() {
+addProfileBtn.addEventListener('click', async () => {
     addEditProfileForm.reset();
     addEditProfileForm.elements['profileId'].value = '';
     profileModalTitle.textContent = 'Add Profile';
+    await fetchUsersForProfileDropdown();
+    // Hide the hidden userId input if present
+    if (addEditProfileForm.querySelector('input[name="userId"]')) {
+        addEditProfileForm.querySelector('input[name="userId"]').style.display = 'none';
+    }
+    profileUserSelect.style.display = '';
     const modal = new bootstrap.Modal(document.getElementById('addEditProfileModal'));
     modal.show();
-}
+});
 
-window.openEditProfileModal = function(profileId) {
+window.openEditProfileModal = async function(profileId) {
     const profile = allProfiles.find(p => p._id === profileId);
     if (!profile) return;
     addEditProfileForm.reset();
     addEditProfileForm.elements['profileId'].value = profile._id;
-    // Set hidden userId field
-    addEditProfileForm.elements['userId'].value = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
+    await fetchUsersForProfileDropdown();
+    // Set the user dropdown to the correct user
+    let userId = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
+    profileUserSelect.value = userId;
+    // Hide the hidden userId input if present
+    if (addEditProfileForm.querySelector('input[name="userId"]')) {
+        addEditProfileForm.querySelector('input[name="userId"]').style.display = 'none';
+    }
+    profileUserSelect.style.display = '';
     addEditProfileForm.elements['fullName'].value = profile.fullName || '';
     addEditProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
     addEditProfileForm.elements['company'].value = profile.company || '';
@@ -613,7 +641,7 @@ window.openEditProfileModal = function(profileId) {
     profileModalTitle.textContent = 'Edit Profile';
     const modal = new bootstrap.Modal(document.getElementById('addEditProfileModal'));
     modal.show();
-}
+};
 
 addEditProfileForm.onsubmit = function(e) {
     e.preventDefault();
