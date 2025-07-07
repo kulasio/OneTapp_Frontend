@@ -482,8 +482,15 @@ window.deleteCard = function(cardId) {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
     })
-        .then(res => res.json())
-        .then(() => fetchAndRenderCards());
+    .then(res => res.json().then(data => ({ status: res.status, data })))
+    .then(({ status, data }) => {
+        if (status >= 400) {
+            alert(data.message || 'Failed to delete card');
+        } else {
+            fetchAndRenderCards();
+        }
+    })
+    .catch(err => alert('Network error: ' + err.message));
 };
 
 // Filter cards by assigned user's email
