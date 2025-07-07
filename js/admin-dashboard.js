@@ -194,8 +194,8 @@ function renderUsersTable(users) {
             <td><span class="status-badge status-${user.status}">${user.status}</span></td>
             <td>${user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Never'}</td>
             <td class="actions-cell">
-                <button class="btn-action btn-edit" data-id="${user._id}">Edit</button>
-                <button class="btn-action btn-delete" data-id="${user._id}">Delete</button>
+                <button class="btn-action btn-edit" data-id="${user._id}"><i class="fas fa-edit"></i></button>
+                <button class="btn-action btn-delete" data-id="${user._id}"><i class="fas fa-trash"></i></button>
             </td>
         </tr>
     `).join('');
