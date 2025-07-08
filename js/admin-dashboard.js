@@ -580,7 +580,8 @@ function fetchAndRenderProfiles() {
 function renderProfilesTable(profiles) {
     profilesTableBody.innerHTML = '';
     profiles.forEach(profile => {
-        const user = allUsers.find(u => u._id === profile.userId);
+        const userId = profile.userId && profile.userId._id ? profile.userId._id : profile.userId;
+        const user = allUsers.find(u => u._id === userId);
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${profile.fullName || ''}</td>
