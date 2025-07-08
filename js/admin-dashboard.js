@@ -585,6 +585,8 @@ window.openEditProfileModal = async function(profileId) {
   if (!profile) return;
   editProfileForm.reset();
   editProfileForm.elements['profileId'].value = profile._id;
+  // Always set userId hidden field
+  editProfileForm.elements['userId'].value = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
 
   // Remove user dropdown and show read-only user display
   let userDisplay = editProfileForm.querySelector('[name="userDisplay"]');
