@@ -680,15 +680,15 @@
 
     <!-- Edit Profile Modal (no user field) -->
     <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="profileModalTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
                     <h5 class="modal-title text-primary" id="profileModalTitle">Edit Profile</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editProfileForm">
-                        <input type="hidden" name="profileId">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="editProfileForm">
+              <input type="hidden" name="profileId">
                         <!-- Profile Image Preview -->
                         <div class="mb-3 text-center">
                             <img id="profileImagePreview" src="#" alt="Profile Preview" style="max-width: 180px; max-height: 200px; display: none; border-radius: 1rem; margin-bottom: 1rem;" />
@@ -699,22 +699,22 @@
                                 <!-- User options will be loaded dynamically -->
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Full Name</label>
-                            <input type="text" name="fullName" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Job Title</label>
-                            <input type="text" name="jobTitle" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Company</label>
-                            <input type="text" name="company" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Bio</label>
-                            <textarea name="bio" rows="2" class="form-control"></textarea>
-                        </div>
+              <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input type="text" name="fullName" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Job Title</label>
+                <input type="text" name="jobTitle" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Company</label>
+                <input type="text" name="company" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Bio</label>
+                <textarea name="bio" rows="2" class="form-control"></textarea>
+              </div>
                         <hr>
 
                         <div class="mb-3">
@@ -874,14 +874,14 @@
                             <label class="form-label">QR URL</label>
                             <input type="url" name="qrUrl" class="form-control">
                         </div>
-                        <div class="d-flex justify-content-end gap-2">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+              <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+              </div>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
 
     <!-- Edit User Modal -->
