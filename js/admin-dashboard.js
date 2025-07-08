@@ -241,7 +241,11 @@ usersNav.addEventListener('click', () => {
 
 // Event delegation for user actions (Edit, Delete)
 usersTableBody.addEventListener('click', async (e) => {
-    const target = e.target;
+    let target = e.target;
+    // If the click is on the <i> icon, get the parent button
+    if (target.tagName === 'I' && target.parentElement.classList.contains('btn-action')) {
+        target = target.parentElement;
+    }
     const id = target.dataset.id;
     const token = localStorage.getItem('adminToken');
 
