@@ -527,11 +527,7 @@ if (cardsSidebarBtn) {
 // --- Profiles Section Logic ---
 const profilesTableBody = document.getElementById('profilesTableBody');
 const addProfileBtn = document.getElementById('addProfileBtn');
-const addEditProfileModal = document.getElementById('addEditProfileModal');
-const addEditProfileForm = document.getElementById('addEditProfileForm');
 const profileNameFilter = document.getElementById('profileNameFilter');
-const profileModalTitle = document.getElementById('profileModalTitle');
-const profileUserSelect = addEditProfileForm.elements['userId'];
 
 let allProfiles = [];
 
@@ -542,13 +538,19 @@ async function fetchUsersForProfileDropdown() {
     });
     const data = await res.json();
     const users = data.users || data;
-    profileUserSelect.innerHTML = '';
-    users.forEach(user => {
-        const opt = document.createElement('option');
-        opt.value = user._id;
-        opt.textContent = user.username + ' (' + user.email + ')';
-        profileUserSelect.appendChild(opt);
-    });
+    
+    // Update the add profile form dropdown
+    const addProfileUserSelect = document.querySelector('#addProfileForm select[name="userId"]');
+    if (addProfileUserSelect) {
+        addProfileUserSelect.innerHTML = '';
+        users.forEach(user => {
+            const opt = document.createElement('option');
+            opt.value = user._id;
+            opt.textContent = user.username + ' (' + user.email + ')';
+            addProfileUserSelect.appendChild(opt);
+        });
+    }
+    
     // Always update the global allUsers array
     allUsers = users;
     return users;
@@ -565,7 +567,6 @@ function showProfilesSection() {
     profilesSection.style.display = 'none';
     // Show profiles section
     profilesSection.style.display = 'block';
-    fetchAndRenderProfiles();
 }
 
 function fetchAndRenderProfiles() {
@@ -615,7 +616,7 @@ addProfileForm.addEventListener('submit', async function(e) {
   // formData.append('gallery', JSON.stringify(galleryItems));
   // formData.append('recentActivity', JSON.stringify(recentActivities));
   // formData.append('verificationStatus', JSON.stringify(verificationStatus));
-  const res = await fetch('/api/profiles', {
+  const res = await fetch(`${API_BASE}/profiles`, {
     method: 'POST',
     body: formData,
     headers: {
@@ -655,7 +656,7 @@ editProfileForm.addEventListener('submit', async function(e) {
   // formData.append('recentActivity', JSON.stringify(recentActivities));
   // formData.append('verificationStatus', JSON.stringify(verificationStatus));
   const profileId = editProfileForm.elements['profileId'].value;
-  const res = await fetch(`/api/profiles/${profileId}`, {
+  const res = await fetch(`${API_BASE}/profiles/${profileId}`, {
     method: 'PUT',
     body: formData,
     headers: {
@@ -667,6 +668,29 @@ editProfileForm.addEventListener('submit', async function(e) {
     fetchAndRenderProfiles();
   }
 });
+
+// Delete profile function
+window.deleteProfile = async function(profileId) {
+  if (!confirm('Are you sure you want to delete this profile?')) return;
+  
+  try {
+    const res = await fetch(`${API_BASE}/profiles/${profileId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+      }
+    });
+    
+    if (res.ok) {
+      fetchAndRenderProfiles();
+    } else {
+      const errorData = await res.json().catch(() => ({ message: 'Failed to delete profile.' }));
+      alert(`Error: ${errorData.message}`);
+    }
+  } catch (err) {
+    alert(`Error: ${err.message}`);
+  }
+};
 
 // === Profile Image Cropping Logic ===
 let cropper;
