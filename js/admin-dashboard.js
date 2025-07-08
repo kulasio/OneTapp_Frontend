@@ -607,6 +607,8 @@ window.openEditProfileModal = async function(profileId) {
   const profile = allProfiles.find(p => p._id === profileId);
   if (!profile) return;
   editProfileForm.reset();
+  croppedBlob = null; // Clear any previous cropped image
+  editProfileForm.elements['profileImage'].value = ''; // Clear file input
   editProfileForm.elements['profileId'].value = profile._id;
   // Always set userId hidden field
   editProfileForm.elements['userId'].value = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
