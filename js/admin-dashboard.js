@@ -672,6 +672,9 @@ addEditProfileForm.onsubmit = function(e) {
     const formData = new FormData(addEditProfileForm);
     // Remove profileImageUrl from FormData if present
     formData.delete('profileImageUrl');
+    if (croppedBlob) {
+      formData.set('profileImage', croppedBlob, 'profile.jpg');
+    }
     // Set up method and URL
     const profileId = formData.get('profileId');
     const method = profileId ? 'PUT' : 'POST';
@@ -709,4 +712,56 @@ profileNameFilter.addEventListener('input', function() {
 const profilesSidebarBtn = document.getElementById('profilesNav');
 if (profilesSidebarBtn) {
     profilesSidebarBtn.addEventListener('click', showProfilesSection);
+} 
+
+// === Profile Image Cropping Logic ===
+let cropper;
+let croppedBlob = null;
+const profileImageInput = document.querySelector('input[name="profileImage"]');
+const cropperModalEl = document.getElementById('cropperModal');
+const cropperModal = cropperModalEl ? new bootstrap.Modal(cropperModalEl) : null;
+const cropperImage = document.getElementById('cropperImage');
+const profileImagePreview = document.getElementById('profileImagePreview');
+
+if (profileImageInput) {
+  profileImageInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      cropperImage.src = event.target.result;
+      if (cropperModal) cropperModal.show();
+      setTimeout(() => {
+        if (cropper) cropper.destroy();
+        cropper = new Cropper(cropperImage, {
+          aspectRatio: 7 / 8,
+          viewMode: 1,
+          autoCropArea: 1,
+          movable: false,
+          zoomable: true,
+          rotatable: false,
+          scalable: false,
+          responsive: true,
+          background: false
+        });
+      }, 300);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+const cropImageBtn = document.getElementById('cropImageBtn');
+if (cropImageBtn) {
+  cropImageBtn.addEventListener('click', function() {
+    if (!cropper) return;
+    cropper.getCroppedCanvas().toBlob(blob => {
+      croppedBlob = blob;
+      // Show preview
+      if (profileImagePreview) {
+        profileImagePreview.src = URL.createObjectURL(blob);
+        profileImagePreview.style.display = '';
+      }
+      if (cropperModal) cropperModal.hide();
+    }, 'image/jpeg');
+  });
 } 
