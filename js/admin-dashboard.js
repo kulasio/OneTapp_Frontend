@@ -597,145 +597,76 @@ function renderProfilesTable(profiles) {
     });
 }
 
+// === Add Profile Modal Logic ===
+const addProfileModal = new bootstrap.Modal(document.getElementById('addProfileModal'));
+const addProfileForm = document.getElementById('addProfileForm');
+
 addProfileBtn.addEventListener('click', async () => {
-    addEditProfileForm.reset();
-    addEditProfileForm.elements['profileId'].value = '';
-    profileModalTitle.textContent = 'Add Profile';
-    await fetchUsersForProfileDropdown();
-    profileUserSelect.style.display = ''; // Show dropdown
-    let userDisplay = addEditProfileForm.querySelector('[name="userDisplay"]');
-    if (userDisplay) userDisplay.style.display = 'none'; // Hide read-only field
-    featuredLinks = [];
-    renderFeaturedLinks();
-    galleryItems = [];
-    renderGalleryItems();
-    recentActivities = [];
-    renderRecentActivities();
-    verificationStatusType.value = 'unverified';
-    verificationStatusVerifiedAt.value = '';
-    verificationStatusVerifiedBy.value = '';
-    const modal = new bootstrap.Modal(document.getElementById('addEditProfileModal'));
-    modal.show();
+  addProfileForm.reset();
+  await fetchUsersForProfileDropdown(); // Populate user dropdown
+  addProfileModal.show();
 });
+
+addProfileForm.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const formData = new FormData(addProfileForm);
+  // Add custom field serialization here if needed
+  // formData.append('featuredLinks', JSON.stringify(featuredLinks));
+  // formData.append('gallery', JSON.stringify(galleryItems));
+  // formData.append('recentActivity', JSON.stringify(recentActivities));
+  // formData.append('verificationStatus', JSON.stringify(verificationStatus));
+  const res = await fetch('/api/profiles', {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+    }
+  });
+  if (res.ok) {
+    addProfileModal.hide();
+    fetchAndRenderProfiles();
+  }
+});
+
+// === Edit Profile Modal Logic ===
+const editProfileModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+const editProfileForm = document.getElementById('editProfileForm');
 
 window.openEditProfileModal = async function(profileId) {
-    const profile = allProfiles.find(p => p._id === profileId);
-    if (!profile) return;
-    addEditProfileForm.reset();
-    addEditProfileForm.elements['profileId'].value = profile._id;
-    await fetchUsersForProfileDropdown();
-    profileUserSelect.style.display = 'none'; // Hide dropdown
-    let userDisplay = addEditProfileForm.querySelector('[name="userDisplay"]');
-    if (!userDisplay) {
-        userDisplay = document.createElement('input');
-        userDisplay.type = 'text';
-        userDisplay.name = 'userDisplay';
-        userDisplay.className = 'form-control';
-        userDisplay.disabled = true;
-        profileUserSelect.parentNode.appendChild(userDisplay);
-    }
-    // Set the plain text value to the user's name/email
-    if (profile.userId && profile.userId.username) {
-      userDisplay.value = profile.userId.username + ' (' + profile.userId.email + ')';
-    } else {
-      let userId = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
-      let user = allUsers.find(u => u._id === userId);
-      userDisplay.value = user ? (user.username + ' (' + user.email + ')') : '';
-    }
-    userDisplay.style.display = ''; // Show read-only field
-    addEditProfileForm.elements['fullName'].value = profile.fullName || '';
-    addEditProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
-    addEditProfileForm.elements['company'].value = profile.company || '';
-    addEditProfileForm.elements['bio'].value = profile.bio || '';
-    addEditProfileForm.elements['contactEmail'].value = (profile.contact && profile.contact.email) || profile.contactEmail || '';
-    addEditProfileForm.elements['contactPhone'].value = (profile.contact && profile.contact.phone) || profile.contactPhone || '';
-    addEditProfileForm.elements['contactLocation'].value = (profile.contact && profile.contact.location) || profile.contactLocation || '';
-    addEditProfileForm.elements['facebook'].value = (profile.socialLinks && profile.socialLinks.facebook) || '';
-    addEditProfileForm.elements['instagram'].value = (profile.socialLinks && profile.socialLinks.instagram) || '';
-    addEditProfileForm.elements['tiktok'].value = (profile.socialLinks && profile.socialLinks.tiktok) || '';
-    addEditProfileForm.elements['youtube'].value = (profile.socialLinks && profile.socialLinks.youtube) || '';
-    addEditProfileForm.elements['whatsapp'].value = (profile.socialLinks && profile.socialLinks.whatsapp) || '';
-    addEditProfileForm.elements['telegram'].value = (profile.socialLinks && profile.socialLinks.telegram) || '';
-    addEditProfileForm.elements['snapchat'].value = (profile.socialLinks && profile.socialLinks.snapchat) || '';
-    addEditProfileForm.elements['pinterest'].value = (profile.socialLinks && profile.socialLinks.pinterest) || '';
-    addEditProfileForm.elements['reddit'].value = (profile.socialLinks && profile.socialLinks.reddit) || '';
-    addEditProfileForm.elements['other'].value = (profile.socialLinks && profile.socialLinks.other) || '';
-    addEditProfileForm.elements['linkedin'].value = (profile.socialLinks && profile.socialLinks.linkedin) || '';
-    addEditProfileForm.elements['twitter'].value = (profile.socialLinks && profile.socialLinks.twitter) || '';
-    addEditProfileForm.elements['github'].value = (profile.socialLinks && profile.socialLinks.github) || '';
-    addEditProfileForm.elements['website'].value = (profile.socialLinks && profile.socialLinks.website) || profile.website || '';
-    featuredLinks = Array.isArray(profile.featuredLinks) ? profile.featuredLinks.map(l => ({...l})) : [];
-    renderFeaturedLinks();
-    galleryItems = Array.isArray(profile.gallery) ? profile.gallery.map(i => ({...i})) : [];
-    renderGalleryItems();
-    recentActivities = Array.isArray(profile.recentActivity) ? profile.recentActivity.map(i => ({...i})) : [];
-    renderRecentActivities();
-    if (profile.verificationStatus) {
-        verificationStatusType.value = profile.verificationStatus.type || 'unverified';
-        verificationStatusVerifiedAt.value = profile.verificationStatus.verifiedAt ? profile.verificationStatus.verifiedAt.split('T')[0] : '';
-        verificationStatusVerifiedBy.value = profile.verificationStatus.verifiedBy || '';
-    } else {
-        verificationStatusType.value = 'unverified';
-        verificationStatusVerifiedAt.value = '';
-        verificationStatusVerifiedBy.value = '';
-    }
-    profileModalTitle.textContent = 'Edit Profile';
-    const modal = new bootstrap.Modal(document.getElementById('addEditProfileModal'));
-    modal.show();
+  const profile = allProfiles.find(p => p._id === profileId);
+  if (!profile) return;
+  editProfileForm.reset();
+  editProfileForm.elements['profileId'].value = profile._id;
+  editProfileForm.elements['fullName'].value = profile.fullName || '';
+  editProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
+  editProfileForm.elements['company'].value = profile.company || '';
+  editProfileForm.elements['bio'].value = profile.bio || '';
+  // Populate other fields as needed (featuredLinks, gallery, etc.)
+  // ...
+  editProfileModal.show();
 };
 
-addEditProfileForm.onsubmit = function(e) {
-    e.preventDefault();
-    const formData = new FormData(addEditProfileForm);
-    // Remove profileImageUrl from FormData if present
-    formData.delete('profileImageUrl');
-    if (croppedBlob) {
-      formData.set('profileImage', croppedBlob, 'profile.jpg');
+editProfileForm.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const formData = new FormData(editProfileForm);
+  // Add custom field serialization here if needed
+  // formData.append('featuredLinks', JSON.stringify(featuredLinks));
+  // formData.append('gallery', JSON.stringify(galleryItems));
+  // formData.append('recentActivity', JSON.stringify(recentActivities));
+  // formData.append('verificationStatus', JSON.stringify(verificationStatus));
+  const profileId = editProfileForm.elements['profileId'].value;
+  const res = await fetch(`/api/profiles/${profileId}`, {
+    method: 'PUT',
+    body: formData,
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
     }
-    // Set up method and URL
-    const profileId = formData.get('profileId');
-    const method = profileId ? 'PUT' : 'POST';
-    const url = profileId ? `${API_BASE}/profiles/${profileId}` : `${API_BASE}/profiles`;
-    formData.delete('featuredLinks');
-    formData.append('featuredLinks', JSON.stringify(featuredLinks));
-    formData.delete('gallery');
-    formData.append('gallery', JSON.stringify(galleryItems));
-    formData.delete('recentActivity');
-    formData.append('recentActivity', JSON.stringify(recentActivities));
-    fetch(url, {
-        method,
-        headers: {
-            // 'Content-Type' is NOT set here so browser uses multipart/form-data
-            'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-        },
-        body: formData
-    })
-    .then(res => res.json())
-    .then(() => {
-        const modalEl = document.getElementById('addEditProfileModal');
-        const modal = bootstrap.Modal.getInstance(modalEl);
-        if (modal) modal.hide();
-        fetchAndRenderProfiles();
-    });
-};
-
-window.deleteProfile = function(profileId) {
-    if (!confirm('Are you sure you want to delete this profile?')) return;
-    fetch(`${API_BASE}/profiles/${profileId}`, { method: 'DELETE' })
-        .then(res => res.json())
-        .then(() => fetchAndRenderProfiles());
-};
-
-profileNameFilter.addEventListener('input', function() {
-    const val = this.value.toLowerCase();
-    renderProfilesTable(allProfiles.filter(p => (p.fullName || '').toLowerCase().includes(val)));
+  });
+  if (res.ok) {
+    editProfileModal.hide();
+    fetchAndRenderProfiles();
+  }
 });
-
-// Add logic to show the Profiles section when sidebar option is clicked
-const profilesSidebarBtn = document.getElementById('profilesNav');
-if (profilesSidebarBtn) {
-    profilesSidebarBtn.addEventListener('click', showProfilesSection);
-} 
 
 // === Profile Image Cropping Logic ===
 let cropper;
