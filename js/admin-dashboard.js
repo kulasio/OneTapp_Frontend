@@ -721,8 +721,15 @@ editProfileForm.addEventListener('submit', async function(e) {
       // Reset cropped blob
       croppedBlob = null;
     } else {
-      const errorData = await res.json().catch(() => ({ message: 'Failed to update profile.' }));
-      alert(`Error: ${errorData.message}`);
+      let errorText = await res.text();
+      let errorMsg = '';
+      try {
+        const errorData = JSON.parse(errorText);
+        errorMsg = errorData.message || errorData.error || errorText;
+      } catch {
+        errorMsg = errorText;
+      }
+      alert(`Error: ${errorMsg}`);
     }
   } catch (err) {
     alert(`Error: ${err.message}`);
