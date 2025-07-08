@@ -996,58 +996,60 @@ gallerySection.addEventListener('click', function(e) {
 window.openEditProfileModal = async function(profileId) {
     const profile = allProfiles.find(p => p._id === profileId);
     if (!profile) return;
-    addProfileForm.reset();
-    addProfileForm.elements['profileId'].value = profile._id;
-    await fetchUsersForProfileDropdown();
-    // Hide the dropdown, show the plain text
-    const profileUserSelect = document.querySelector('#addProfileForm select[name="userId"]');
-    if (profileUserSelect) {
-        profileUserSelect.style.display = 'none';
-    }
-    let userDisplay = addProfileForm.querySelector('[name="userDisplay"]');
-    if (!userDisplay) {
-        userDisplay = document.createElement('input');
-        userDisplay.type = 'text';
-        userDisplay.name = 'userDisplay';
-        userDisplay.className = 'form-control';
-        userDisplay.disabled = true;
-        profileUserSelect.parentNode.appendChild(userDisplay);
-    }
-    // Set the plain text value to the user's name/email
-    let userId = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
-    let user = allUsers.find(u => u._id === userId);
-    userDisplay.value = user ? (user.username + ' (' + user.email + ')') : '';
-    userDisplay.style.display = '';
-    addProfileForm.elements['fullName'].value = profile.fullName || '';
-    addProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
-    addProfileForm.elements['company'].value = profile.company || '';
-    addProfileForm.elements['bio'].value = profile.bio || '';
-    addProfileForm.elements['contactEmail'].value = (profile.contact && profile.contact.email) || profile.contactEmail || '';
-    addProfileForm.elements['contactPhone'].value = (profile.contact && profile.contact.phone) || profile.contactPhone || '';
-    addProfileForm.elements['contactLocation'].value = (profile.contact && profile.contact.location) || profile.contactLocation || '';
-    addProfileForm.elements['facebook'].value = (profile.socialLinks && profile.socialLinks.facebook) || '';
-    addProfileForm.elements['instagram'].value = (profile.socialLinks && profile.socialLinks.instagram) || '';
-    addProfileForm.elements['tiktok'].value = (profile.socialLinks && profile.socialLinks.tiktok) || '';
-    addProfileForm.elements['youtube'].value = (profile.socialLinks && profile.socialLinks.youtube) || '';
-    addProfileForm.elements['whatsapp'].value = (profile.socialLinks && profile.socialLinks.whatsapp) || '';
-    addProfileForm.elements['telegram'].value = (profile.socialLinks && profile.socialLinks.telegram) || '';
-    addProfileForm.elements['snapchat'].value = (profile.socialLinks && profile.socialLinks.snapchat) || '';
-    addProfileForm.elements['pinterest'].value = (profile.socialLinks && profile.socialLinks.pinterest) || '';
-    addProfileForm.elements['reddit'].value = (profile.socialLinks && profile.socialLinks.reddit) || '';
-    addProfileForm.elements['other'].value = (profile.socialLinks && profile.socialLinks.other) || '';
-    addProfileForm.elements['linkedin'].value = (profile.socialLinks && profile.socialLinks.linkedin) || '';
-    addProfileForm.elements['twitter'].value = (profile.socialLinks && profile.socialLinks.twitter) || '';
-    addProfileForm.elements['github'].value = (profile.socialLinks && profile.socialLinks.github) || '';
-    addProfileForm.elements['website'].value = (profile.socialLinks && profile.socialLinks.website) || profile.website || '';
+    editProfileForm.reset();
+    editProfileForm.elements['profileId'].value = profile._id;
+    // No user field in edit modal
+    // Populate fields
+    editProfileForm.elements['fullName'].value = profile.fullName || '';
+    editProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
+    editProfileForm.elements['company'].value = profile.company || '';
+    editProfileForm.elements['bio'].value = profile.bio || '';
+    editProfileForm.elements['contactEmail'].value = (profile.contact && profile.contact.email) || profile.contactEmail || '';
+    editProfileForm.elements['contactPhone'].value = (profile.contact && profile.contact.phone) || profile.contactPhone || '';
+    editProfileForm.elements['contactLocation'].value = (profile.contact && profile.contact.location) || profile.contactLocation || '';
+    editProfileForm.elements['linkedin'].value = (profile.socialLinks && profile.socialLinks.linkedin) || '';
+    editProfileForm.elements['twitter'].value = (profile.socialLinks && profile.socialLinks.twitter) || '';
+    editProfileForm.elements['github'].value = (profile.socialLinks && profile.socialLinks.github) || '';
+    editProfileForm.elements['facebook'].value = (profile.socialLinks && profile.socialLinks.facebook) || '';
+    editProfileForm.elements['instagram'].value = (profile.socialLinks && profile.socialLinks.instagram) || '';
+    editProfileForm.elements['tiktok'].value = (profile.socialLinks && profile.socialLinks.tiktok) || '';
+    editProfileForm.elements['youtube'].value = (profile.socialLinks && profile.socialLinks.youtube) || '';
+    editProfileForm.elements['whatsapp'].value = (profile.socialLinks && profile.socialLinks.whatsapp) || '';
+    editProfileForm.elements['telegram'].value = (profile.socialLinks && profile.socialLinks.telegram) || '';
+    editProfileForm.elements['snapchat'].value = (profile.socialLinks && profile.socialLinks.snapchat) || '';
+    editProfileForm.elements['pinterest'].value = (profile.socialLinks && profile.socialLinks.pinterest) || '';
+    editProfileForm.elements['reddit'].value = (profile.socialLinks && profile.socialLinks.reddit) || '';
+    editProfileForm.elements['website'].value = (profile.socialLinks && profile.socialLinks.website) || profile.website || '';
+    editProfileForm.elements['other'].value = (profile.socialLinks && profile.socialLinks.other) || '';
+    // Featured Links, Gallery, Recent Activity
     featuredLinks = Array.isArray(profile.featuredLinks) ? profile.featuredLinks.map(l => ({...l})) : [];
     renderFeaturedLinks();
     galleryItems = Array.isArray(profile.gallery) ? profile.gallery.map(i => ({...i})) : [];
     renderGalleryItems();
     recentActivities = Array.isArray(profile.recentActivity) ? profile.recentActivity.map(i => ({...i})) : [];
     renderRecentActivities();
+    // Verification Status
+    if (profile.verificationStatus) {
+        if (editProfileForm.elements['verificationStatusType'])
+            editProfileForm.elements['verificationStatusType'].value = profile.verificationStatus.type || 'unverified';
+        if (editProfileForm.elements['verificationStatusVerifiedAt'])
+            editProfileForm.elements['verificationStatusVerifiedAt'].value = profile.verificationStatus.verifiedAt ? profile.verificationStatus.verifiedAt.split('T')[0] : '';
+        if (editProfileForm.elements['verificationStatusVerifiedBy'])
+            editProfileForm.elements['verificationStatusVerifiedBy'].value = profile.verificationStatus.verifiedBy || '';
+    } else {
+        if (editProfileForm.elements['verificationStatusType'])
+            editProfileForm.elements['verificationStatusType'].value = 'unverified';
+        if (editProfileForm.elements['verificationStatusVerifiedAt'])
+            editProfileForm.elements['verificationStatusVerifiedAt'].value = '';
+        if (editProfileForm.elements['verificationStatusVerifiedBy'])
+            editProfileForm.elements['verificationStatusVerifiedBy'].value = '';
+    }
+    if (editProfileForm.elements['qrUrl'])
+        editProfileForm.elements['qrUrl'].value = profile.qrUrl || '';
+    // Profile image preview (if you have logic for this)
     const profileModalTitle = document.getElementById('profileModalTitle');
     profileModalTitle.textContent = 'Edit Profile';
-    const modal = new bootstrap.Modal(document.getElementById('addProfileModal'));
+    const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
     modal.show();
 };
 
@@ -1144,58 +1146,60 @@ recentActivitySection.addEventListener('click', function(e) {
 window.openEditProfileModal = async function(profileId) {
     const profile = allProfiles.find(p => p._id === profileId);
     if (!profile) return;
-    addProfileForm.reset();
-    addProfileForm.elements['profileId'].value = profile._id;
-    await fetchUsersForProfileDropdown();
-    // Hide the dropdown, show the plain text
-    const profileUserSelect = document.querySelector('#addProfileForm select[name="userId"]');
-    if (profileUserSelect) {
-        profileUserSelect.style.display = 'none';
-    }
-    let userDisplay = addProfileForm.querySelector('[name="userDisplay"]');
-    if (!userDisplay) {
-        userDisplay = document.createElement('input');
-        userDisplay.type = 'text';
-        userDisplay.name = 'userDisplay';
-        userDisplay.className = 'form-control';
-        userDisplay.disabled = true;
-        profileUserSelect.parentNode.appendChild(userDisplay);
-    }
-    // Set the plain text value to the user's name/email
-    let userId = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
-    let user = allUsers.find(u => u._id === userId);
-    userDisplay.value = user ? (user.username + ' (' + user.email + ')') : '';
-    userDisplay.style.display = '';
-    addProfileForm.elements['fullName'].value = profile.fullName || '';
-    addProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
-    addProfileForm.elements['company'].value = profile.company || '';
-    addProfileForm.elements['bio'].value = profile.bio || '';
-    addProfileForm.elements['contactEmail'].value = (profile.contact && profile.contact.email) || profile.contactEmail || '';
-    addProfileForm.elements['contactPhone'].value = (profile.contact && profile.contact.phone) || profile.contactPhone || '';
-    addProfileForm.elements['contactLocation'].value = (profile.contact && profile.contact.location) || profile.contactLocation || '';
-    addProfileForm.elements['facebook'].value = (profile.socialLinks && profile.socialLinks.facebook) || '';
-    addProfileForm.elements['instagram'].value = (profile.socialLinks && profile.socialLinks.instagram) || '';
-    addProfileForm.elements['tiktok'].value = (profile.socialLinks && profile.socialLinks.tiktok) || '';
-    addProfileForm.elements['youtube'].value = (profile.socialLinks && profile.socialLinks.youtube) || '';
-    addProfileForm.elements['whatsapp'].value = (profile.socialLinks && profile.socialLinks.whatsapp) || '';
-    addProfileForm.elements['telegram'].value = (profile.socialLinks && profile.socialLinks.telegram) || '';
-    addProfileForm.elements['snapchat'].value = (profile.socialLinks && profile.socialLinks.snapchat) || '';
-    addProfileForm.elements['pinterest'].value = (profile.socialLinks && profile.socialLinks.pinterest) || '';
-    addProfileForm.elements['reddit'].value = (profile.socialLinks && profile.socialLinks.reddit) || '';
-    addProfileForm.elements['other'].value = (profile.socialLinks && profile.socialLinks.other) || '';
-    addProfileForm.elements['linkedin'].value = (profile.socialLinks && profile.socialLinks.linkedin) || '';
-    addProfileForm.elements['twitter'].value = (profile.socialLinks && profile.socialLinks.twitter) || '';
-    addProfileForm.elements['github'].value = (profile.socialLinks && profile.socialLinks.github) || '';
-    addProfileForm.elements['website'].value = (profile.socialLinks && profile.socialLinks.website) || profile.website || '';
+    editProfileForm.reset();
+    editProfileForm.elements['profileId'].value = profile._id;
+    // No user field in edit modal
+    // Populate fields
+    editProfileForm.elements['fullName'].value = profile.fullName || '';
+    editProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
+    editProfileForm.elements['company'].value = profile.company || '';
+    editProfileForm.elements['bio'].value = profile.bio || '';
+    editProfileForm.elements['contactEmail'].value = (profile.contact && profile.contact.email) || profile.contactEmail || '';
+    editProfileForm.elements['contactPhone'].value = (profile.contact && profile.contact.phone) || profile.contactPhone || '';
+    editProfileForm.elements['contactLocation'].value = (profile.contact && profile.contact.location) || profile.contactLocation || '';
+    editProfileForm.elements['linkedin'].value = (profile.socialLinks && profile.socialLinks.linkedin) || '';
+    editProfileForm.elements['twitter'].value = (profile.socialLinks && profile.socialLinks.twitter) || '';
+    editProfileForm.elements['github'].value = (profile.socialLinks && profile.socialLinks.github) || '';
+    editProfileForm.elements['facebook'].value = (profile.socialLinks && profile.socialLinks.facebook) || '';
+    editProfileForm.elements['instagram'].value = (profile.socialLinks && profile.socialLinks.instagram) || '';
+    editProfileForm.elements['tiktok'].value = (profile.socialLinks && profile.socialLinks.tiktok) || '';
+    editProfileForm.elements['youtube'].value = (profile.socialLinks && profile.socialLinks.youtube) || '';
+    editProfileForm.elements['whatsapp'].value = (profile.socialLinks && profile.socialLinks.whatsapp) || '';
+    editProfileForm.elements['telegram'].value = (profile.socialLinks && profile.socialLinks.telegram) || '';
+    editProfileForm.elements['snapchat'].value = (profile.socialLinks && profile.socialLinks.snapchat) || '';
+    editProfileForm.elements['pinterest'].value = (profile.socialLinks && profile.socialLinks.pinterest) || '';
+    editProfileForm.elements['reddit'].value = (profile.socialLinks && profile.socialLinks.reddit) || '';
+    editProfileForm.elements['website'].value = (profile.socialLinks && profile.socialLinks.website) || profile.website || '';
+    editProfileForm.elements['other'].value = (profile.socialLinks && profile.socialLinks.other) || '';
+    // Featured Links, Gallery, Recent Activity
     featuredLinks = Array.isArray(profile.featuredLinks) ? profile.featuredLinks.map(l => ({...l})) : [];
     renderFeaturedLinks();
     galleryItems = Array.isArray(profile.gallery) ? profile.gallery.map(i => ({...i})) : [];
     renderGalleryItems();
     recentActivities = Array.isArray(profile.recentActivity) ? profile.recentActivity.map(i => ({...i})) : [];
     renderRecentActivities();
+    // Verification Status
+    if (profile.verificationStatus) {
+        if (editProfileForm.elements['verificationStatusType'])
+            editProfileForm.elements['verificationStatusType'].value = profile.verificationStatus.type || 'unverified';
+        if (editProfileForm.elements['verificationStatusVerifiedAt'])
+            editProfileForm.elements['verificationStatusVerifiedAt'].value = profile.verificationStatus.verifiedAt ? profile.verificationStatus.verifiedAt.split('T')[0] : '';
+        if (editProfileForm.elements['verificationStatusVerifiedBy'])
+            editProfileForm.elements['verificationStatusVerifiedBy'].value = profile.verificationStatus.verifiedBy || '';
+    } else {
+        if (editProfileForm.elements['verificationStatusType'])
+            editProfileForm.elements['verificationStatusType'].value = 'unverified';
+        if (editProfileForm.elements['verificationStatusVerifiedAt'])
+            editProfileForm.elements['verificationStatusVerifiedAt'].value = '';
+        if (editProfileForm.elements['verificationStatusVerifiedBy'])
+            editProfileForm.elements['verificationStatusVerifiedBy'].value = '';
+    }
+    if (editProfileForm.elements['qrUrl'])
+        editProfileForm.elements['qrUrl'].value = profile.qrUrl || '';
+    // Profile image preview (if you have logic for this)
     const profileModalTitle = document.getElementById('profileModalTitle');
     profileModalTitle.textContent = 'Edit Profile';
-    const modal = new bootstrap.Modal(document.getElementById('addProfileModal'));
+    const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
     modal.show();
 };
 
@@ -1220,67 +1224,60 @@ const verificationStatusVerifiedBy = document.querySelector('input[name="verific
 window.openEditProfileModal = async function(profileId) {
     const profile = allProfiles.find(p => p._id === profileId);
     if (!profile) return;
-    addProfileForm.reset();
-    addProfileForm.elements['profileId'].value = profile._id;
-    await fetchUsersForProfileDropdown();
-    // Hide the dropdown, show the plain text
-    const profileUserSelect = document.querySelector('#addProfileForm select[name="userId"]');
-    if (profileUserSelect) {
-        profileUserSelect.style.display = 'none';
-    }
-    let userDisplay = addProfileForm.querySelector('[name="userDisplay"]');
-    if (!userDisplay) {
-        userDisplay = document.createElement('input');
-        userDisplay.type = 'text';
-        userDisplay.name = 'userDisplay';
-        userDisplay.className = 'form-control';
-        userDisplay.disabled = true;
-        profileUserSelect.parentNode.appendChild(userDisplay);
-    }
-    // Set the plain text value to the user's name/email
-    let userId = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
-    let user = allUsers.find(u => u._id === userId);
-    userDisplay.value = user ? (user.username + ' (' + user.email + ')') : '';
-    userDisplay.style.display = '';
-    addProfileForm.elements['fullName'].value = profile.fullName || '';
-    addProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
-    addProfileForm.elements['company'].value = profile.company || '';
-    addProfileForm.elements['bio'].value = profile.bio || '';
-    addProfileForm.elements['contactEmail'].value = (profile.contact && profile.contact.email) || profile.contactEmail || '';
-    addProfileForm.elements['contactPhone'].value = (profile.contact && profile.contact.phone) || profile.contactPhone || '';
-    addProfileForm.elements['contactLocation'].value = (profile.contact && profile.contact.location) || profile.contactLocation || '';
-    addProfileForm.elements['facebook'].value = (profile.socialLinks && profile.socialLinks.facebook) || '';
-    addProfileForm.elements['instagram'].value = (profile.socialLinks && profile.socialLinks.instagram) || '';
-    addProfileForm.elements['tiktok'].value = (profile.socialLinks && profile.socialLinks.tiktok) || '';
-    addProfileForm.elements['youtube'].value = (profile.socialLinks && profile.socialLinks.youtube) || '';
-    addProfileForm.elements['whatsapp'].value = (profile.socialLinks && profile.socialLinks.whatsapp) || '';
-    addProfileForm.elements['telegram'].value = (profile.socialLinks && profile.socialLinks.telegram) || '';
-    addProfileForm.elements['snapchat'].value = (profile.socialLinks && profile.socialLinks.snapchat) || '';
-    addProfileForm.elements['pinterest'].value = (profile.socialLinks && profile.socialLinks.pinterest) || '';
-    addProfileForm.elements['reddit'].value = (profile.socialLinks && profile.socialLinks.reddit) || '';
-    addProfileForm.elements['other'].value = (profile.socialLinks && profile.socialLinks.other) || '';
-    addProfileForm.elements['linkedin'].value = (profile.socialLinks && profile.socialLinks.linkedin) || '';
-    addProfileForm.elements['twitter'].value = (profile.socialLinks && profile.socialLinks.twitter) || '';
-    addProfileForm.elements['github'].value = (profile.socialLinks && profile.socialLinks.github) || '';
-    addProfileForm.elements['website'].value = (profile.socialLinks && profile.socialLinks.website) || profile.website || '';
+    editProfileForm.reset();
+    editProfileForm.elements['profileId'].value = profile._id;
+    // No user field in edit modal
+    // Populate fields
+    editProfileForm.elements['fullName'].value = profile.fullName || '';
+    editProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
+    editProfileForm.elements['company'].value = profile.company || '';
+    editProfileForm.elements['bio'].value = profile.bio || '';
+    editProfileForm.elements['contactEmail'].value = (profile.contact && profile.contact.email) || profile.contactEmail || '';
+    editProfileForm.elements['contactPhone'].value = (profile.contact && profile.contact.phone) || profile.contactPhone || '';
+    editProfileForm.elements['contactLocation'].value = (profile.contact && profile.contact.location) || profile.contactLocation || '';
+    editProfileForm.elements['linkedin'].value = (profile.socialLinks && profile.socialLinks.linkedin) || '';
+    editProfileForm.elements['twitter'].value = (profile.socialLinks && profile.socialLinks.twitter) || '';
+    editProfileForm.elements['github'].value = (profile.socialLinks && profile.socialLinks.github) || '';
+    editProfileForm.elements['facebook'].value = (profile.socialLinks && profile.socialLinks.facebook) || '';
+    editProfileForm.elements['instagram'].value = (profile.socialLinks && profile.socialLinks.instagram) || '';
+    editProfileForm.elements['tiktok'].value = (profile.socialLinks && profile.socialLinks.tiktok) || '';
+    editProfileForm.elements['youtube'].value = (profile.socialLinks && profile.socialLinks.youtube) || '';
+    editProfileForm.elements['whatsapp'].value = (profile.socialLinks && profile.socialLinks.whatsapp) || '';
+    editProfileForm.elements['telegram'].value = (profile.socialLinks && profile.socialLinks.telegram) || '';
+    editProfileForm.elements['snapchat'].value = (profile.socialLinks && profile.socialLinks.snapchat) || '';
+    editProfileForm.elements['pinterest'].value = (profile.socialLinks && profile.socialLinks.pinterest) || '';
+    editProfileForm.elements['reddit'].value = (profile.socialLinks && profile.socialLinks.reddit) || '';
+    editProfileForm.elements['website'].value = (profile.socialLinks && profile.socialLinks.website) || profile.website || '';
+    editProfileForm.elements['other'].value = (profile.socialLinks && profile.socialLinks.other) || '';
+    // Featured Links, Gallery, Recent Activity
     featuredLinks = Array.isArray(profile.featuredLinks) ? profile.featuredLinks.map(l => ({...l})) : [];
     renderFeaturedLinks();
     galleryItems = Array.isArray(profile.gallery) ? profile.gallery.map(i => ({...i})) : [];
     renderGalleryItems();
     recentActivities = Array.isArray(profile.recentActivity) ? profile.recentActivity.map(i => ({...i})) : [];
     renderRecentActivities();
+    // Verification Status
     if (profile.verificationStatus) {
-        verificationStatusType.value = profile.verificationStatus.type || 'unverified';
-        verificationStatusVerifiedAt.value = profile.verificationStatus.verifiedAt ? profile.verificationStatus.verifiedAt.split('T')[0] : '';
-        verificationStatusVerifiedBy.value = profile.verificationStatus.verifiedBy || '';
+        if (editProfileForm.elements['verificationStatusType'])
+            editProfileForm.elements['verificationStatusType'].value = profile.verificationStatus.type || 'unverified';
+        if (editProfileForm.elements['verificationStatusVerifiedAt'])
+            editProfileForm.elements['verificationStatusVerifiedAt'].value = profile.verificationStatus.verifiedAt ? profile.verificationStatus.verifiedAt.split('T')[0] : '';
+        if (editProfileForm.elements['verificationStatusVerifiedBy'])
+            editProfileForm.elements['verificationStatusVerifiedBy'].value = profile.verificationStatus.verifiedBy || '';
     } else {
-        verificationStatusType.value = 'unverified';
-        verificationStatusVerifiedAt.value = '';
-        verificationStatusVerifiedBy.value = '';
+        if (editProfileForm.elements['verificationStatusType'])
+            editProfileForm.elements['verificationStatusType'].value = 'unverified';
+        if (editProfileForm.elements['verificationStatusVerifiedAt'])
+            editProfileForm.elements['verificationStatusVerifiedAt'].value = '';
+        if (editProfileForm.elements['verificationStatusVerifiedBy'])
+            editProfileForm.elements['verificationStatusVerifiedBy'].value = '';
     }
+    if (editProfileForm.elements['qrUrl'])
+        editProfileForm.elements['qrUrl'].value = profile.qrUrl || '';
+    // Profile image preview (if you have logic for this)
     const profileModalTitle = document.getElementById('profileModalTitle');
     profileModalTitle.textContent = 'Edit Profile';
-    const modal = new bootstrap.Modal(document.getElementById('addProfileModal'));
+    const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
     modal.show();
 };
 
