@@ -469,7 +469,7 @@
 
 
 
-    <!-- Edit Profile Modal (no user field) -->
+    <!-- Edit Profile Modal  -->
     <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="profileModalTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -481,6 +481,10 @@
             <form id="editProfileForm">
               <input type="hidden" name="profileId">
               <input type="hidden" name="userId">
+              <div class="mb-3">
+                <label class="form-label">User ID</label>
+                <input type="text" name="userIdDisplay" class="form-control" readonly>
+              </div>
                         <!-- Profile Image Preview -->
                         <div class="mb-3 text-center">
                             <img id="profileImagePreview" src="#" alt="Profile Preview" style="max-width: 180px; max-height: 200px; display: none; border-radius: 1rem; margin-bottom: 1rem;" />

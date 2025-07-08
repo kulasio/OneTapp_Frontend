@@ -706,6 +706,9 @@ window.openEditProfileModal = async function(profileId) {
     editProfileForm.querySelector('#profileImagePreview').style.display = 'none';
   }
 
+  // Set the userId display field
+  editProfileForm.elements['userIdDisplay'].value = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
+
   const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
   modal.show();
 };
