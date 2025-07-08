@@ -685,22 +685,47 @@ window.openEditProfileModal = async function(profileId) {
 editProfileForm.addEventListener('submit', async function(e) {
   e.preventDefault();
   const formData = new FormData(editProfileForm);
-  // Add custom field serialization here if needed
-  // formData.append('featuredLinks', JSON.stringify(featuredLinks));
-  // formData.append('gallery', JSON.stringify(galleryItems));
-  // formData.append('recentActivity', JSON.stringify(recentActivities));
-  // formData.append('verificationStatus', JSON.stringify(verificationStatus));
+  
+  // Add custom field serialization
+  formData.append('featuredLinks', JSON.stringify(featuredLinks));
+  formData.append('gallery', JSON.stringify(galleryItems));
+  formData.append('recentActivity', JSON.stringify(recentActivities));
+  
+  // Add verification status
+  const verificationStatus = {
+    type: editProfileForm.elements['verificationStatusType'].value,
+    verifiedAt: editProfileForm.elements['verificationStatusVerifiedAt'].value,
+    verifiedBy: editProfileForm.elements['verificationStatusVerifiedBy'].value
+  };
+  formData.append('verificationStatus', JSON.stringify(verificationStatus));
+  
+  // Add cropped image if available
+  if (croppedBlob) {
+    formData.append('profileImage', croppedBlob, 'profile-image.jpg');
+  }
+  
   const profileId = editProfileForm.elements['profileId'].value;
-  const res = await fetch(`${API_BASE}/profiles/${profileId}`, {
-    method: 'PUT',
-    body: formData,
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+  
+  try {
+    const res = await fetch(`${API_BASE}/profiles/${profileId}`, {
+      method: 'PUT',
+      body: formData,
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+      }
+    });
+    
+    if (res.ok) {
+      editProfileModal.hide();
+      fetchAndRenderProfiles();
+      // Reset cropped blob
+      croppedBlob = null;
+    } else {
+      const errorData = await res.json().catch(() => ({ message: 'Failed to update profile.' }));
+      alert(`Error: ${errorData.message}`);
     }
-  });
-  if (res.ok) {
-    editProfileModal.hide();
-    fetchAndRenderProfiles();
+  } catch (err) {
+    alert(`Error: ${err.message}`);
   }
 });
 
@@ -782,7 +807,6 @@ if (cropImageBtn) {
 // === Featured Links Logic ===
 const featuredLinksSection = document.getElementById('featuredLinksSection');
 const addFeaturedLinkBtnAdd = document.getElementById('addFeaturedLinkBtnAdd');
-const addFeaturedLinkBtnEdit = document.getElementById('addFeaturedLinkBtnEdit');
 let featuredLinks = [];
 
 function renderFeaturedLinks() {
@@ -823,12 +847,6 @@ if (addFeaturedLinkBtnAdd) {
     renderFeaturedLinks();
   });
 }
-if (addFeaturedLinkBtnEdit) {
-  addFeaturedLinkBtnEdit.addEventListener('click', function() {
-    featuredLinks.push({ label: '', url: '', icon: '', order: featuredLinks.length });
-    renderFeaturedLinks();
-  });
-}
 
 featuredLinksSection.addEventListener('input', function(e) {
   const idx = e.target.getAttribute('idx');
@@ -851,7 +869,6 @@ featuredLinksSection.addEventListener('click', function(e) {
 // === Gallery/Media Logic ===
 const gallerySection = document.getElementById('gallerySection');
 const addGalleryItemBtnAdd = document.getElementById('addGalleryItemBtnAdd');
-const addGalleryItemBtnEdit = document.getElementById('addGalleryItemBtnEdit');
 let galleryItems = [];
 
 function renderGalleryItems() {
@@ -904,12 +921,6 @@ if (addGalleryItemBtnAdd) {
     renderGalleryItems();
   });
 }
-if (addGalleryItemBtnEdit) {
-  addGalleryItemBtnEdit.addEventListener('click', function() {
-    galleryItems.push({ type: 'image', url: '', thumbnail: '', title: '', description: '', order: galleryItems.length });
-    renderGalleryItems();
-  });
-}
 
 gallerySection.addEventListener('input', function(e) {
   const idx = e.target.getAttribute('idx');
@@ -929,73 +940,13 @@ gallerySection.addEventListener('click', function(e) {
   }
 });
 
-// Populate galleryItems when editing a profile
-window.openEditProfileModal = async function(profileId) {
-    const profile = allProfiles.find(p => p._id === profileId);
-    if (!profile) return;
-    editProfileForm.reset();
-    editProfileForm.elements['profileId'].value = profile._id;
-    // No user field in edit modal
-    // Populate fields
-    editProfileForm.elements['fullName'].value = profile.fullName || '';
-    editProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
-    editProfileForm.elements['company'].value = profile.company || '';
-    editProfileForm.elements['bio'].value = profile.bio || '';
-    editProfileForm.elements['contactEmail'].value = (profile.contact && profile.contact.email) || profile.contactEmail || '';
-    editProfileForm.elements['contactPhone'].value = (profile.contact && profile.contact.phone) || profile.contactPhone || '';
-    editProfileForm.elements['contactLocation'].value = (profile.contact && profile.contact.location) || profile.contactLocation || '';
-    editProfileForm.elements['linkedin'].value = (profile.socialLinks && profile.socialLinks.linkedin) || '';
-    editProfileForm.elements['twitter'].value = (profile.socialLinks && profile.socialLinks.twitter) || '';
-    editProfileForm.elements['github'].value = (profile.socialLinks && profile.socialLinks.github) || '';
-    editProfileForm.elements['facebook'].value = (profile.socialLinks && profile.socialLinks.facebook) || '';
-    editProfileForm.elements['instagram'].value = (profile.socialLinks && profile.socialLinks.instagram) || '';
-    editProfileForm.elements['tiktok'].value = (profile.socialLinks && profile.socialLinks.tiktok) || '';
-    editProfileForm.elements['youtube'].value = (profile.socialLinks && profile.socialLinks.youtube) || '';
-    editProfileForm.elements['whatsapp'].value = (profile.socialLinks && profile.socialLinks.whatsapp) || '';
-    editProfileForm.elements['telegram'].value = (profile.socialLinks && profile.socialLinks.telegram) || '';
-    editProfileForm.elements['snapchat'].value = (profile.socialLinks && profile.socialLinks.snapchat) || '';
-    editProfileForm.elements['pinterest'].value = (profile.socialLinks && profile.socialLinks.pinterest) || '';
-    editProfileForm.elements['reddit'].value = (profile.socialLinks && profile.socialLinks.reddit) || '';
-    editProfileForm.elements['website'].value = (profile.socialLinks && profile.socialLinks.website) || profile.website || '';
-    editProfileForm.elements['other'].value = (profile.socialLinks && profile.socialLinks.other) || '';
-    // Featured Links, Gallery, Recent Activity
-    featuredLinks = Array.isArray(profile.featuredLinks) ? profile.featuredLinks.map(l => ({...l})) : [];
-    renderFeaturedLinks();
-    galleryItems = Array.isArray(profile.gallery) ? profile.gallery.map(i => ({...i})) : [];
-    renderGalleryItems();
-    recentActivities = Array.isArray(profile.recentActivity) ? profile.recentActivity.map(i => ({...i})) : [];
-    renderRecentActivities();
-    // Verification Status
-    if (profile.verificationStatus) {
-        if (editProfileForm.elements['verificationStatusType'])
-            editProfileForm.elements['verificationStatusType'].value = profile.verificationStatus.type || 'unverified';
-        if (editProfileForm.elements['verificationStatusVerifiedAt'])
-            editProfileForm.elements['verificationStatusVerifiedAt'].value = profile.verificationStatus.verifiedAt ? profile.verificationStatus.verifiedAt.split('T')[0] : '';
-        if (editProfileForm.elements['verificationStatusVerifiedBy'])
-            editProfileForm.elements['verificationStatusVerifiedBy'].value = profile.verificationStatus.verifiedBy || '';
-    } else {
-        if (editProfileForm.elements['verificationStatusType'])
-            editProfileForm.elements['verificationStatusType'].value = 'unverified';
-        if (editProfileForm.elements['verificationStatusVerifiedAt'])
-            editProfileForm.elements['verificationStatusVerifiedAt'].value = '';
-        if (editProfileForm.elements['verificationStatusVerifiedBy'])
-            editProfileForm.elements['verificationStatusVerifiedBy'].value = '';
-    }
-    if (editProfileForm.elements['qrUrl'])
-        editProfileForm.elements['qrUrl'].value = profile.qrUrl || '';
-    // Profile image preview (if you have logic for this)
-    const profileModalTitle = document.getElementById('profileModalTitle');
-    profileModalTitle.textContent = 'Edit Profile';
-    const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
-    modal.show();
-};
+
 
  
 
 // === Recent Activity Logic ===
 const recentActivitySection = document.getElementById('recentActivitySection');
 const addRecentActivityBtnAdd = document.getElementById('addRecentActivityBtnAdd');
-const addRecentActivityBtnEdit = document.getElementById('addRecentActivityBtnEdit');
 let recentActivities = [];
 
 function renderRecentActivities() {
@@ -1044,12 +995,6 @@ if (addRecentActivityBtnAdd) {
     renderRecentActivities();
   });
 }
-if (addRecentActivityBtnEdit) {
-  addRecentActivityBtnEdit.addEventListener('click', function() {
-    recentActivities.push({ type: '', title: '', description: '', url: '', date: '', icon: '', order: recentActivities.length });
-    renderRecentActivities();
-  });
-}
 
 recentActivitySection.addEventListener('input', function(e) {
   const idx = e.target.getAttribute('idx');
@@ -1074,69 +1019,8 @@ recentActivitySection.addEventListener('click', function(e) {
  
 
 // === Verification Status Logic ===
-const verificationStatusType = document.querySelector('select[name="verificationStatusType"]');
-const verificationStatusVerifiedAt = document.querySelector('input[name="verificationStatusVerifiedAt"]');
-const verificationStatusVerifiedBy = document.querySelector('input[name="verificationStatusVerifiedBy"]');
+// These selectors will be used within the edit profile modal context
 
-// Populate verification status when editing a profile
-window.openEditProfileModal = async function(profileId) {
-    const profile = allProfiles.find(p => p._id === profileId);
-    if (!profile) return;
-    editProfileForm.reset();
-    editProfileForm.elements['profileId'].value = profile._id;
-    // No user field in edit modal
-    // Populate fields
-    editProfileForm.elements['fullName'].value = profile.fullName || '';
-    editProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
-    editProfileForm.elements['company'].value = profile.company || '';
-    editProfileForm.elements['bio'].value = profile.bio || '';
-    editProfileForm.elements['contactEmail'].value = (profile.contact && profile.contact.email) || profile.contactEmail || '';
-    editProfileForm.elements['contactPhone'].value = (profile.contact && profile.contact.phone) || profile.contactPhone || '';
-    editProfileForm.elements['contactLocation'].value = (profile.contact && profile.contact.location) || profile.contactLocation || '';
-    editProfileForm.elements['linkedin'].value = (profile.socialLinks && profile.socialLinks.linkedin) || '';
-    editProfileForm.elements['twitter'].value = (profile.socialLinks && profile.socialLinks.twitter) || '';
-    editProfileForm.elements['github'].value = (profile.socialLinks && profile.socialLinks.github) || '';
-    editProfileForm.elements['facebook'].value = (profile.socialLinks && profile.socialLinks.facebook) || '';
-    editProfileForm.elements['instagram'].value = (profile.socialLinks && profile.socialLinks.instagram) || '';
-    editProfileForm.elements['tiktok'].value = (profile.socialLinks && profile.socialLinks.tiktok) || '';
-    editProfileForm.elements['youtube'].value = (profile.socialLinks && profile.socialLinks.youtube) || '';
-    editProfileForm.elements['whatsapp'].value = (profile.socialLinks && profile.socialLinks.whatsapp) || '';
-    editProfileForm.elements['telegram'].value = (profile.socialLinks && profile.socialLinks.telegram) || '';
-    editProfileForm.elements['snapchat'].value = (profile.socialLinks && profile.socialLinks.snapchat) || '';
-    editProfileForm.elements['pinterest'].value = (profile.socialLinks && profile.socialLinks.pinterest) || '';
-    editProfileForm.elements['reddit'].value = (profile.socialLinks && profile.socialLinks.reddit) || '';
-    editProfileForm.elements['website'].value = (profile.socialLinks && profile.socialLinks.website) || profile.website || '';
-    editProfileForm.elements['other'].value = (profile.socialLinks && profile.socialLinks.other) || '';
-    // Featured Links, Gallery, Recent Activity
-    featuredLinks = Array.isArray(profile.featuredLinks) ? profile.featuredLinks.map(l => ({...l})) : [];
-    renderFeaturedLinks();
-    galleryItems = Array.isArray(profile.gallery) ? profile.gallery.map(i => ({...i})) : [];
-    renderGalleryItems();
-    recentActivities = Array.isArray(profile.recentActivity) ? profile.recentActivity.map(i => ({...i})) : [];
-    renderRecentActivities();
-    // Verification Status
-    if (profile.verificationStatus) {
-        if (editProfileForm.elements['verificationStatusType'])
-            editProfileForm.elements['verificationStatusType'].value = profile.verificationStatus.type || 'unverified';
-        if (editProfileForm.elements['verificationStatusVerifiedAt'])
-            editProfileForm.elements['verificationStatusVerifiedAt'].value = profile.verificationStatus.verifiedAt ? profile.verificationStatus.verifiedAt.split('T')[0] : '';
-        if (editProfileForm.elements['verificationStatusVerifiedBy'])
-            editProfileForm.elements['verificationStatusVerifiedBy'].value = profile.verificationStatus.verifiedBy || '';
-    } else {
-        if (editProfileForm.elements['verificationStatusType'])
-            editProfileForm.elements['verificationStatusType'].value = 'unverified';
-        if (editProfileForm.elements['verificationStatusVerifiedAt'])
-            editProfileForm.elements['verificationStatusVerifiedAt'].value = '';
-        if (editProfileForm.elements['verificationStatusVerifiedBy'])
-            editProfileForm.elements['verificationStatusVerifiedBy'].value = '';
-    }
-    if (editProfileForm.elements['qrUrl'])
-        editProfileForm.elements['qrUrl'].value = profile.qrUrl || '';
-    // Profile image preview (if you have logic for this)
-    const profileModalTitle = document.getElementById('profileModalTitle');
-    profileModalTitle.textContent = 'Edit Profile';
-    const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
-    modal.show();
-};
+
 
  
