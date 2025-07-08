@@ -615,6 +615,8 @@ addProfileBtn.addEventListener('click', async () => {
         profileUserSelect.parentNode.appendChild(userDisplay);
     }
     userDisplay.style.display = 'none';
+    featuredLinks = [];
+    renderFeaturedLinks();
     const modal = new bootstrap.Modal(document.getElementById('addEditProfileModal'));
     modal.show();
 });
@@ -662,6 +664,8 @@ window.openEditProfileModal = async function(profileId) {
     addEditProfileForm.elements['twitter'].value = (profile.socialLinks && profile.socialLinks.twitter) || '';
     addEditProfileForm.elements['github'].value = (profile.socialLinks && profile.socialLinks.github) || '';
     addEditProfileForm.elements['website'].value = (profile.socialLinks && profile.socialLinks.website) || profile.website || '';
+    featuredLinks = Array.isArray(profile.featuredLinks) ? profile.featuredLinks.map(l => ({...l})) : [];
+    renderFeaturedLinks();
     profileModalTitle.textContent = 'Edit Profile';
     const modal = new bootstrap.Modal(document.getElementById('addEditProfileModal'));
     modal.show();
@@ -679,6 +683,8 @@ addEditProfileForm.onsubmit = function(e) {
     const profileId = formData.get('profileId');
     const method = profileId ? 'PUT' : 'POST';
     const url = profileId ? `${API_BASE}/profiles/${profileId}` : `${API_BASE}/profiles`;
+    formData.delete('featuredLinks');
+    formData.append('featuredLinks', JSON.stringify(featuredLinks));
     fetch(url, {
         method,
         headers: {
@@ -765,3 +771,73 @@ if (cropImageBtn) {
     }, 'image/jpeg');
   });
 } 
+
+// === Featured Links Logic ===
+const featuredLinksSection = document.getElementById('featuredLinksSection');
+const addFeaturedLinkBtn = document.getElementById('addFeaturedLinkBtn');
+let featuredLinks = [];
+
+function renderFeaturedLinks() {
+  featuredLinksSection.innerHTML = '';
+  featuredLinks.forEach((link, idx) => {
+    const div = document.createElement('div');
+    div.className = 'card p-2 mb-2';
+    div.innerHTML = `
+      <div class="row g-2 align-items-end">
+        <div class="col-md-4">
+          <label class="form-label mb-0">Label</label>
+          <input type="text" class="form-control" value="${link.label || ''}" data-flabel idx="${idx}">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label mb-0">URL</label>
+          <input type="url" class="form-control" value="${link.url || ''}" data-furl idx="${idx}">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label mb-0">Icon</label>
+          <input type="text" class="form-control" value="${link.icon || ''}" data-ficon idx="${idx}" placeholder="fa-solid fa-link">
+        </div>
+        <div class="col-md-1">
+          <label class="form-label mb-0">Order</label>
+          <input type="number" class="form-control" value="${link.order || idx}" data-forder idx="${idx}">
+        </div>
+        <div class="col-md-1 text-end">
+          <button type="button" class="btn btn-danger btn-sm" data-remove-featured-link="${idx}"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    `;
+    featuredLinksSection.appendChild(div);
+  });
+}
+
+addFeaturedLinkBtn.addEventListener('click', function() {
+  featuredLinks.push({ label: '', url: '', icon: '', order: featuredLinks.length });
+  renderFeaturedLinks();
+});
+
+featuredLinksSection.addEventListener('input', function(e) {
+  const idx = e.target.getAttribute('idx');
+  if (e.target.hasAttribute('data-flabel')) featuredLinks[idx].label = e.target.value;
+  if (e.target.hasAttribute('data-furl')) featuredLinks[idx].url = e.target.value;
+  if (e.target.hasAttribute('data-ficon')) featuredLinks[idx].icon = e.target.value;
+  if (e.target.hasAttribute('data-forder')) featuredLinks[idx].order = parseInt(e.target.value) || 0;
+});
+
+featuredLinksSection.addEventListener('click', function(e) {
+  if (e.target.closest('[data-remove-featured-link]')) {
+    const idx = e.target.closest('[data-remove-featured-link]').getAttribute('data-remove-featured-link');
+    featuredLinks.splice(idx, 1);
+    renderFeaturedLinks();
+  }
+});
+
+// Clear featuredLinks when adding a new profile
+addProfileBtn.addEventListener('click', async () => {
+    featuredLinks = [];
+    renderFeaturedLinks();
+});
+
+// On form submit, add featuredLinks to FormData
+addEditProfileForm.addEventListener('submit', function(e) {
+    formData.delete('featuredLinks');
+    formData.append('featuredLinks', JSON.stringify(featuredLinks));
+}, true); 
