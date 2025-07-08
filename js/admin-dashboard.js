@@ -604,12 +604,13 @@ const editProfileModal = new bootstrap.Modal(document.getElementById('editProfil
 const editProfileForm = document.getElementById('editProfileForm');
 
 window.openEditProfileModal = async function(profileId) {
-  const profile = allProfiles.find(p => p._id === profileId);
-  if (!profile) return;
+  // Always close the modal before opening it for a new user
+  const modalInstance = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
+  if (modalInstance) modalInstance.hide();
+  croppedBlob = null;
   editProfileForm.reset();
-  croppedBlob = null; // Clear any previous cropped image
-  editProfileForm.elements['profileImage'].value = ''; // Clear file input
-  editProfileForm.elements['profileId'].value = profile._id;
+  editProfileForm.elements['profileImage'].value = '';
+  editProfileForm.elements['profileId'].value = profileId;
   // Always set userId hidden field
   editProfileForm.elements['userId'].value = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
 
@@ -734,6 +735,7 @@ editProfileForm.addEventListener('submit', async function(e) {
   }
   
   const profileId = editProfileForm.elements['profileId'].value;
+  console.log('Submitting profile update for:', profileId, 'croppedBlob:', croppedBlob);
   
   try {
   const res = await fetch(`${API_BASE}/profiles/${profileId}`, {
