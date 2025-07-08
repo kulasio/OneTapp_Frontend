@@ -834,7 +834,8 @@ if (cropImageBtn) {
 
 // === Featured Links Logic ===
 const featuredLinksSection = document.getElementById('featuredLinksSection');
-const addFeaturedLinkBtn = document.getElementById('addFeaturedLinkBtn');
+const addFeaturedLinkBtnAdd = document.getElementById('addFeaturedLinkBtnAdd');
+const addFeaturedLinkBtnEdit = document.getElementById('addFeaturedLinkBtnEdit');
 let featuredLinks = [];
 
 function renderFeaturedLinks() {
@@ -869,10 +870,18 @@ function renderFeaturedLinks() {
   });
 }
 
-addFeaturedLinkBtn.addEventListener('click', function() {
-  featuredLinks.push({ label: '', url: '', icon: '', order: featuredLinks.length });
-  renderFeaturedLinks();
-});
+if (addFeaturedLinkBtnAdd) {
+  addFeaturedLinkBtnAdd.addEventListener('click', function() {
+    featuredLinks.push({ label: '', url: '', icon: '', order: featuredLinks.length });
+    renderFeaturedLinks();
+  });
+}
+if (addFeaturedLinkBtnEdit) {
+  addFeaturedLinkBtnEdit.addEventListener('click', function() {
+    featuredLinks.push({ label: '', url: '', icon: '', order: featuredLinks.length });
+    renderFeaturedLinks();
+  });
+}
 
 featuredLinksSection.addEventListener('input', function(e) {
   const idx = e.target.getAttribute('idx');
@@ -904,7 +913,8 @@ addEditProfileForm.addEventListener('submit', function(e) {
 
 // === Gallery/Media Logic ===
 const gallerySection = document.getElementById('gallerySection');
-const addGalleryItemBtn = document.getElementById('addGalleryItemBtn');
+const addGalleryItemBtnAdd = document.getElementById('addGalleryItemBtnAdd');
+const addGalleryItemBtnEdit = document.getElementById('addGalleryItemBtnEdit');
 let galleryItems = [];
 
 function renderGalleryItems() {
@@ -951,10 +961,18 @@ function renderGalleryItems() {
   });
 }
 
-addGalleryItemBtn.addEventListener('click', function() {
-  galleryItems.push({ type: 'image', url: '', thumbnail: '', title: '', description: '', order: galleryItems.length });
-  renderGalleryItems();
-});
+if (addGalleryItemBtnAdd) {
+  addGalleryItemBtnAdd.addEventListener('click', function() {
+    galleryItems.push({ type: 'image', url: '', thumbnail: '', title: '', description: '', order: galleryItems.length });
+    renderGalleryItems();
+  });
+}
+if (addGalleryItemBtnEdit) {
+  addGalleryItemBtnEdit.addEventListener('click', function() {
+    galleryItems.push({ type: 'image', url: '', thumbnail: '', title: '', description: '', order: galleryItems.length });
+    renderGalleryItems();
+  });
+}
 
 gallerySection.addEventListener('input', function(e) {
   const idx = e.target.getAttribute('idx');
@@ -1043,7 +1061,8 @@ addEditProfileForm.addEventListener('submit', function(e) {
 
 // === Recent Activity Logic ===
 const recentActivitySection = document.getElementById('recentActivitySection');
-const addRecentActivityBtn = document.getElementById('addRecentActivityBtn');
+const addRecentActivityBtnAdd = document.getElementById('addRecentActivityBtnAdd');
+const addRecentActivityBtnEdit = document.getElementById('addRecentActivityBtnEdit');
 let recentActivities = [];
 
 function renderRecentActivities() {
@@ -1086,10 +1105,18 @@ function renderRecentActivities() {
   });
 }
 
-addRecentActivityBtn.addEventListener('click', function() {
-  recentActivities.push({ type: '', title: '', description: '', url: '', date: '', icon: '', order: recentActivities.length });
-  renderRecentActivities();
-});
+if (addRecentActivityBtnAdd) {
+  addRecentActivityBtnAdd.addEventListener('click', function() {
+    recentActivities.push({ type: '', title: '', description: '', url: '', date: '', icon: '', order: recentActivities.length });
+    renderRecentActivities();
+  });
+}
+if (addRecentActivityBtnEdit) {
+  addRecentActivityBtnEdit.addEventListener('click', function() {
+    recentActivities.push({ type: '', title: '', description: '', url: '', date: '', icon: '', order: recentActivities.length });
+    renderRecentActivities();
+  });
+}
 
 recentActivitySection.addEventListener('input', function(e) {
   const idx = e.target.getAttribute('idx');
