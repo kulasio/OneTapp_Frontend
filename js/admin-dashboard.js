@@ -718,10 +718,12 @@ editProfileForm.addEventListener('submit', async function(e) {
     });
     
     if (res.ok) {
-      editProfileModal.hide();
+      // Always close modal on success
+      const modal = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
+      if (modal) modal.hide();
       fetchAndRenderProfiles();
-      // Reset cropped blob
       croppedBlob = null;
+      showToast('Profile updated successfully!', 'success');
     } else {
       let errorText = await res.text();
       let errorMsg = '';
@@ -731,10 +733,10 @@ editProfileForm.addEventListener('submit', async function(e) {
       } catch {
         errorMsg = errorText;
       }
-      alert(`Error: ${errorMsg}`);
+      showToast(`Error: ${errorMsg}`, 'error');
     }
   } catch (err) {
-    alert(`Error: ${err.message}`);
+    showToast(`Error: ${err.message}`, 'error');
   }
 });
 
