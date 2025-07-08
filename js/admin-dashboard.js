@@ -1,3 +1,26 @@
+// Toast notification function
+function showToast(message, type = 'success') {
+  const toastContainer = document.getElementById('toastContainer');
+  const toastId = `toast-${Date.now()}`;
+  const bgClass = type === 'success' ? 'bg-success text-white' : 'bg-danger text-white';
+  const toast = document.createElement('div');
+  toast.className = `toast align-items-center ${bgClass}`;
+  toast.id = toastId;
+  toast.setAttribute('role', 'alert');
+  toast.setAttribute('aria-live', 'assertive');
+  toast.setAttribute('aria-atomic', 'true');
+  toast.innerHTML = `
+    <div class="d-flex">
+      <div class="toast-body">${message}</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  `;
+  toastContainer.appendChild(toast);
+  const bsToast = new bootstrap.Toast(toast, { delay: 3500 });
+  bsToast.show();
+  toast.addEventListener('hidden.bs.toast', () => toast.remove());
+}
+
 const API_BASE = "https://onetapp-backend.onrender.com/api"; // or your deployed backend URL
 
 // Sidebar navigation
