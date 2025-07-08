@@ -724,27 +724,29 @@ editProfileForm.addEventListener('submit', async function(e) {
   };
   formData.append('verificationStatus', JSON.stringify(verificationStatus));
   
-  // Add cropped image if available
+  // Ensure only one file is sent as profileImage
   if (croppedBlob) {
+    formData.delete('profileImage'); // Remove any file input
     formData.append('profileImage', croppedBlob, 'profile-image.jpg');
+    editProfileForm.elements['profileImage'].value = '';
   }
   
   const profileId = editProfileForm.elements['profileId'].value;
   
   try {
-    const res = await fetch(`${API_BASE}/profiles/${profileId}`, {
-      method: 'PUT',
-      body: formData,
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-      }
-    });
+  const res = await fetch(`${API_BASE}/profiles/${profileId}`, {
+    method: 'PUT',
+    body: formData,
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+    }
+  });
     
-    if (res.ok) {
+  if (res.ok) {
       // Always close modal on success
       const modal = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
       if (modal) modal.hide();
-      fetchAndRenderProfiles();
+    fetchAndRenderProfiles();
       croppedBlob = null;
       showToast('Profile updated successfully!', 'success');
     } else {
@@ -898,7 +900,7 @@ featuredLinksSection.addEventListener('click', function(e) {
   }
 });
 
- 
+
 
 // === Gallery/Media Logic ===
 const gallerySection = document.getElementById('gallerySection');
