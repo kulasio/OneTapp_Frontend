@@ -619,6 +619,8 @@ addProfileBtn.addEventListener('click', async () => {
     renderFeaturedLinks();
     galleryItems = [];
     renderGalleryItems();
+    recentActivities = [];
+    renderRecentActivities();
     const modal = new bootstrap.Modal(document.getElementById('addEditProfileModal'));
     modal.show();
 });
@@ -670,6 +672,8 @@ window.openEditProfileModal = async function(profileId) {
     renderFeaturedLinks();
     galleryItems = Array.isArray(profile.gallery) ? profile.gallery.map(i => ({...i})) : [];
     renderGalleryItems();
+    recentActivities = Array.isArray(profile.recentActivity) ? profile.recentActivity.map(i => ({...i})) : [];
+    renderRecentActivities();
     profileModalTitle.textContent = 'Edit Profile';
     const modal = new bootstrap.Modal(document.getElementById('addEditProfileModal'));
     modal.show();
@@ -691,6 +695,8 @@ addEditProfileForm.onsubmit = function(e) {
     formData.append('featuredLinks', JSON.stringify(featuredLinks));
     formData.delete('gallery');
     formData.append('gallery', JSON.stringify(galleryItems));
+    formData.delete('recentActivity');
+    formData.append('recentActivity', JSON.stringify(recentActivities));
     fetch(url, {
         method,
         headers: {
@@ -968,6 +974,8 @@ window.openEditProfileModal = async function(profileId) {
     renderFeaturedLinks();
     galleryItems = Array.isArray(profile.gallery) ? profile.gallery.map(i => ({...i})) : [];
     renderGalleryItems();
+    recentActivities = Array.isArray(profile.recentActivity) ? profile.recentActivity.map(i => ({...i})) : [];
+    renderRecentActivities();
     profileModalTitle.textContent = 'Edit Profile';
     const modal = new bootstrap.Modal(document.getElementById('addEditProfileModal'));
     modal.show();
@@ -983,4 +991,139 @@ addProfileBtn.addEventListener('click', async () => {
 addEditProfileForm.addEventListener('submit', function(e) {
     formData.delete('gallery');
     formData.append('gallery', JSON.stringify(galleryItems));
+}, true); 
+
+// === Recent Activity Logic ===
+const recentActivitySection = document.getElementById('recentActivitySection');
+const addRecentActivityBtn = document.getElementById('addRecentActivityBtn');
+let recentActivities = [];
+
+function renderRecentActivities() {
+  recentActivitySection.innerHTML = '';
+  recentActivities.forEach((item, idx) => {
+    const div = document.createElement('div');
+    div.className = 'card p-2 mb-2';
+    div.innerHTML = `
+      <div class="row g-2 align-items-end">
+        <div class="col-md-2">
+          <label class="form-label mb-0">Type</label>
+          <input type="text" class="form-control" value="${item.type || ''}" data-rtype idx="${idx}" placeholder="e.g. blog_post">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label mb-0">Title</label>
+          <input type="text" class="form-control" value="${item.title || ''}" data-rtitle idx="${idx}">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label mb-0">Description</label>
+          <input type="text" class="form-control" value="${item.description || ''}" data-rdesc idx="${idx}" placeholder="(optional)">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label mb-0">URL</label>
+          <input type="url" class="form-control" value="${item.url || ''}" data-rurl idx="${idx}" placeholder="(optional)">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label mb-0">Date</label>
+          <input type="date" class="form-control" value="${item.date ? item.date.split('T')[0] : ''}" data-rdate idx="${idx}">
+        </div>
+        <div class="col-md-1">
+          <label class="form-label mb-0">Icon</label>
+          <input type="text" class="form-control" value="${item.icon || ''}" data-ricon idx="${idx}" placeholder="fa-solid fa-award">
+        </div>
+        <div class="col-md-1 text-end">
+          <button type="button" class="btn btn-danger btn-sm" data-remove-recent-activity="${idx}"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    `;
+    recentActivitySection.appendChild(div);
+  });
+}
+
+addRecentActivityBtn.addEventListener('click', function() {
+  recentActivities.push({ type: '', title: '', description: '', url: '', date: '', icon: '', order: recentActivities.length });
+  renderRecentActivities();
+});
+
+recentActivitySection.addEventListener('input', function(e) {
+  const idx = e.target.getAttribute('idx');
+  if (e.target.hasAttribute('data-rtype')) recentActivities[idx].type = e.target.value;
+  if (e.target.hasAttribute('data-rtitle')) recentActivities[idx].title = e.target.value;
+  if (e.target.hasAttribute('data-rdesc')) recentActivities[idx].description = e.target.value;
+  if (e.target.hasAttribute('data-rurl')) recentActivities[idx].url = e.target.value;
+  if (e.target.hasAttribute('data-rdate')) recentActivities[idx].date = e.target.value;
+  if (e.target.hasAttribute('data-ricon')) recentActivities[idx].icon = e.target.value;
+});
+
+recentActivitySection.addEventListener('click', function(e) {
+  if (e.target.closest('[data-remove-recent-activity]')) {
+    const idx = e.target.closest('[data-remove-recent-activity]').getAttribute('data-remove-recent-activity');
+    recentActivities.splice(idx, 1);
+    renderRecentActivities();
+  }
+});
+
+// Populate recentActivities when editing a profile
+window.openEditProfileModal = async function(profileId) {
+    const profile = allProfiles.find(p => p._id === profileId);
+    if (!profile) return;
+    addEditProfileForm.reset();
+    addEditProfileForm.elements['profileId'].value = profile._id;
+    await fetchUsersForProfileDropdown();
+    // Hide the dropdown, show the plain text
+    profileUserSelect.style.display = 'none';
+    let userDisplay = addEditProfileForm.querySelector('[name="userDisplay"]');
+    if (!userDisplay) {
+        userDisplay = document.createElement('input');
+        userDisplay.type = 'text';
+        userDisplay.name = 'userDisplay';
+        userDisplay.className = 'form-control';
+        userDisplay.disabled = true;
+        profileUserSelect.parentNode.appendChild(userDisplay);
+    }
+    // Set the plain text value to the user's name/email
+    let userId = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
+    let user = allUsers.find(u => u._id === userId);
+    userDisplay.value = user ? (user.username + ' (' + user.email + ')') : '';
+    userDisplay.style.display = '';
+    addEditProfileForm.elements['fullName'].value = profile.fullName || '';
+    addEditProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
+    addEditProfileForm.elements['company'].value = profile.company || '';
+    addEditProfileForm.elements['bio'].value = profile.bio || '';
+    addEditProfileForm.elements['contactEmail'].value = (profile.contact && profile.contact.email) || profile.contactEmail || '';
+    addEditProfileForm.elements['contactPhone'].value = (profile.contact && profile.contact.phone) || profile.contactPhone || '';
+    addEditProfileForm.elements['contactLocation'].value = (profile.contact && profile.contact.location) || profile.contactLocation || '';
+    addEditProfileForm.elements['facebook'].value = (profile.socialLinks && profile.socialLinks.facebook) || '';
+    addEditProfileForm.elements['instagram'].value = (profile.socialLinks && profile.socialLinks.instagram) || '';
+    addEditProfileForm.elements['tiktok'].value = (profile.socialLinks && profile.socialLinks.tiktok) || '';
+    addEditProfileForm.elements['youtube'].value = (profile.socialLinks && profile.socialLinks.youtube) || '';
+    addEditProfileForm.elements['whatsapp'].value = (profile.socialLinks && profile.socialLinks.whatsapp) || '';
+    addEditProfileForm.elements['telegram'].value = (profile.socialLinks && profile.socialLinks.telegram) || '';
+    addEditProfileForm.elements['snapchat'].value = (profile.socialLinks && profile.socialLinks.snapchat) || '';
+    addEditProfileForm.elements['pinterest'].value = (profile.socialLinks && profile.socialLinks.pinterest) || '';
+    addEditProfileForm.elements['reddit'].value = (profile.socialLinks && profile.socialLinks.reddit) || '';
+    addEditProfileForm.elements['other'].value = (profile.socialLinks && profile.socialLinks.other) || '';
+    addEditProfileForm.elements['linkedin'].value = (profile.socialLinks && profile.socialLinks.linkedin) || '';
+    addEditProfileForm.elements['twitter'].value = (profile.socialLinks && profile.socialLinks.twitter) || '';
+    addEditProfileForm.elements['github'].value = (profile.socialLinks && profile.socialLinks.github) || '';
+    addEditProfileForm.elements['website'].value = (profile.socialLinks && profile.socialLinks.website) || profile.website || '';
+    featuredLinks = Array.isArray(profile.featuredLinks) ? profile.featuredLinks.map(l => ({...l})) : [];
+    renderFeaturedLinks();
+    galleryItems = Array.isArray(profile.gallery) ? profile.gallery.map(i => ({...i})) : [];
+    renderGalleryItems();
+    recentActivities = Array.isArray(profile.recentActivity) ? profile.recentActivity.map(i => ({...i})) : [];
+    renderRecentActivities();
+    profileModalTitle.textContent = 'Edit Profile';
+    const modal = new bootstrap.Modal(document.getElementById('addEditProfileModal'));
+    modal.show();
+};
+
+// Clear recentActivities when adding a new profile
+addProfileBtn.addEventListener('click', async () => {
+    recentActivities = [];
+    renderRecentActivities();
+});
+
+// On form submit, add recentActivity to FormData
+addEditProfileForm.addEventListener('submit', function(e) {
+    formData.delete('recentActivity');
+    formData.append('recentActivity', JSON.stringify(recentActivities));
 }, true); 
