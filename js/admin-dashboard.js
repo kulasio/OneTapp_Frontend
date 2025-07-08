@@ -617,6 +617,8 @@ addProfileBtn.addEventListener('click', async () => {
     userDisplay.style.display = 'none';
     featuredLinks = [];
     renderFeaturedLinks();
+    galleryItems = [];
+    renderGalleryItems();
     const modal = new bootstrap.Modal(document.getElementById('addEditProfileModal'));
     modal.show();
 });
@@ -666,6 +668,8 @@ window.openEditProfileModal = async function(profileId) {
     addEditProfileForm.elements['website'].value = (profile.socialLinks && profile.socialLinks.website) || profile.website || '';
     featuredLinks = Array.isArray(profile.featuredLinks) ? profile.featuredLinks.map(l => ({...l})) : [];
     renderFeaturedLinks();
+    galleryItems = Array.isArray(profile.gallery) ? profile.gallery.map(i => ({...i})) : [];
+    renderGalleryItems();
     profileModalTitle.textContent = 'Edit Profile';
     const modal = new bootstrap.Modal(document.getElementById('addEditProfileModal'));
     modal.show();
@@ -685,6 +689,8 @@ addEditProfileForm.onsubmit = function(e) {
     const url = profileId ? `${API_BASE}/profiles/${profileId}` : `${API_BASE}/profiles`;
     formData.delete('featuredLinks');
     formData.append('featuredLinks', JSON.stringify(featuredLinks));
+    formData.delete('gallery');
+    formData.append('gallery', JSON.stringify(galleryItems));
     fetch(url, {
         method,
         headers: {
@@ -840,4 +846,141 @@ addProfileBtn.addEventListener('click', async () => {
 addEditProfileForm.addEventListener('submit', function(e) {
     formData.delete('featuredLinks');
     formData.append('featuredLinks', JSON.stringify(featuredLinks));
+}, true); 
+
+// === Gallery/Media Logic ===
+const gallerySection = document.getElementById('gallerySection');
+const addGalleryItemBtn = document.getElementById('addGalleryItemBtn');
+let galleryItems = [];
+
+function renderGalleryItems() {
+  gallerySection.innerHTML = '';
+  galleryItems.forEach((item, idx) => {
+    const div = document.createElement('div');
+    div.className = 'card p-2 mb-2';
+    div.innerHTML = `
+      <div class="row g-2 align-items-end">
+        <div class="col-md-2">
+          <label class="form-label mb-0">Type</label>
+          <select class="form-select" data-gtype idx="${idx}">
+            <option value="image" ${item.type === 'image' ? 'selected' : ''}>Image</option>
+            <option value="video" ${item.type === 'video' ? 'selected' : ''}>Video</option>
+            <option value="document" ${item.type === 'document' ? 'selected' : ''}>Document</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label mb-0">URL</label>
+          <input type="url" class="form-control" value="${item.url || ''}" data-gurl idx="${idx}">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label mb-0">Thumbnail</label>
+          <input type="url" class="form-control" value="${item.thumbnail || ''}" data-gthumb idx="${idx}" placeholder="(optional)">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label mb-0">Title</label>
+          <input type="text" class="form-control" value="${item.title || ''}" data-gtitle idx="${idx}">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label mb-0">Description</label>
+          <input type="text" class="form-control" value="${item.description || ''}" data-gdesc idx="${idx}" placeholder="(optional)">
+        </div>
+        <div class="col-md-1">
+          <label class="form-label mb-0">Order</label>
+          <input type="number" class="form-control" value="${item.order || idx}" data-gorder idx="${idx}">
+        </div>
+        <div class="col-md-1 text-end">
+          <button type="button" class="btn btn-danger btn-sm" data-remove-gallery-item="${idx}"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    `;
+    gallerySection.appendChild(div);
+  });
+}
+
+addGalleryItemBtn.addEventListener('click', function() {
+  galleryItems.push({ type: 'image', url: '', thumbnail: '', title: '', description: '', order: galleryItems.length });
+  renderGalleryItems();
+});
+
+gallerySection.addEventListener('input', function(e) {
+  const idx = e.target.getAttribute('idx');
+  if (e.target.hasAttribute('data-gtype')) galleryItems[idx].type = e.target.value;
+  if (e.target.hasAttribute('data-gurl')) galleryItems[idx].url = e.target.value;
+  if (e.target.hasAttribute('data-gthumb')) galleryItems[idx].thumbnail = e.target.value;
+  if (e.target.hasAttribute('data-gtitle')) galleryItems[idx].title = e.target.value;
+  if (e.target.hasAttribute('data-gdesc')) galleryItems[idx].description = e.target.value;
+  if (e.target.hasAttribute('data-gorder')) galleryItems[idx].order = parseInt(e.target.value) || 0;
+});
+
+gallerySection.addEventListener('click', function(e) {
+  if (e.target.closest('[data-remove-gallery-item]')) {
+    const idx = e.target.closest('[data-remove-gallery-item]').getAttribute('data-remove-gallery-item');
+    galleryItems.splice(idx, 1);
+    renderGalleryItems();
+  }
+});
+
+// Populate galleryItems when editing a profile
+window.openEditProfileModal = async function(profileId) {
+    const profile = allProfiles.find(p => p._id === profileId);
+    if (!profile) return;
+    addEditProfileForm.reset();
+    addEditProfileForm.elements['profileId'].value = profile._id;
+    await fetchUsersForProfileDropdown();
+    // Hide the dropdown, show the plain text
+    profileUserSelect.style.display = 'none';
+    let userDisplay = addEditProfileForm.querySelector('[name="userDisplay"]');
+    if (!userDisplay) {
+        userDisplay = document.createElement('input');
+        userDisplay.type = 'text';
+        userDisplay.name = 'userDisplay';
+        userDisplay.className = 'form-control';
+        userDisplay.disabled = true;
+        profileUserSelect.parentNode.appendChild(userDisplay);
+    }
+    // Set the plain text value to the user's name/email
+    let userId = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
+    let user = allUsers.find(u => u._id === userId);
+    userDisplay.value = user ? (user.username + ' (' + user.email + ')') : '';
+    userDisplay.style.display = '';
+    addEditProfileForm.elements['fullName'].value = profile.fullName || '';
+    addEditProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
+    addEditProfileForm.elements['company'].value = profile.company || '';
+    addEditProfileForm.elements['bio'].value = profile.bio || '';
+    addEditProfileForm.elements['contactEmail'].value = (profile.contact && profile.contact.email) || profile.contactEmail || '';
+    addEditProfileForm.elements['contactPhone'].value = (profile.contact && profile.contact.phone) || profile.contactPhone || '';
+    addEditProfileForm.elements['contactLocation'].value = (profile.contact && profile.contact.location) || profile.contactLocation || '';
+    addEditProfileForm.elements['facebook'].value = (profile.socialLinks && profile.socialLinks.facebook) || '';
+    addEditProfileForm.elements['instagram'].value = (profile.socialLinks && profile.socialLinks.instagram) || '';
+    addEditProfileForm.elements['tiktok'].value = (profile.socialLinks && profile.socialLinks.tiktok) || '';
+    addEditProfileForm.elements['youtube'].value = (profile.socialLinks && profile.socialLinks.youtube) || '';
+    addEditProfileForm.elements['whatsapp'].value = (profile.socialLinks && profile.socialLinks.whatsapp) || '';
+    addEditProfileForm.elements['telegram'].value = (profile.socialLinks && profile.socialLinks.telegram) || '';
+    addEditProfileForm.elements['snapchat'].value = (profile.socialLinks && profile.socialLinks.snapchat) || '';
+    addEditProfileForm.elements['pinterest'].value = (profile.socialLinks && profile.socialLinks.pinterest) || '';
+    addEditProfileForm.elements['reddit'].value = (profile.socialLinks && profile.socialLinks.reddit) || '';
+    addEditProfileForm.elements['other'].value = (profile.socialLinks && profile.socialLinks.other) || '';
+    addEditProfileForm.elements['linkedin'].value = (profile.socialLinks && profile.socialLinks.linkedin) || '';
+    addEditProfileForm.elements['twitter'].value = (profile.socialLinks && profile.socialLinks.twitter) || '';
+    addEditProfileForm.elements['github'].value = (profile.socialLinks && profile.socialLinks.github) || '';
+    addEditProfileForm.elements['website'].value = (profile.socialLinks && profile.socialLinks.website) || profile.website || '';
+    featuredLinks = Array.isArray(profile.featuredLinks) ? profile.featuredLinks.map(l => ({...l})) : [];
+    renderFeaturedLinks();
+    galleryItems = Array.isArray(profile.gallery) ? profile.gallery.map(i => ({...i})) : [];
+    renderGalleryItems();
+    profileModalTitle.textContent = 'Edit Profile';
+    const modal = new bootstrap.Modal(document.getElementById('addEditProfileModal'));
+    modal.show();
+};
+
+// Clear galleryItems when adding a new profile
+addProfileBtn.addEventListener('click', async () => {
+    galleryItems = [];
+    renderGalleryItems();
+});
+
+// On form submit, add gallery to FormData
+addEditProfileForm.addEventListener('submit', function(e) {
+    formData.delete('gallery');
+    formData.append('gallery', JSON.stringify(galleryItems));
 }, true); 
