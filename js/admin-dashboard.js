@@ -635,9 +635,13 @@ window.openEditProfileModal = async function(profileId) {
         profileUserSelect.parentNode.appendChild(userDisplay);
     }
     // Set the plain text value to the user's name/email
-    let userId = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
-    let user = allUsers.find(u => u._id === userId);
-    userDisplay.value = user ? (user.username + ' (' + user.email + ')') : '';
+    if (profile.userId && profile.userId.username) {
+      userDisplay.value = profile.userId.username + ' (' + profile.userId.email + ')';
+    } else {
+      let userId = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
+      let user = allUsers.find(u => u._id === userId);
+      userDisplay.value = user ? (user.username + ' (' + user.email + ')') : '';
+    }
     userDisplay.style.display = ''; // Show read-only field
     addEditProfileForm.elements['fullName'].value = profile.fullName || '';
     addEditProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
