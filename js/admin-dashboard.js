@@ -604,6 +604,12 @@ const editProfileModal = new bootstrap.Modal(document.getElementById('editProfil
 const editProfileForm = document.getElementById('editProfileForm');
 
 window.openEditProfileModal = async function(profileId) {
+  // Find the profile object from allProfiles
+  const profile = allProfiles.find(p => p._id === profileId);
+  if (!profile) {
+    showToast('Profile not found', 'error');
+    return;
+  }
   // Always close the modal before opening it for a new user
   const modalInstance = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
   if (modalInstance) modalInstance.hide();
