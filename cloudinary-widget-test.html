@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cloudinary Widget Test</title>
+    <script src="https://widget.cloudinary.com/v2.0/global/all.js"></script>
+  </head>
+  <body>
+    <button id="upload_widget">Upload</button>
+    <script>
+      var myWidget = cloudinary.createUploadWidget({
+        cloudName: 'dgqyxcpau',
+        uploadPreset: 'nfc_unsigned'
+      }, (error, result) => { 
+        console.log("Widget error:", error);
+        console.log("Widget result:", result);
+      });
+      document.getElementById("upload_widget").addEventListener("click", function(){
+          myWidget.open();
+      }, false);
+    </script>
+  </body>
+</html>
