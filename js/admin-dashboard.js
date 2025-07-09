@@ -1061,7 +1061,12 @@ gallerySection.addEventListener('input', async function(e) {
   const idx = e.target.getAttribute('idx');
   if (e.target.hasAttribute('data-gtype')) galleryItems[idx].type = e.target.value;
   if (e.target.hasAttribute('data-gurl')) {
-    galleryItems[idx].url = e.target.value;
+    let url = e.target.value.trim();
+    // Only add https:// if not already present for video URLs
+    if (galleryItems[idx].type === 'video' && !/^https?:\/\//i.test(url)) {
+      url = 'https://' + url;
+    }
+    galleryItems[idx].url = url;
     // Auto-fetch thumbnail for video URLs
     if (galleryItems[idx].type === 'video') {
       let thumb = getYouTubeThumbnail(galleryItems[idx].url);
