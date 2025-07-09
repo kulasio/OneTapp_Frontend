@@ -993,7 +993,7 @@ function renderGalleryItems() {
       formData.append('image', file);
       try {
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/api/profile/gallery/upload-image');
+        xhr.open('POST', 'https://onetapp-backend.onrender.com/api/profiles/gallery/upload-image');
         xhr.upload.addEventListener('progress', function(e) {
           if (e.lengthComputable) {
             const percent = Math.round((e.loaded / e.total) * 100);
