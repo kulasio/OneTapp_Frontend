@@ -942,8 +942,8 @@ function renderGalleryItems() {
         </div>
         <div class="col-md-4">
           <label class="form-label mb-0">Media</label>
-          <input type="url" class="form-control mb-1" value="${item.url || ''}" data-gurl idx="${idx}" placeholder="Paste URL or upload below">
-          <input type="file" class="form-control mb-1" accept="image/*,video/*" data-gfile idx="${idx}">
+          <input type="url" class="form-control mb-1" value="${item.url || ''}" data-gurl idx="${idx}" placeholder="${item.type === 'video' ? 'Paste video URL' : 'Paste image URL or upload below'}">
+          <input type="file" class="form-control mb-1" accept="image/*" data-gfile idx="${idx}" style="display:${item.type === 'image' ? '' : 'none'}">
           <div class="progress mb-1" style="display:none;" id="gallery-upload-progress-${idx}">
             <div class="progress-bar" role="progressbar" style="width: 0%"></div>
           </div>
@@ -968,8 +968,59 @@ function renderGalleryItems() {
     gallerySection.appendChild(div);
   });
 
-  // Remove Cloudinary upload logic. Placeholder for Firebase upload logic will be added here.
-  // TODO: Add Firebase Storage upload logic for file inputs.
+  // Handle type change to show/hide file input for images
+  document.querySelectorAll('select[data-gtype]').forEach(select => {
+    select.addEventListener('change', function(e) {
+      const idx = e.target.getAttribute('idx');
+      galleryItems[idx].type = e.target.value;
+      renderGalleryItems();
+    });
+  });
+
+  // Handle image file upload
+  document.querySelectorAll('input[data-gfile]').forEach(input => {
+    input.addEventListener('change', async function(e) {
+      const idx = e.target.getAttribute('idx');
+      const file = e.target.files[0];
+      if (!file) return;
+      // Show progress bar
+      const progressBar = document.getElementById(`gallery-upload-progress-${idx}`);
+      progressBar.style.display = 'block';
+      const bar = progressBar.querySelector('.progress-bar');
+      bar.style.width = '0%';
+      // Upload to backend
+      const formData = new FormData();
+      formData.append('image', file);
+      try {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/gallery/upload-image'); // Backend endpoint to be implemented
+        xhr.upload.addEventListener('progress', function(e) {
+          if (e.lengthComputable) {
+            const percent = Math.round((e.loaded / e.total) * 100);
+            bar.style.width = percent + '%';
+          }
+        });
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            galleryItems[idx].url = response.url;
+            renderGalleryItems();
+          } else {
+            alert('Upload failed: ' + xhr.responseText);
+            progressBar.style.display = 'none';
+          }
+        };
+        xhr.onerror = function() {
+          alert('Upload failed.');
+          progressBar.style.display = 'none';
+        };
+        xhr.send(formData);
+      } catch (err) {
+        alert('Upload error: ' + err.message);
+        progressBar.style.display = 'none';
+      }
+    });
+  });
 }
 
 if (addGalleryItemBtnAdd) {
