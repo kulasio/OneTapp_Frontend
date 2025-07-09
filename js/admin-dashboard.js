@@ -940,14 +940,13 @@ function renderGalleryItems() {
             <option value="document" ${item.type === 'document' ? 'selected' : ''}>Document</option>
           </select>
         </div>
-        <div class="col-md-3">
-          <label class="form-label mb-0">URL</label>
-          <input type="url" class="form-control" value="${item.url || ''}" data-gurl idx="${idx}" placeholder="Paste URL or upload below">
-          <input type="file" class="form-control mt-1" accept="image/*,video/*" data-gfile idx="${idx}">
-          <div class="progress mt-1" style="display:none;" id="gallery-upload-progress-${idx}">
+        <div class="col-md-4">
+          <label class="form-label mb-0">Media</label>
+          <input type="url" class="form-control mb-1" value="${item.url || ''}" data-gurl idx="${idx}" placeholder="Paste URL or upload below">
+          <input type="file" class="form-control mb-1" accept="image/*,video/*" data-gfile idx="${idx}">
+          <div class="progress mb-1" style="display:none;" id="gallery-upload-progress-${idx}">
             <div class="progress-bar" role="progressbar" style="width: 0%"></div>
           </div>
-          <div class="gallery-preview mt-1" id="gallery-preview-${idx}"></div>
         </div>
         <div class="col-md-2">
           <label class="form-label mb-0">Thumbnail</label>
@@ -956,10 +955,6 @@ function renderGalleryItems() {
         <div class="col-md-2">
           <label class="form-label mb-0">Title</label>
           <input type="text" class="form-control" value="${item.title || ''}" data-gtitle idx="${idx}">
-        </div>
-        <div class="col-md-2">
-          <label class="form-label mb-0">Description</label>
-          <input type="text" class="form-control" value="${item.description || ''}" data-gdesc idx="${idx}" placeholder="(optional)">
         </div>
         <div class="col-md-1">
           <label class="form-label mb-0">Order</label>
@@ -984,7 +979,7 @@ function renderGalleryItems() {
       progressBar.style.display = 'block';
       const bar = progressBar.querySelector('.progress-bar');
       bar.style.width = '0%';
-      // Cloudinary config (replace with your own)
+      // Cloudinary config
       const cloudName = window.CLOUDINARY_CONFIG.cloudName;
       const unsignedPreset = window.CLOUDINARY_CONFIG.unsignedPreset;
       const url = `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`;
