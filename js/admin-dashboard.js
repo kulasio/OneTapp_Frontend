@@ -942,7 +942,12 @@ function renderGalleryItems() {
         </div>
         <div class="col-md-3">
           <label class="form-label mb-0">URL</label>
-          <input type="url" class="form-control" value="${item.url || ''}" data-gurl idx="${idx}">
+          <input type="url" class="form-control" value="${item.url || ''}" data-gurl idx="${idx}" placeholder="Paste URL or upload below">
+          <input type="file" class="form-control mt-1" accept="image/*,video/*" data-gfile idx="${idx}">
+          <div class="progress mt-1" style="display:none;" id="gallery-upload-progress-${idx}">
+            <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+          </div>
+          <div class="gallery-preview mt-1" id="gallery-preview-${idx}"></div>
         </div>
         <div class="col-md-2">
           <label class="form-label mb-0">Thumbnail</label>
@@ -966,6 +971,56 @@ function renderGalleryItems() {
       </div>
     `;
     gallerySection.appendChild(div);
+  });
+
+  // Add file input event listeners for Cloudinary upload
+  document.querySelectorAll('input[data-gfile]').forEach(input => {
+    input.addEventListener('change', async function(e) {
+      const idx = e.target.getAttribute('idx');
+      const file = e.target.files[0];
+      if (!file) return;
+      // Show progress bar
+      const progressBar = document.getElementById(`gallery-upload-progress-${idx}`);
+      progressBar.style.display = 'block';
+      const bar = progressBar.querySelector('.progress-bar');
+      bar.style.width = '0%';
+      // Cloudinary config (replace with your own)
+      const cloudName = window.CLOUDINARY_CONFIG.cloudName;
+      const unsignedPreset = window.CLOUDINARY_CONFIG.unsignedPreset;
+      const url = `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`;
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', unsignedPreset);
+      // Upload to Cloudinary
+      try {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url);
+        xhr.upload.addEventListener('progress', function(e) {
+          if (e.lengthComputable) {
+            const percent = Math.round((e.loaded / e.total) * 100);
+            bar.style.width = percent + '%';
+          }
+        });
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            galleryItems[idx].url = response.secure_url;
+            renderGalleryItems();
+          } else {
+            alert('Upload failed: ' + xhr.responseText);
+            progressBar.style.display = 'none';
+          }
+        };
+        xhr.onerror = function() {
+          alert('Upload failed.');
+          progressBar.style.display = 'none';
+        };
+        xhr.send(formData);
+      } catch (err) {
+        alert('Upload error: ' + err.message);
+        progressBar.style.display = 'none';
+      }
+    });
   });
 }
 
