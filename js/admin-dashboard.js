@@ -1036,10 +1036,44 @@ if (addGalleryItemBtnAdd) {
   });
 }
 
-gallerySection.addEventListener('input', function(e) {
+// Helper: Get YouTube thumbnail from URL
+function getYouTubeThumbnail(url) {
+  const match = url.match(/(?:youtube\.com.*[?&]v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if (match && match[1]) {
+    return `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`;
+  }
+  return '';
+}
+
+// Helper: Get Vimeo thumbnail from URL (async)
+async function getVimeoThumbnail(url) {
+  const match = url.match(/vimeo\.com\/(\d+)/);
+  if (match && match[1]) {
+    const videoId = match[1];
+    const response = await fetch(`https://vimeo.com/api/v2/video/${videoId}.json`);
+    const data = await response.json();
+    return data[0].thumbnail_large;
+  }
+  return '';
+}
+
+gallerySection.addEventListener('input', async function(e) {
   const idx = e.target.getAttribute('idx');
   if (e.target.hasAttribute('data-gtype')) galleryItems[idx].type = e.target.value;
-  if (e.target.hasAttribute('data-gurl')) galleryItems[idx].url = e.target.value;
+  if (e.target.hasAttribute('data-gurl')) {
+    galleryItems[idx].url = e.target.value;
+    // Auto-fetch thumbnail for video URLs
+    if (galleryItems[idx].type === 'video') {
+      let thumb = getYouTubeThumbnail(galleryItems[idx].url);
+      if (!thumb && galleryItems[idx].url.includes('vimeo.com')) {
+        thumb = await getVimeoThumbnail(galleryItems[idx].url);
+      }
+      if (thumb) {
+        galleryItems[idx].thumbnail = thumb;
+        renderGalleryItems();
+      }
+    }
+  }
   if (e.target.hasAttribute('data-gthumb')) galleryItems[idx].thumbnail = e.target.value;
   if (e.target.hasAttribute('data-gtitle')) galleryItems[idx].title = e.target.value;
   if (e.target.hasAttribute('data-gdesc')) galleryItems[idx].description = e.target.value;
