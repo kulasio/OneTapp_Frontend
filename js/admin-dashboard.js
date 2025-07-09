@@ -1005,6 +1005,9 @@ function renderGalleryItems() {
             const response = JSON.parse(xhr.responseText);
             galleryItems[idx].url = response.url;
             renderGalleryItems();
+            // Automatically add a new blank item for convenience
+            galleryItems.push({ type: 'image', url: '', thumbnail: '', title: '', description: '', order: galleryItems.length });
+            renderGalleryItems();
           } else {
             alert('Upload failed: ' + xhr.responseText);
             progressBar.style.display = 'none';
