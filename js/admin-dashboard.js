@@ -1005,9 +1005,12 @@ function renderGalleryItems() {
             const response = JSON.parse(xhr.responseText);
             galleryItems[idx].url = response.url;
             renderGalleryItems();
-            // Automatically add a new blank item for convenience
-            galleryItems.push({ type: 'image', url: '', thumbnail: '', title: '', description: '', order: galleryItems.length });
-            renderGalleryItems();
+            // Only add a new blank item if the last one is not blank
+            const lastItem = galleryItems[galleryItems.length - 1];
+            if (lastItem && lastItem.url) {
+              galleryItems.push({ type: 'image', url: '', thumbnail: '', title: '', description: '', order: galleryItems.length });
+              renderGalleryItems();
+            }
           } else {
             alert('Upload failed: ' + xhr.responseText);
             progressBar.style.display = 'none';
