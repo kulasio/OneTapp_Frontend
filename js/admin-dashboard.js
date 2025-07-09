@@ -968,55 +968,8 @@ function renderGalleryItems() {
     gallerySection.appendChild(div);
   });
 
-  // Add file input event listeners for Cloudinary upload
-  document.querySelectorAll('input[data-gfile]').forEach(input => {
-    input.addEventListener('change', async function(e) {
-      const idx = e.target.getAttribute('idx');
-      const file = e.target.files[0];
-      if (!file) return;
-      // Show progress bar
-      const progressBar = document.getElementById(`gallery-upload-progress-${idx}`);
-      progressBar.style.display = 'block';
-      const bar = progressBar.querySelector('.progress-bar');
-      bar.style.width = '0%';
-      // Cloudinary config
-      const cloudName = window.CLOUDINARY_CONFIG.cloudName;
-      const unsignedPreset = window.CLOUDINARY_CONFIG.unsignedPreset;
-      const url = `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`;
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('upload_preset', unsignedPreset);
-      // Upload to Cloudinary
-      try {
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', url);
-        xhr.upload.addEventListener('progress', function(e) {
-          if (e.lengthComputable) {
-            const percent = Math.round((e.loaded / e.total) * 100);
-            bar.style.width = percent + '%';
-          }
-        });
-        xhr.onload = function() {
-          if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText);
-            galleryItems[idx].url = response.secure_url;
-            renderGalleryItems();
-          } else {
-            alert('Upload failed: ' + xhr.responseText);
-            progressBar.style.display = 'none';
-          }
-        };
-        xhr.onerror = function() {
-          alert('Upload failed.');
-          progressBar.style.display = 'none';
-        };
-        xhr.send(formData);
-      } catch (err) {
-        alert('Upload error: ' + err.message);
-        progressBar.style.display = 'none';
-      }
-    });
-  });
+  // Remove Cloudinary upload logic. Placeholder for Firebase upload logic will be added here.
+  // TODO: Add Firebase Storage upload logic for file inputs.
 }
 
 if (addGalleryItemBtnAdd) {
