@@ -708,16 +708,27 @@ window.openEditProfileModal = async function(profileId) {
 
   // Profile image preview
   const previewEl = editProfileForm.querySelector('#profileImagePreview');
-  if (profile.profileImageId || (profile.profileImage && profile.profileImage.data)) {
-    // If profileImage.data is a base64 string, use it
-    if (profile.profileImage && profile.profileImage.data) {
-      previewEl.src = `data:image/jpeg;base64,${profile.profileImage.data}`;
-    } else if (profile.profileImageId && profile.profileImage && profile.profileImage.url) {
+  if (profile.profileImage) {
+    if (profile.profileImage.data) {
+      // Handle buffer (array) or base64 string
+      if (Array.isArray(profile.profileImage.data)) {
+        // Buffer to base64
+        const base64 = btoa(String.fromCharCode(...profile.profileImage.data));
+        previewEl.src = `data:image/jpeg;base64,${base64}`;
+      } else if (typeof profile.profileImage.data === 'string') {
+        // Already base64 string
+        previewEl.src = `data:image/jpeg;base64,${profile.profileImage.data}`;
+      } else {
+        previewEl.src = 'https://via.placeholder.com/180x200?text=No+Image';
+      }
+    } else if (profile.profileImage.url) {
       previewEl.src = profile.profileImage.url;
+    } else {
+      previewEl.src = 'https://via.placeholder.com/180x200?text=No+Image';
     }
     previewEl.style.display = '';
   } else {
-    previewEl.src = '#';
+    previewEl.src = 'https://via.placeholder.com/180x200?text=No+Image';
     previewEl.style.display = 'none';
   }
 
