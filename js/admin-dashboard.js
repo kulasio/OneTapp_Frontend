@@ -609,21 +609,117 @@ const editProfileModal = new bootstrap.Modal(document.getElementById('editProfil
 const editProfileForm = document.getElementById('editProfileForm');
 
 window.openEditProfileModal = async function(profileId) {
-  const token = localStorage.getItem('adminToken');
-  const response = await fetch(`${API_BASE}/profiles/${profileId}`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  const profile = await response.json();
+  // Find the profile object from allProfiles
+  const profile = allProfiles.find(p => p._id === profileId);
+  if (!profile) {
+    showToast('Profile not found', 'error');
+    return;
+  }
+  // Always close the modal before opening it for a new user
+  const modalInstance = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
+  if (modalInstance) modalInstance.hide();
+  croppedBlob = null;
+  editProfileForm.reset();
+  editProfileForm.elements['profileImage'].value = '';
+  editProfileForm.elements['profileId'].value = profileId;
+  // Always set userId hidden field
+  editProfileForm.elements['userId'].value = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
 
-  // Populate other fields, e.g.:
-  document.querySelector('[name="fullName"]').value = profile.fullName || '';
-  // ...etc...
+  // Remove user dropdown and show read-only user display
+  let userDisplay = editProfileForm.querySelector('[name="userDisplay"]');
+  if (!userDisplay) {
+    userDisplay = document.createElement('input');
+    userDisplay.type = 'text';
+    userDisplay.name = 'userDisplay';
+    userDisplay.className = 'form-control';
+    userDisplay.disabled = true;
+    const userFieldContainer = editProfileForm.querySelector('#profileUserFieldContainer');
+    if (userFieldContainer) {
+      userFieldContainer.innerHTML = '';
+      userFieldContainer.appendChild(userDisplay);
+    }
+  }
+  // Fetch user details from allUsers or via API if not present
+  let userId = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
+  let user = allUsers && allUsers.find(u => u._id === userId);
+  if (!user) {
+    // Fallback: fetch user from API
+    try {
+      const token = localStorage.getItem('adminToken');
+      const res = await fetch(`${API_BASE}/users/${userId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) user = (await res.json()).user;
+    } catch {}
+  }
+  userDisplay.value = user ? `${user.username} (${user.email})` : 'Unknown User';
+  userDisplay.style.display = '';
 
-  // --- GALLERY POPULATION ---
+  // Populate other fields
+  editProfileForm.elements['fullName'].value = profile.fullName || '';
+  editProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
+  editProfileForm.elements['company'].value = profile.company || '';
+  editProfileForm.elements['bio'].value = profile.bio || '';
+  editProfileForm.elements['contactEmail'].value = (profile.contact && profile.contact.email) || profile.contactEmail || '';
+  editProfileForm.elements['contactPhone'].value = (profile.contact && profile.contact.phone) || profile.contactPhone || '';
+  editProfileForm.elements['contactLocation'].value = (profile.contact && profile.contact.location) || profile.contactLocation || '';
+  editProfileForm.elements['linkedin'].value = (profile.socialLinks && profile.socialLinks.linkedin) || '';
+  editProfileForm.elements['twitter'].value = (profile.socialLinks && profile.socialLinks.twitter) || '';
+  editProfileForm.elements['github'].value = (profile.socialLinks && profile.socialLinks.github) || '';
+  editProfileForm.elements['facebook'].value = (profile.socialLinks && profile.socialLinks.facebook) || '';
+  editProfileForm.elements['instagram'].value = (profile.socialLinks && profile.socialLinks.instagram) || '';
+  editProfileForm.elements['tiktok'].value = (profile.socialLinks && profile.socialLinks.tiktok) || '';
+  editProfileForm.elements['youtube'].value = (profile.socialLinks && profile.socialLinks.youtube) || '';
+  editProfileForm.elements['whatsapp'].value = (profile.socialLinks && profile.socialLinks.whatsapp) || '';
+  editProfileForm.elements['telegram'].value = (profile.socialLinks && profile.socialLinks.telegram) || '';
+  editProfileForm.elements['snapchat'].value = (profile.socialLinks && profile.socialLinks.snapchat) || '';
+  editProfileForm.elements['pinterest'].value = (profile.socialLinks && profile.socialLinks.pinterest) || '';
+  editProfileForm.elements['reddit'].value = (profile.socialLinks && profile.socialLinks.reddit) || '';
+  editProfileForm.elements['website'].value = (profile.socialLinks && profile.socialLinks.website) || profile.website || '';
+  editProfileForm.elements['other'].value = (profile.socialLinks && profile.socialLinks.other) || '';
+
+  // Featured Links
+  featuredLinks = Array.isArray(profile.featuredLinks) ? profile.featuredLinks.map(l => ({...l})) : [];
+  renderFeaturedLinks();
+  // Gallery
   galleryItems = Array.isArray(profile.gallery) ? profile.gallery.map(i => ({...i})) : [];
   renderGalleryItems();
+  // Recent Activity
+  recentActivities = Array.isArray(profile.recentActivity) ? profile.recentActivity.map(i => ({...i})) : [];
+  renderRecentActivities();
 
-  // Show the modal
+  // Verification Status
+  if (profile.verificationStatus) {
+    editProfileForm.elements['verificationStatusType'].value = profile.verificationStatus.type || 'unverified';
+    if (editProfileForm.elements['verificationStatusVerifiedAt'])
+      editProfileForm.elements['verificationStatusVerifiedAt'].value = profile.verificationStatus.verifiedAt ? profile.verificationStatus.verifiedAt.split('T')[0] : '';
+    if (editProfileForm.elements['verificationStatusVerifiedBy'])
+      editProfileForm.elements['verificationStatusVerifiedBy'].value = profile.verificationStatus.verifiedBy || '';
+  } else {
+    editProfileForm.elements['verificationStatusType'].value = 'unverified';
+    if (editProfileForm.elements['verificationStatusVerifiedAt'])
+      editProfileForm.elements['verificationStatusVerifiedAt'].value = '';
+    if (editProfileForm.elements['verificationStatusVerifiedBy'])
+      editProfileForm.elements['verificationStatusVerifiedBy'].value = '';
+  }
+  // QR URL
+  if (editProfileForm.elements['qrUrl'])
+    editProfileForm.elements['qrUrl'].value = profile.qrUrl || '';
+
+  // Profile image preview
+  if (profile.profileImageId || (profile.profileImage && profile.profileImage.data)) {
+    // If you have a URL or can construct one, set it here
+    // Otherwise, handle base64 or blob as needed
+    // Example: editProfileForm.querySelector('#profileImagePreview').src = ...
+    // For now, just show the preview if available
+    editProfileForm.querySelector('#profileImagePreview').style.display = '';
+  } else {
+    editProfileForm.querySelector('#profileImagePreview').style.display = 'none';
+  }
+
+  // Set the userId display field
+  editProfileForm.elements['userIdDisplay'].value = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
+
   const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
   modal.show();
 };
@@ -846,13 +942,11 @@ function renderGalleryItems() {
         </div>
         <div class="col-md-4">
           <label class="form-label mb-0">Media</label>
-          ${item.type === 'image' ? 
-            `<input type="file" class="form-control mb-1" accept="image/*" data-gfile idx="${idx}" placeholder="Upload image file">
-             <div class="progress mb-1" style="display:none;" id="gallery-upload-progress-${idx}">
-               <div class="progress-bar" role="progressbar" style="width: 0%"></div>
-             </div>` : 
-            `<input type="url" class="form-control mb-1" value="${item.url || ''}" data-gurl idx="${idx}" placeholder="Paste video URL">`
-          }
+          <input type="url" class="form-control mb-1" value="${item.url || ''}" data-gurl idx="${idx}" placeholder="${item.type === 'video' ? 'Paste video URL' : 'Paste image URL or upload below'}">
+          <input type="file" class="form-control mb-1" accept="image/*" data-gfile idx="${idx}" style="display:${item.type === 'image' ? '' : 'none'}">
+          <div class="progress mb-1" style="display:none;" id="gallery-upload-progress-${idx}">
+            <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+          </div>
         </div>
         <div class="col-md-2">
           <label class="form-label mb-0">Thumbnail</label>
@@ -874,25 +968,26 @@ function renderGalleryItems() {
     gallerySection.appendChild(div);
   });
 
+  // Handle type change to show/hide file input for images
+  document.querySelectorAll('select[data-gtype]').forEach(select => {
+    select.addEventListener('change', function(e) {
+      const idx = e.target.getAttribute('idx');
+      galleryItems[idx].type = e.target.value;
+      renderGalleryItems();
+    });
+  });
+
   // Handle image file upload
   document.querySelectorAll('input[data-gfile]').forEach(input => {
     input.addEventListener('change', async function(e) {
       const idx = e.target.getAttribute('idx');
       const file = e.target.files[0];
       if (!file) return;
-      
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        alert('Please select an image file.');
-        return;
-      }
-      
       // Show progress bar
       const progressBar = document.getElementById(`gallery-upload-progress-${idx}`);
       progressBar.style.display = 'block';
       const bar = progressBar.querySelector('.progress-bar');
       bar.style.width = '0%';
-      
       // Upload to backend
       const formData = new FormData();
       formData.append('image', file);
@@ -964,10 +1059,7 @@ async function getVimeoThumbnail(url) {
 
 gallerySection.addEventListener('input', async function(e) {
   const idx = e.target.getAttribute('idx');
-  if (e.target.hasAttribute('data-gtype')) {
-    galleryItems[idx].type = e.target.value;
-    renderGalleryItems();
-  }
+  if (e.target.hasAttribute('data-gtype')) galleryItems[idx].type = e.target.value;
   if (e.target.hasAttribute('data-gurl')) {
     let url = e.target.value.trim();
     // Only add https:// if not already present for video URLs
@@ -976,22 +1068,7 @@ gallerySection.addEventListener('input', async function(e) {
     }
     galleryItems[idx].url = url;
     // Auto-fetch thumbnail for video URLs
-    if (galleryItems[idx].type === 'video' && url) {
-      // Validate video URL format
-      const videoUrlPatterns = [
-        /^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\/.+/,
-        /^https?:\/\/(www\.)?(vimeo\.com)\/.+/,
-        /^https?:\/\/(www\.)?(dailymotion\.com)\/.+/,
-        /^https?:\/\/(www\.)?(facebook\.com)\/.+/,
-        /^https?:\/\/(www\.)?(instagram\.com)\/.+/
-      ];
-      
-      const isValidVideoUrl = videoUrlPatterns.some(pattern => pattern.test(url));
-      if (!isValidVideoUrl) {
-        alert('Please enter a valid video URL (YouTube, Vimeo, Dailymotion, Facebook, or Instagram)');
-        return;
-      }
-      
+    if (galleryItems[idx].type === 'video') {
       let thumb = getYouTubeThumbnail(galleryItems[idx].url);
       if (!thumb && galleryItems[idx].url.includes('vimeo.com')) {
         thumb = await getVimeoThumbnail(galleryItems[idx].url);
