@@ -706,32 +706,14 @@ window.openEditProfileModal = async function(profileId) {
   if (editProfileForm.elements['qrUrl'])
     editProfileForm.elements['qrUrl'].value = profile.qrUrl || '';
 
-  // Profile image preview
-  const previewEl = editProfileForm.querySelector('#profileImagePreview');
-  const localPlaceholder = '../images/OneTapp_Logo.png';
-  if (profile.profileImage) {
-    if (profile.profileImage.data) {
-      // Handle buffer (array) or base64 string
-      if (Array.isArray(profile.profileImage.data)) {
-        // Buffer to base64
-        const base64 = btoa(String.fromCharCode(...profile.profileImage.data));
-        previewEl.src = `data:image/jpeg;base64,${base64}`;
-      } else if (typeof profile.profileImage.data === 'string') {
-        // Already base64 string
-        previewEl.src = `data:image/jpeg;base64,${profile.profileImage.data}`;
-      } else {
-        previewEl.src = localPlaceholder;
-      }
-    } else if (profile.profileImage.url) {
-      previewEl.src = profile.profileImage.url;
-    } else {
-      previewEl.src = localPlaceholder;
-    }
-    previewEl.style.display = '';
-  } else {
-    previewEl.src = localPlaceholder;
-    previewEl.style.display = 'none';
-  }
+  // Profile image preview (removed)
+  // const previewEl = editProfileForm.querySelector('#profileImagePreview');
+  // const localPlaceholder = '../images/OneTapp_Logo.png';
+  // if (profile.profileImage) {
+  //   ... (all logic for previewEl)
+  // } else {
+  //   ...
+  // }
 
   // Set the userId display field
   editProfileForm.elements['userIdDisplay'].value = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
