@@ -942,11 +942,13 @@ function renderGalleryItems() {
         </div>
         <div class="col-md-4">
           <label class="form-label mb-0">Media</label>
-          <input type="url" class="form-control mb-1" value="${item.url || ''}" data-gurl idx="${idx}" placeholder="${item.type === 'video' ? 'Paste video URL' : 'Paste image URL or upload below'}">
-          <input type="file" class="form-control mb-1" accept="image/*" data-gfile idx="${idx}" style="display:${item.type === 'image' ? '' : 'none'}">
-          <div class="progress mb-1" style="display:none;" id="gallery-upload-progress-${idx}">
-            <div class="progress-bar" role="progressbar" style="width: 0%"></div>
-          </div>
+          ${item.type === 'image' ? 
+            `<input type="file" class="form-control mb-1" accept="image/*" data-gfile idx="${idx}" placeholder="Upload image file">
+             <div class="progress mb-1" style="display:none;" id="gallery-upload-progress-${idx}">
+               <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+             </div>` : 
+            `<input type="url" class="form-control mb-1" value="${item.url || ''}" data-gurl idx="${idx}" placeholder="Paste video URL">`
+          }
         </div>
         <div class="col-md-2">
           <label class="form-label mb-0">Thumbnail</label>
@@ -968,14 +970,7 @@ function renderGalleryItems() {
     gallerySection.appendChild(div);
   });
 
-  // Handle type change to show/hide file input for images
-  document.querySelectorAll('select[data-gtype]').forEach(select => {
-    select.addEventListener('change', function(e) {
-      const idx = e.target.getAttribute('idx');
-      galleryItems[idx].type = e.target.value;
-      renderGalleryItems();
-    });
-  });
+  // Handle type change is now handled in the input event listener above
 
   // Handle image file upload
   document.querySelectorAll('input[data-gfile]').forEach(input => {
@@ -983,11 +978,19 @@ function renderGalleryItems() {
       const idx = e.target.getAttribute('idx');
       const file = e.target.files[0];
       if (!file) return;
+      
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file.');
+        return;
+      }
+      
       // Show progress bar
       const progressBar = document.getElementById(`gallery-upload-progress-${idx}`);
       progressBar.style.display = 'block';
       const bar = progressBar.querySelector('.progress-bar');
       bar.style.width = '0%';
+      
       // Upload to backend
       const formData = new FormData();
       formData.append('image', file);
@@ -1059,7 +1062,10 @@ async function getVimeoThumbnail(url) {
 
 gallerySection.addEventListener('input', async function(e) {
   const idx = e.target.getAttribute('idx');
-  if (e.target.hasAttribute('data-gtype')) galleryItems[idx].type = e.target.value;
+  if (e.target.hasAttribute('data-gtype')) {
+    galleryItems[idx].type = e.target.value;
+    renderGalleryItems();
+  }
   if (e.target.hasAttribute('data-gurl')) {
     let url = e.target.value.trim();
     // Only add https:// if not already present for video URLs
@@ -1068,7 +1074,22 @@ gallerySection.addEventListener('input', async function(e) {
     }
     galleryItems[idx].url = url;
     // Auto-fetch thumbnail for video URLs
-    if (galleryItems[idx].type === 'video') {
+    if (galleryItems[idx].type === 'video' && url) {
+      // Validate video URL format
+      const videoUrlPatterns = [
+        /^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\/.+/,
+        /^https?:\/\/(www\.)?(vimeo\.com)\/.+/,
+        /^https?:\/\/(www\.)?(dailymotion\.com)\/.+/,
+        /^https?:\/\/(www\.)?(facebook\.com)\/.+/,
+        /^https?:\/\/(www\.)?(instagram\.com)\/.+/
+      ];
+      
+      const isValidVideoUrl = videoUrlPatterns.some(pattern => pattern.test(url));
+      if (!isValidVideoUrl) {
+        alert('Please enter a valid video URL (YouTube, Vimeo, Dailymotion, Facebook, or Instagram)');
+        return;
+      }
+      
       let thumb = getYouTubeThumbnail(galleryItems[idx].url);
       if (!thumb && galleryItems[idx].url.includes('vimeo.com')) {
         thumb = await getVimeoThumbnail(galleryItems[idx].url);
