@@ -708,6 +708,7 @@ window.openEditProfileModal = async function(profileId) {
 
   // Profile image preview
   const previewEl = editProfileForm.querySelector('#profileImagePreview');
+  const localPlaceholder = '../images/OneTapp_Logo.png';
   if (profile.profileImage) {
     if (profile.profileImage.data) {
       // Handle buffer (array) or base64 string
@@ -719,16 +720,16 @@ window.openEditProfileModal = async function(profileId) {
         // Already base64 string
         previewEl.src = `data:image/jpeg;base64,${profile.profileImage.data}`;
       } else {
-        previewEl.src = 'https://via.placeholder.com/180x200?text=No+Image';
+        previewEl.src = localPlaceholder;
       }
     } else if (profile.profileImage.url) {
       previewEl.src = profile.profileImage.url;
     } else {
-      previewEl.src = 'https://via.placeholder.com/180x200?text=No+Image';
+      previewEl.src = localPlaceholder;
     }
     previewEl.style.display = '';
   } else {
-    previewEl.src = 'https://via.placeholder.com/180x200?text=No+Image';
+    previewEl.src = localPlaceholder;
     previewEl.style.display = 'none';
   }
 
