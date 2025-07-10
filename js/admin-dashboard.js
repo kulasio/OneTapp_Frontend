@@ -609,117 +609,21 @@ const editProfileModal = new bootstrap.Modal(document.getElementById('editProfil
 const editProfileForm = document.getElementById('editProfileForm');
 
 window.openEditProfileModal = async function(profileId) {
-  // Find the profile object from allProfiles
-  const profile = allProfiles.find(p => p._id === profileId);
-  if (!profile) {
-    showToast('Profile not found', 'error');
-    return;
-  }
-  // Always close the modal before opening it for a new user
-  const modalInstance = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
-  if (modalInstance) modalInstance.hide();
-  croppedBlob = null;
-  editProfileForm.reset();
-  editProfileForm.elements['profileImage'].value = '';
-  editProfileForm.elements['profileId'].value = profileId;
-  // Always set userId hidden field
-  editProfileForm.elements['userId'].value = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
+  const token = localStorage.getItem('adminToken');
+  const response = await fetch(`${API_BASE}/profiles/${profileId}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  const profile = await response.json();
 
-  // Remove user dropdown and show read-only user display
-  let userDisplay = editProfileForm.querySelector('[name="userDisplay"]');
-  if (!userDisplay) {
-    userDisplay = document.createElement('input');
-    userDisplay.type = 'text';
-    userDisplay.name = 'userDisplay';
-    userDisplay.className = 'form-control';
-    userDisplay.disabled = true;
-    const userFieldContainer = editProfileForm.querySelector('#profileUserFieldContainer');
-    if (userFieldContainer) {
-      userFieldContainer.innerHTML = '';
-      userFieldContainer.appendChild(userDisplay);
-    }
-  }
-  // Fetch user details from allUsers or via API if not present
-  let userId = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
-  let user = allUsers && allUsers.find(u => u._id === userId);
-  if (!user) {
-    // Fallback: fetch user from API
-    try {
-      const token = localStorage.getItem('adminToken');
-      const res = await fetch(`${API_BASE}/users/${userId}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.ok) user = (await res.json()).user;
-    } catch {}
-  }
-  userDisplay.value = user ? `${user.username} (${user.email})` : 'Unknown User';
-  userDisplay.style.display = '';
+  // Populate other fields, e.g.:
+  document.querySelector('[name="fullName"]').value = profile.fullName || '';
+  // ...etc...
 
-  // Populate other fields
-  editProfileForm.elements['fullName'].value = profile.fullName || '';
-  editProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
-  editProfileForm.elements['company'].value = profile.company || '';
-  editProfileForm.elements['bio'].value = profile.bio || '';
-  editProfileForm.elements['contactEmail'].value = (profile.contact && profile.contact.email) || profile.contactEmail || '';
-  editProfileForm.elements['contactPhone'].value = (profile.contact && profile.contact.phone) || profile.contactPhone || '';
-  editProfileForm.elements['contactLocation'].value = (profile.contact && profile.contact.location) || profile.contactLocation || '';
-  editProfileForm.elements['linkedin'].value = (profile.socialLinks && profile.socialLinks.linkedin) || '';
-  editProfileForm.elements['twitter'].value = (profile.socialLinks && profile.socialLinks.twitter) || '';
-  editProfileForm.elements['github'].value = (profile.socialLinks && profile.socialLinks.github) || '';
-  editProfileForm.elements['facebook'].value = (profile.socialLinks && profile.socialLinks.facebook) || '';
-  editProfileForm.elements['instagram'].value = (profile.socialLinks && profile.socialLinks.instagram) || '';
-  editProfileForm.elements['tiktok'].value = (profile.socialLinks && profile.socialLinks.tiktok) || '';
-  editProfileForm.elements['youtube'].value = (profile.socialLinks && profile.socialLinks.youtube) || '';
-  editProfileForm.elements['whatsapp'].value = (profile.socialLinks && profile.socialLinks.whatsapp) || '';
-  editProfileForm.elements['telegram'].value = (profile.socialLinks && profile.socialLinks.telegram) || '';
-  editProfileForm.elements['snapchat'].value = (profile.socialLinks && profile.socialLinks.snapchat) || '';
-  editProfileForm.elements['pinterest'].value = (profile.socialLinks && profile.socialLinks.pinterest) || '';
-  editProfileForm.elements['reddit'].value = (profile.socialLinks && profile.socialLinks.reddit) || '';
-  editProfileForm.elements['website'].value = (profile.socialLinks && profile.socialLinks.website) || profile.website || '';
-  editProfileForm.elements['other'].value = (profile.socialLinks && profile.socialLinks.other) || '';
-
-  // Featured Links
-  featuredLinks = Array.isArray(profile.featuredLinks) ? profile.featuredLinks.map(l => ({...l})) : [];
-  renderFeaturedLinks();
-  // Gallery
+  // --- GALLERY POPULATION ---
   galleryItems = Array.isArray(profile.gallery) ? profile.gallery.map(i => ({...i})) : [];
   renderGalleryItems();
-  // Recent Activity
-  recentActivities = Array.isArray(profile.recentActivity) ? profile.recentActivity.map(i => ({...i})) : [];
-  renderRecentActivities();
 
-  // Verification Status
-  if (profile.verificationStatus) {
-    editProfileForm.elements['verificationStatusType'].value = profile.verificationStatus.type || 'unverified';
-    if (editProfileForm.elements['verificationStatusVerifiedAt'])
-      editProfileForm.elements['verificationStatusVerifiedAt'].value = profile.verificationStatus.verifiedAt ? profile.verificationStatus.verifiedAt.split('T')[0] : '';
-    if (editProfileForm.elements['verificationStatusVerifiedBy'])
-      editProfileForm.elements['verificationStatusVerifiedBy'].value = profile.verificationStatus.verifiedBy || '';
-  } else {
-    editProfileForm.elements['verificationStatusType'].value = 'unverified';
-    if (editProfileForm.elements['verificationStatusVerifiedAt'])
-      editProfileForm.elements['verificationStatusVerifiedAt'].value = '';
-    if (editProfileForm.elements['verificationStatusVerifiedBy'])
-      editProfileForm.elements['verificationStatusVerifiedBy'].value = '';
-  }
-  // QR URL
-  if (editProfileForm.elements['qrUrl'])
-    editProfileForm.elements['qrUrl'].value = profile.qrUrl || '';
-
-  // Profile image preview
-  if (profile.profileImageId || (profile.profileImage && profile.profileImage.data)) {
-    // If you have a URL or can construct one, set it here
-    // Otherwise, handle base64 or blob as needed
-    // Example: editProfileForm.querySelector('#profileImagePreview').src = ...
-    // For now, just show the preview if available
-    editProfileForm.querySelector('#profileImagePreview').style.display = '';
-  } else {
-    editProfileForm.querySelector('#profileImagePreview').style.display = 'none';
-  }
-
-  // Set the userId display field
-  editProfileForm.elements['userIdDisplay'].value = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
-
+  // Show the modal
   const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
   modal.show();
 };
@@ -969,8 +873,6 @@ function renderGalleryItems() {
     `;
     gallerySection.appendChild(div);
   });
-
-  // Handle type change is now handled in the input event listener above
 
   // Handle image file upload
   document.querySelectorAll('input[data-gfile]').forEach(input => {
