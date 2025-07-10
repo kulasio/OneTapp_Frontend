@@ -931,6 +931,29 @@ const cropperModal = cropperModalEl ? new bootstrap.Modal(cropperModalEl) : null
 const cropperImage = document.getElementById('cropperImage');
 const profileImagePreview = document.getElementById('profileImagePreview');
 
+// Test function for profile image upload
+window.testProfileImageUpload = async function() {
+  const formData = new FormData();
+  const testFile = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
+  formData.append('profileImage', testFile);
+  
+  try {
+    const response = await fetch(`${API_BASE}/profiles/test-upload`, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+      }
+    });
+    const result = await response.json();
+    console.log('Test upload result:', result);
+    alert('Test upload result: ' + JSON.stringify(result));
+  } catch (error) {
+    console.error('Test upload error:', error);
+    alert('Test upload error: ' + error.message);
+  }
+};
+
 if (profileImageInput) {
   profileImageInput.addEventListener('change', function(e) {
     const file = e.target.files[0];
