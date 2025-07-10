@@ -844,15 +844,22 @@ if (editProfileForm) {
       };
       formData.append('verificationStatus', JSON.stringify(verificationStatus));
       
-      // Ensure only one file is sent as profileImage
+      // Handle profile image upload
+      const profileImageInput = editProfileForm.querySelector('input[name="profileImage"]');
       if (croppedBlob) {
-        formData.delete('profileImage'); // Remove any file input
+        // Use cropped image
+        formData.delete('profileImage'); // Remove any existing file input
         formData.append('profileImage', croppedBlob, 'profile-image.jpg');
-        if (editProfileForm.elements['profileImage']) editProfileForm.elements['profileImage'].value = '';
+        console.log('Using cropped blob for profile image');
+      } else if (profileImageInput && profileImageInput.files[0]) {
+        // Use original file input if no cropped blob
+        formData.delete('profileImage');
+        formData.append('profileImage', profileImageInput.files[0]);
+        console.log('Using original file input for profile image');
       }
       
       const profileId = editProfileForm.elements['profileId'].value;
-      console.log('Submitting profile update for:', profileId, 'croppedBlob:', croppedBlob);
+      console.log('Submitting profile update for:', profileId, 'croppedBlob:', croppedBlob, 'hasFile:', profileImageInput?.files[0]);
       
       try {
       const res = await fetch(`${API_BASE}/profiles/${profileId}`, {
@@ -860,6 +867,7 @@ if (editProfileForm) {
         body: formData,
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+          // Note: Don't set Content-Type header for FormData - browser will set it automatically with boundary
         }
       });
         
@@ -955,16 +963,28 @@ if (profileImageInput) {
 const cropImageBtn = document.getElementById('cropImageBtn');
 if (cropImageBtn) {
   cropImageBtn.addEventListener('click', function() {
-    if (!cropper) return;
-    cropper.getCroppedCanvas().toBlob(blob => {
-      croppedBlob = blob;
-      // Show preview
-      if (profileImagePreview) {
-        profileImagePreview.src = URL.createObjectURL(blob);
-        profileImagePreview.style.display = '';
-      }
-      if (cropperModal) cropperModal.hide();
-    }, 'image/jpeg');
+    if (!cropper) {
+      console.error('Cropper not initialized');
+      return;
+    }
+    try {
+      cropper.getCroppedCanvas().toBlob(blob => {
+        if (blob) {
+          croppedBlob = blob;
+          console.log('Cropped blob created:', blob.size, 'bytes');
+          // Show preview
+          if (profileImagePreview) {
+            profileImagePreview.src = URL.createObjectURL(blob);
+            profileImagePreview.style.display = '';
+          }
+          if (cropperModal) cropperModal.hide();
+        } else {
+          console.error('Failed to create cropped blob');
+        }
+      }, 'image/jpeg', 0.9); // Added quality parameter
+    } catch (error) {
+      console.error('Error cropping image:', error);
+    }
   });
 } 
 
