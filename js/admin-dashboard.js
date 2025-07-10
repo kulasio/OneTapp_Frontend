@@ -942,7 +942,7 @@ function renderGalleryItems() {
         </div>
         <div class="col-md-4">
           <label class="form-label mb-0">Media</label>
-          <input type="url" class="form-control mb-1" value="${item.url || ''}" data-gurl idx="${idx}" placeholder="${item.type === 'video' ? 'Paste video URL' : 'Paste image URL or upload below'}">
+          <input type="url" class="form-control mb-1" value="${item.url || ''}" data-gurl idx="${idx}" placeholder="${item.type === 'video' ? 'Paste video URL' : ''}" style="display:${item.type === 'video' ? '' : 'none'}">
           <input type="file" class="form-control mb-1" accept="image/*" data-gfile idx="${idx}" style="display:${item.type === 'image' ? '' : 'none'}">
           <div class="progress mb-1" style="display:none;" id="gallery-upload-progress-${idx}">
             <div class="progress-bar" role="progressbar" style="width: 0%"></div>
