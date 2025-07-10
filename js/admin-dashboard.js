@@ -707,14 +707,18 @@ window.openEditProfileModal = async function(profileId) {
     editProfileForm.elements['qrUrl'].value = profile.qrUrl || '';
 
   // Profile image preview
+  const previewEl = editProfileForm.querySelector('#profileImagePreview');
   if (profile.profileImageId || (profile.profileImage && profile.profileImage.data)) {
-    // If you have a URL or can construct one, set it here
-    // Otherwise, handle base64 or blob as needed
-    // Example: editProfileForm.querySelector('#profileImagePreview').src = ...
-    // For now, just show the preview if available
-    editProfileForm.querySelector('#profileImagePreview').style.display = '';
+    // If profileImage.data is a base64 string, use it
+    if (profile.profileImage && profile.profileImage.data) {
+      previewEl.src = `data:image/jpeg;base64,${profile.profileImage.data}`;
+    } else if (profile.profileImageId && profile.profileImage && profile.profileImage.url) {
+      previewEl.src = profile.profileImage.url;
+    }
+    previewEl.style.display = '';
   } else {
-    editProfileForm.querySelector('#profileImagePreview').style.display = 'none';
+    previewEl.src = '#';
+    previewEl.style.display = 'none';
   }
 
   // Set the userId display field
