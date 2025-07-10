@@ -1,15 +1,6 @@
-// Wait for DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('Admin dashboard script loaded');
-});
-
 // Toast notification function
 function showToast(message, type = 'success') {
   const toastContainer = document.getElementById('toastContainer');
-  if (!toastContainer) {
-    console.error('Toast container not found');
-    return;
-  }
   const toastId = `toast-${Date.now()}`;
   const bgClass = type === 'success' ? 'bg-success text-white' : 'bg-danger text-white';
   const toast = document.createElement('div');
@@ -32,7 +23,7 @@ function showToast(message, type = 'success') {
 
 const API_BASE = "https://onetapp-backend.onrender.com/api"; // or your deployed backend URL
 
-// Sidebar navigation - with null checks
+// Sidebar navigation
 const dashboardNav = document.getElementById('dashboardNav');
 const usersNav = document.getElementById('usersNav');
 const cardsNav = document.getElementById('cardsNav');
@@ -50,13 +41,6 @@ const settingsSection = document.getElementById('settingsSection');
 const profilesSection = document.getElementById('profilesSection');
 
 function showSection(section) {
-    // Check if all sections exist before proceeding
-    if (!dashboardSection || !usersSection || !cardsSection || !analyticsSection || 
-        !reportsSection || !settingsSection || !profilesSection) {
-        console.error('One or more sections not found');
-        return;
-    }
-    
     // Hide all sections
     dashboardSection.style.display = 'none';
     usersSection.style.display = 'none';
@@ -67,155 +51,133 @@ function showSection(section) {
     profilesSection.style.display = 'none';
 
     // Remove active class from all nav items
-    if (dashboardNav) dashboardNav.classList.remove('active');
-    if (usersNav) usersNav.classList.remove('active');
-    if (cardsNav) cardsNav.classList.remove('active');
-    if (analyticsNav) analyticsNav.classList.remove('active');
-    if (reportsNav) reportsNav.classList.remove('active');
-    if (settingsNav) settingsNav.classList.remove('active');
-    if (profilesNav) profilesNav.classList.remove('active');
+    dashboardNav.classList.remove('active');
+    usersNav.classList.remove('active');
+    cardsNav.classList.remove('active');
+    analyticsNav.classList.remove('active');
+    reportsNav.classList.remove('active');
+    settingsNav.classList.remove('active');
+    profilesNav.classList.remove('active');
 
     // Show selected section and activate nav item
-    if (section === 'dashboard' && dashboardSection && dashboardNav) {
+    if (section === 'dashboard') {
         dashboardSection.style.display = '';
         dashboardNav.classList.add('active');
-    } else if (section === 'users' && usersSection && usersNav) {
+    } else if (section === 'users') {
         usersSection.style.display = '';
         usersNav.classList.add('active');
-    } else if (section === 'cards' && cardsSection && cardsNav) {
+    } else if (section === 'cards') {
         cardsSection.style.display = '';
         cardsNav.classList.add('active');
-    } else if (section === 'analytics' && analyticsSection && analyticsNav) {
+    } else if (section === 'analytics') {
         analyticsSection.style.display = '';
         analyticsNav.classList.add('active');
-    } else if (section === 'reports' && reportsSection && reportsNav) {
+    } else if (section === 'reports') {
         reportsSection.style.display = '';
         reportsNav.classList.add('active');
-    } else if (section === 'settings' && settingsSection && settingsNav) {
+    } else if (section === 'settings') {
         settingsSection.style.display = '';
         settingsNav.classList.add('active');
-    } else if (section === 'profiles' && profilesSection && profilesNav) {
+    } else if (section === 'profiles') {
         profilesSection.style.display = '';
         profilesNav.classList.add('active');
-        if (typeof fetchAndRenderProfiles === 'function') {
-            fetchAndRenderProfiles();
-        }
+        fetchAndRenderProfiles();
     }
 }
 
-// Add event listeners only if elements exist
-if (dashboardNav) {
-    dashboardNav.addEventListener('click', (e) => {
-        e.preventDefault();
-        showSection('dashboard');
-    });
-}
+dashboardNav.addEventListener('click', (e) => {
+    e.preventDefault();
+    showSection('dashboard');
+});
 
-if (usersNav) {
-    usersNav.addEventListener('click', (e) => {
-        e.preventDefault();
-        showSection('users');
-    });
-}
+usersNav.addEventListener('click', (e) => {
+    e.preventDefault();
+    showSection('users');
+});
 
-if (cardsNav) {
-    cardsNav.addEventListener('click', (e) => {
-        e.preventDefault();
-        showSection('cards');
-    });
-}
+cardsNav.addEventListener('click', (e) => {
+    e.preventDefault();
+    showSection('cards');
+});
 
-if (analyticsNav) {
-    analyticsNav.addEventListener('click', (e) => {
-        e.preventDefault();
-        showSection('analytics');
-    });
-}
+analyticsNav.addEventListener('click', (e) => {
+    e.preventDefault();
+    showSection('analytics');
+});
 
-if (reportsNav) {
-    reportsNav.addEventListener('click', (e) => {
-        e.preventDefault();
-        showSection('reports');
-    });
-}
+reportsNav.addEventListener('click', (e) => {
+    e.preventDefault();
+    showSection('reports');
+});
 
-if (settingsNav) {
-    settingsNav.addEventListener('click', (e) => {
-        e.preventDefault();
-        showSection('settings');
-    });
-}
+settingsNav.addEventListener('click', (e) => {
+    e.preventDefault();
+    showSection('settings');
+});
 
-if (profilesNav) {
-    profilesNav.addEventListener('click', (e) => {
-        e.preventDefault();
-        showSection('profiles');
-    });
-}
+profilesNav.addEventListener('click', (e) => {
+    e.preventDefault();
+    showSection('profiles');
+});
 
 // Logout functionality
 const logoutBtn = document.getElementById('logoutBtn');
 
-if (logoutBtn) {
-    logoutBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        // Clear the admin token from localStorage
-        localStorage.removeItem('adminToken');
-        
-        // Redirect to admin login page
-        window.location.href = './admin-login.html';
-    });
-}
+logoutBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    // Clear the admin token from localStorage
+    localStorage.removeItem('adminToken');
+    
+    // Redirect to admin login page
+    window.location.href = './admin-login.html';
+});
 
 // Modal logic
 const addUserBtn = document.getElementById('addUserBtn');
 const addUserModal = document.getElementById('addUserModal');
 const editUserModal = document.getElementById('editUserModal');
 
-if (addUserBtn) {
-    addUserBtn.addEventListener('click', () => {
-        const modal = new bootstrap.Modal(document.getElementById('addUserModal'));
-        modal.show();
-    });
-}
+addUserBtn.addEventListener('click', () => {
+    const modal = new bootstrap.Modal(document.getElementById('addUserModal'));
+    modal.show();
+});
 
 const addUserForm = document.getElementById('addUserForm');
-if (addUserForm) {
-    addUserForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(addUserForm);
-        const data = {
-            username: formData.get('username'),
-            email: formData.get('email'),
-            password: formData.get('password'),
-            role: formData.get('role'),
-            status: 'active' // Always set status for new users
-        };
-        const token = localStorage.getItem('adminToken');
-        try {
-            const response = await fetch(`${API_BASE}/users`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(data)
-            });
-            if (!response.ok) throw new Error('Failed to add user');
-            // Hide modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
-            if (modal) modal.hide();
-            // Refresh user list
-            if (typeof fetchUsers === 'function') {
-                fetchUsers();
-            }
-            addUserForm.reset();
-        } catch (err) {
-            alert('Error: ' + err.message);
-        }
-    });
-}
+addUserForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(addUserForm);
+    const data = {
+        username: formData.get('username'),
+        email: formData.get('email'),
+        password: formData.get('password'),
+        role: formData.get('role'),
+        status: 'active' // Always set status for new users
+    };
+    const token = localStorage.getItem('adminToken');
+    try {
+        const response = await fetch(`${API_BASE}/users`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(data)
+        });
+        if (!response.ok) throw new Error('Failed to add user');
+        // Hide modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+        if (modal) modal.hide();
+        // Refresh user list
+        fetchUsers();
+        addUserForm.reset();
+    } catch (err) {
+        alert('Error: ' + err.message);
+    }
+});
+
+// Remove old window click handler for modals (Bootstrap handles this)
+// window.addEventListener('click', (e) => { ... });
 
 // On page load, show dashboard by default
 showSection('dashboard');
@@ -238,16 +200,15 @@ async function fetchUsers() {
         allUsers = data.users;
         renderUsersTable(allUsers);
     } catch (err) {
-        if (usersTableBody) usersTableBody.innerHTML = `<tr><td colspan="5" style="color:red;">Error loading users</td></tr>`;
+        usersTableBody.innerHTML = `<tr><td colspan="5" style="color:red;">Error loading users</td></tr>`;
     }
 }
 
 function renderUsersTable(users) {
     if (!users || users.length === 0) {
-        if (usersTableBody) usersTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2rem;">No users found.</td></tr>';
+        usersTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2rem;">No users found.</td></tr>';
         return;
     }
-    if (!usersTableBody) return;
     usersTableBody.innerHTML = users.map(user => `
         <tr>
             <td>${user.username}</td>
@@ -265,123 +226,113 @@ function renderUsersTable(users) {
 
 // Filter users by email
 const userEmailFilter = document.getElementById('userEmailFilter');
-if (userEmailFilter) {
-    userEmailFilter.addEventListener('input', function() {
-        const filterValue = this.value.trim().toLowerCase();
-        const filtered = allUsers.filter(user =>
-            user.email && user.email.toLowerCase().includes(filterValue)
-        );
-        renderUsersTable(filterValue ? filtered : allUsers);
-    });
-}
+userEmailFilter.addEventListener('input', function() {
+    const filterValue = this.value.trim().toLowerCase();
+    const filtered = allUsers.filter(user =>
+        user.email && user.email.toLowerCase().includes(filterValue)
+    );
+    renderUsersTable(filterValue ? filtered : allUsers);
+});
 
 // Fetch users when Users section is shown
-if (usersNav) {
-    usersNav.addEventListener('click', () => {
-        fetchUsers();
-    });
-}
+usersNav.addEventListener('click', () => {
+    fetchUsers();
+});
 
 // Event delegation for user actions (Edit, Delete)
-if (usersTableBody) {
-    usersTableBody.addEventListener('click', async (e) => {
-        let target = e.target;
-        // If the click is on the <i> icon, get the parent button
-        if (target.tagName === 'I' && target.parentElement.classList.contains('btn-action')) {
-            target = target.parentElement;
-        }
-        const id = target.dataset.id;
-        const token = localStorage.getItem('adminToken');
+usersTableBody.addEventListener('click', async (e) => {
+    let target = e.target;
+    // If the click is on the <i> icon, get the parent button
+    if (target.tagName === 'I' && target.parentElement.classList.contains('btn-action')) {
+        target = target.parentElement;
+    }
+    const id = target.dataset.id;
+    const token = localStorage.getItem('adminToken');
 
-        if (target.classList.contains('btn-delete')) {
-            if (confirm('Are you sure you want to delete this user?')) {
-                try {
-                    const response = await fetch(`${API_BASE}/users/${id}`, {
-                        method: 'DELETE',
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-
-                    if (!response.ok) {
-                        const errorData = await response.json().catch(() => ({ message: 'Failed to delete user.' }));
-                        throw new Error(errorData.message);
-                    }
-                    
-                    await fetchUsers(); // Refresh the table
-                } catch (err) {
-                    alert(`Error: ${err.message}`);
-                }
-            }
-        }
-
-        if (target.classList.contains('btn-edit')) {
+    if (target.classList.contains('btn-delete')) {
+        if (confirm('Are you sure you want to delete this user?')) {
             try {
                 const response = await fetch(`${API_BASE}/users/${id}`, {
+                    method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
                 if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ message: 'Failed to fetch user data.' }));
+                    const errorData = await response.json().catch(() => ({ message: 'Failed to delete user.' }));
                     throw new Error(errorData.message);
                 }
-
-                // Support both { user: {...} } and { ... } response formats
-                const userResponse = await response.json();
-                const user = userResponse.user || userResponse;
                 
-                // Populate and show the modal
-                const form = document.getElementById('editUserForm');
-                if (form) {
-                    form.elements.userId.value = user._id || '';
-                    form.elements.email.value = user.email || '';
-                    form.elements.role.value = user.role || '';
-                    form.elements.status.value = user.status || '';
-                    
-                    const modal = new bootstrap.Modal(document.getElementById('editUserModal'));
-                    modal.show();
-                }
-
+                await fetchUsers(); // Refresh the table
             } catch (err) {
                 alert(`Error: ${err.message}`);
             }
         }
-    });
-}
+    }
 
-const editUserForm = document.getElementById('editUserForm');
-
-if (editUserForm) {
-    editUserForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const userId = e.target.elements.userId.value;
-        const role = e.target.elements.role.value;
-        const status = e.target.elements.status.value;
-        const token = localStorage.getItem('adminToken');
-
+    if (target.classList.contains('btn-edit')) {
         try {
-            const response = await fetch(`${API_BASE}/users/${userId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ role, status })
+            const response = await fetch(`${API_BASE}/users/${id}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
             });
 
             if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ message: 'Failed to update user.' }));
+                const errorData = await response.json().catch(() => ({ message: 'Failed to fetch user data.' }));
                 throw new Error(errorData.message);
             }
 
-            // editUserModal.style.display = 'none';
-            const modal = bootstrap.Modal.getInstance(document.getElementById('editUserModal'));
-            if (modal) modal.hide();
-            await fetchUsers(); // Refresh the table
+            // Support both { user: {...} } and { ... } response formats
+            const userResponse = await response.json();
+            const user = userResponse.user || userResponse;
+            
+            // Populate and show the modal
+            const form = document.getElementById('editUserForm');
+            form.elements.userId.value = user._id || '';
+            form.elements.email.value = user.email || '';
+            form.elements.role.value = user.role || '';
+            form.elements.status.value = user.status || '';
+            
+            const modal = new bootstrap.Modal(document.getElementById('editUserModal'));
+            modal.show();
 
         } catch (err) {
             alert(`Error: ${err.message}`);
         }
-    });
-}
+    }
+});
+
+const editUserForm = document.getElementById('editUserForm');
+
+editUserForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const userId = e.target.elements.userId.value;
+    const role = e.target.elements.role.value;
+    const status = e.target.elements.status.value;
+    const token = localStorage.getItem('adminToken');
+
+    try {
+        const response = await fetch(`${API_BASE}/users/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ role, status })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: 'Failed to update user.' }));
+            throw new Error(errorData.message);
+        }
+
+        // editUserModal.style.display = 'none';
+        const modal = bootstrap.Modal.getInstance(document.getElementById('editUserModal'));
+        if (modal) modal.hide();
+        await fetchUsers(); // Refresh the table
+
+    } catch (err) {
+        alert(`Error: ${err.message}`);
+    }
+});
 
 // Optionally, fetch users on page load if Users section is default
 // fetchUsers(); 
@@ -399,10 +350,6 @@ let allCardProfiles = [];
 
 function fetchAndRenderCards() {
     const token = localStorage.getItem('adminToken');
-    if (!token) {
-        console.error('Admin token not found for card fetching.');
-        return;
-    }
     fetch(`${API_BASE}/cards`, {
         headers: { 'Authorization': `Bearer ${token}` }
     })
@@ -414,7 +361,6 @@ function fetchAndRenderCards() {
 }
 
 function renderCardsTable(cards) {
-    if (!cardsTableBody) return;
     cardsTableBody.innerHTML = '';
     cards.forEach(card => {
         // Use populated userId object
@@ -439,10 +385,6 @@ function renderCardsTable(cards) {
 
 function fetchUsersForCardDropdown() {
     const token = localStorage.getItem('adminToken');
-    if (!token) {
-        console.error('Admin token not found for card user fetching.');
-        return;
-    }
     return fetch(`${API_BASE}/users`, {
         headers: { 'Authorization': `Bearer ${token}` }
     })
@@ -451,24 +393,18 @@ function fetchUsersForCardDropdown() {
             const users = data.users || data;
             allCardUsers = users;
             const userSelect = addEditCardForm.elements['userId'];
-            if (userSelect) {
-                userSelect.innerHTML = '';
-                users.forEach(user => {
-                    const opt = document.createElement('option');
-                    opt.value = user._id;
-                    opt.textContent = user.username + ' (' + user.email + ')';
-                    userSelect.appendChild(opt);
-                });
-            }
+            userSelect.innerHTML = '';
+            users.forEach(user => {
+                const opt = document.createElement('option');
+                opt.value = user._id;
+                opt.textContent = user.username + ' (' + user.email + ')';
+                userSelect.appendChild(opt);
+            });
         });
 }
 
 function fetchProfilesForCardDropdown() {
     const token = localStorage.getItem('adminToken');
-    if (!token) {
-        console.error('Admin token not found for card profile fetching.');
-        return;
-    }
     return fetch(`${API_BASE}/profiles`, {
         headers: { 'Authorization': `Bearer ${token}` }
     })
@@ -477,15 +413,13 @@ function fetchProfilesForCardDropdown() {
             const profiles = data;
             allCardProfiles = profiles;
             const profileSelect = addEditCardForm.elements['defaultProfileId'];
-            if (profileSelect) {
-                profileSelect.innerHTML = '<option value="">None</option>';
-                profiles.forEach(profile => {
-                    const opt = document.createElement('option');
-                    opt.value = profile._id;
-                    opt.textContent = profile.fullName + (profile.jobTitle ? ' - ' + profile.jobTitle : '');
-                    profileSelect.appendChild(opt);
-                });
-            }
+            profileSelect.innerHTML = '<option value="">None</option>';
+            profiles.forEach(profile => {
+                const opt = document.createElement('option');
+                opt.value = profile._id;
+                opt.textContent = profile.fullName + (profile.jobTitle ? ' - ' + profile.jobTitle : '');
+                profileSelect.appendChild(opt);
+            });
         });
 }
 
@@ -499,92 +433,78 @@ function generateCardUid(length = 10) {
     return uid;
 }
 
-if (addCardBtn) {
-    addCardBtn.addEventListener('click', async () => {
-        if (!addEditCardForm) return;
-        addEditCardForm.reset();
-        if (addEditCardForm.elements['cardId']) addEditCardForm.elements['cardId'].value = '';
-        // Auto-generate cardUid
-        if (addEditCardForm.elements['cardUid']) addEditCardForm.elements['cardUid'].value = generateCardUid(10);
-        if (cardModalTitle) cardModalTitle.textContent = 'Add Card';
-        await fetchUsersForCardDropdown();
-        await fetchProfilesForCardDropdown();
-        // Show dropdown, hide plain text
-        if (addEditCardForm.elements['userId']) addEditCardForm.elements['userId'].style.display = '';
-        if (addEditCardForm.elements['userDisplay']) addEditCardForm.elements['userDisplay'].style.display = 'none';
-        const modal = new bootstrap.Modal(document.getElementById('addEditCardModal'));
-        modal.show();
-    });
-}
+addCardBtn.addEventListener('click', async () => {
+    addEditCardForm.reset();
+    addEditCardForm.elements['cardId'].value = '';
+    // Auto-generate cardUid
+    addEditCardForm.elements['cardUid'].value = generateCardUid(10);
+    cardModalTitle.textContent = 'Add Card';
+    await fetchUsersForCardDropdown();
+    await fetchProfilesForCardDropdown();
+    // Show dropdown, hide plain text
+    addEditCardForm.elements['userId'].style.display = '';
+    addEditCardForm.elements['userDisplay'].style.display = 'none';
+    const modal = new bootstrap.Modal(document.getElementById('addEditCardModal'));
+    modal.show();
+});
 
 window.openEditCardModal = async function(cardId) {
     const card = allCards.find(c => c._id === cardId);
     if (!card) return;
-    if (!addEditCardForm) return;
     addEditCardForm.reset();
-    if (addEditCardForm.elements['cardId']) addEditCardForm.elements['cardId'].value = card._id;
+    addEditCardForm.elements['cardId'].value = card._id;
     await fetchUsersForCardDropdown();
     await fetchProfilesForCardDropdown();
     // Hide dropdown, show plain text
-    if (addEditCardForm.elements['userId']) addEditCardForm.elements['userId'].style.display = 'none';
-    if (addEditCardForm.elements['userDisplay']) addEditCardForm.elements['userDisplay'].style.display = '';
+    addEditCardForm.elements['userId'].style.display = 'none';
+    addEditCardForm.elements['userDisplay'].style.display = '';
     // Find user object
     let user = card.userId;
     if (!user && allCardUsers && card.userId) {
         user = allCardUsers.find(u => u._id === card.userId);
     }
-    if (addEditCardForm.elements['userDisplay']) addEditCardForm.elements['userDisplay'].value = user ? (user.username + ' (' + user.email + ')') : '';
-    if (addEditCardForm.elements['cardUid']) addEditCardForm.elements['cardUid'].value = card.cardUid || '';
-    if (addEditCardForm.elements['label']) addEditCardForm.elements['label'].value = card.label || '';
-    if (addEditCardForm.elements['assignedUrl']) addEditCardForm.elements['assignedUrl'].value = card.assignedUrl || '';
-    if (addEditCardForm.elements['defaultProfileId']) addEditCardForm.elements['defaultProfileId'].value = card.defaultProfileId || '';
-    if (addEditCardForm.elements['status']) addEditCardForm.elements['status'].value = card.status || 'active';
-    if (cardModalTitle) cardModalTitle.textContent = 'Edit Card';
+    addEditCardForm.elements['userDisplay'].value = user ? (user.username + ' (' + user.email + ')') : '';
+    addEditCardForm.elements['cardUid'].value = card.cardUid || '';
+    addEditCardForm.elements['label'].value = card.label || '';
+    addEditCardForm.elements['assignedUrl'].value = card.assignedUrl || '';
+    addEditCardForm.elements['defaultProfileId'].value = card.defaultProfileId || '';
+    addEditCardForm.elements['status'].value = card.status || 'active';
+    cardModalTitle.textContent = 'Edit Card';
     const modal = new bootstrap.Modal(document.getElementById('addEditCardModal'));
     modal.show();
 };
 
-if (addEditCardForm) {
-    addEditCardForm.onsubmit = function(e) {
-        e.preventDefault();
-        const formData = new FormData(addEditCardForm);
-        const cardId = formData.get('cardId');
-        const method = cardId ? 'PUT' : 'POST';
-        const url = cardId ? `${API_BASE}/cards/${cardId}` : `${API_BASE}/cards`;
-        const data = {};
-        formData.forEach((value, key) => {
-            if (value) data[key] = value;
-        });
-        // Remove cardId from data
-        delete data.cardId;
-        if (!localStorage.getItem('adminToken')) {
-            console.error('Admin token not found for card submission.');
-            return;
-        }
-        fetch(url, {
-            method,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-            },
-            body: JSON.stringify(data)
-        })
-        .then(res => res.json())
-        .then(() => {
-            // addEditCardModal.style.display = 'none';
-            const modal = bootstrap.Modal.getInstance(document.getElementById('addEditCardModal'));
-            if (modal) modal.hide();
-            fetchAndRenderCards();
-        });
-    };
-}
+addEditCardForm.onsubmit = function(e) {
+    e.preventDefault();
+    const formData = new FormData(addEditCardForm);
+    const cardId = formData.get('cardId');
+    const method = cardId ? 'PUT' : 'POST';
+    const url = cardId ? `${API_BASE}/cards/${cardId}` : `${API_BASE}/cards`;
+    const data = {};
+    formData.forEach((value, key) => {
+        if (value) data[key] = value;
+    });
+    // Remove cardId from data
+    delete data.cardId;
+    fetch(url, {
+        method,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(() => {
+        // addEditCardModal.style.display = 'none';
+        const modal = bootstrap.Modal.getInstance(document.getElementById('addEditCardModal'));
+        if (modal) modal.hide();
+        fetchAndRenderCards();
+    });
+};
 
 window.deleteCard = function(cardId) {
     if (!confirm('Are you sure you want to delete this card?')) return;
-    if (!localStorage.getItem('adminToken')) {
-        console.error('Admin token not found for card deletion.');
-        return;
-    }
     fetch(`${API_BASE}/cards/${cardId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
@@ -602,25 +522,18 @@ window.deleteCard = function(cardId) {
 
 // Filter cards by assigned user's email
 const cardEmailFilter = document.getElementById('cardEmailFilter');
-if (cardEmailFilter) {
-    cardEmailFilter.addEventListener('input', function() {
-        const filterValue = this.value.trim().toLowerCase();
-        const filtered = allCards.filter(card => {
-            const user = allCardUsers.find(u => u._id === card.userId);
-            return user && user.email && user.email.toLowerCase().includes(filterValue);
-        });
-        renderCardsTable(filterValue ? filtered : allCards);
+cardEmailFilter.addEventListener('input', function() {
+    const filterValue = this.value.trim().toLowerCase();
+    const filtered = allCards.filter(card => {
+        const user = allCardUsers.find(u => u._id === card.userId);
+        return user && user.email && user.email.toLowerCase().includes(filterValue);
     });
-}
+    renderCardsTable(filterValue ? filtered : allCards);
+});
 
 // Fetch cards and users/profiles on page load for the Cards section
 function showCardsSection() {
     // Hide all sections
-    if (!dashboardSection || !usersSection || !cardsSection || !analyticsSection || 
-        !reportsSection || !settingsSection || !profilesSection) {
-        console.error('One or more sections not found for showCardsSection.');
-        return;
-    }
     dashboardSection.style.display = 'none';
     usersSection.style.display = 'none';
     cardsSection.style.display = 'none';
@@ -648,11 +561,6 @@ let allProfiles = [];
 
 function showProfilesSection() {
     // Hide all sections (replace hideAllSections)
-    if (!dashboardSection || !usersSection || !cardsSection || !analyticsSection || 
-        !reportsSection || !settingsSection || !profilesSection) {
-        console.error('One or more sections not found for showProfilesSection.');
-        return;
-    }
     dashboardSection.style.display = 'none';
     usersSection.style.display = 'none';
     cardsSection.style.display = 'none';
@@ -665,10 +573,6 @@ function showProfilesSection() {
 }
 
 function fetchAndRenderProfiles() {
-    if (!localStorage.getItem('adminToken')) {
-        console.error('Admin token not found for profile fetching.');
-        return;
-    }
     fetch(`${API_BASE}/profiles`)
         .then(res => res.json())
         .then(data => {
@@ -678,7 +582,6 @@ function fetchAndRenderProfiles() {
 }
 
 function renderProfilesTable(profiles) {
-    if (!profilesTableBody) return;
     profilesTableBody.innerHTML = '';
     profiles.forEach(profile => {
         const userId = profile.userId && profile.userId._id ? profile.userId._id : profile.userId;
@@ -716,11 +619,11 @@ window.openEditProfileModal = async function(profileId) {
   const modalInstance = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
   if (modalInstance) modalInstance.hide();
   croppedBlob = null;
-  if (editProfileForm) editProfileForm.reset();
-  if (editProfileForm.elements['profileImage']) editProfileForm.elements['profileImage'].value = '';
-  if (editProfileForm.elements['profileId']) editProfileForm.elements['profileId'].value = profileId;
+  editProfileForm.reset();
+  editProfileForm.elements['profileImage'].value = '';
+  editProfileForm.elements['profileId'].value = profileId;
   // Always set userId hidden field
-  if (editProfileForm.elements['userId']) editProfileForm.elements['userId'].value = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
+  editProfileForm.elements['userId'].value = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
 
   // Remove user dropdown and show read-only user display
   let userDisplay = editProfileForm.querySelector('[name="userDisplay"]');
@@ -743,10 +646,6 @@ window.openEditProfileModal = async function(profileId) {
     // Fallback: fetch user from API
     try {
       const token = localStorage.getItem('adminToken');
-      if (!token) {
-        console.error('Admin token not found for profile user fetching.');
-        return;
-      }
       const res = await fetch(`${API_BASE}/users/${userId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -757,27 +656,27 @@ window.openEditProfileModal = async function(profileId) {
   userDisplay.style.display = '';
 
   // Populate other fields
-  if (editProfileForm.elements['fullName']) editProfileForm.elements['fullName'].value = profile.fullName || '';
-  if (editProfileForm.elements['jobTitle']) editProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
-  if (editProfileForm.elements['company']) editProfileForm.elements['company'].value = profile.company || '';
-  if (editProfileForm.elements['bio']) editProfileForm.elements['bio'].value = profile.bio || '';
-  if (editProfileForm.elements['contactEmail']) editProfileForm.elements['contactEmail'].value = (profile.contact && profile.contact.email) || profile.contactEmail || '';
-  if (editProfileForm.elements['contactPhone']) editProfileForm.elements['contactPhone'].value = (profile.contact && profile.contact.phone) || profile.contactPhone || '';
-  if (editProfileForm.elements['contactLocation']) editProfileForm.elements['contactLocation'].value = (profile.contact && profile.contact.location) || profile.contactLocation || '';
-  if (editProfileForm.elements['linkedin']) editProfileForm.elements['linkedin'].value = (profile.socialLinks && profile.socialLinks.linkedin) || '';
-  if (editProfileForm.elements['twitter']) editProfileForm.elements['twitter'].value = (profile.socialLinks && profile.socialLinks.twitter) || '';
-  if (editProfileForm.elements['github']) editProfileForm.elements['github'].value = (profile.socialLinks && profile.socialLinks.github) || '';
-  if (editProfileForm.elements['facebook']) editProfileForm.elements['facebook'].value = (profile.socialLinks && profile.socialLinks.facebook) || '';
-  if (editProfileForm.elements['instagram']) editProfileForm.elements['instagram'].value = (profile.socialLinks && profile.socialLinks.instagram) || '';
-  if (editProfileForm.elements['tiktok']) editProfileForm.elements['tiktok'].value = (profile.socialLinks && profile.socialLinks.tiktok) || '';
-  if (editProfileForm.elements['youtube']) editProfileForm.elements['youtube'].value = (profile.socialLinks && profile.socialLinks.youtube) || '';
-  if (editProfileForm.elements['whatsapp']) editProfileForm.elements['whatsapp'].value = (profile.socialLinks && profile.socialLinks.whatsapp) || '';
-  if (editProfileForm.elements['telegram']) editProfileForm.elements['telegram'].value = (profile.socialLinks && profile.socialLinks.telegram) || '';
-  if (editProfileForm.elements['snapchat']) editProfileForm.elements['snapchat'].value = (profile.socialLinks && profile.socialLinks.snapchat) || '';
-  if (editProfileForm.elements['pinterest']) editProfileForm.elements['pinterest'].value = (profile.socialLinks && profile.socialLinks.pinterest) || '';
-  if (editProfileForm.elements['reddit']) editProfileForm.elements['reddit'].value = (profile.socialLinks && profile.socialLinks.reddit) || '';
-  if (editProfileForm.elements['website']) editProfileForm.elements['website'].value = (profile.socialLinks && profile.socialLinks.website) || profile.website || '';
-  if (editProfileForm.elements['other']) editProfileForm.elements['other'].value = (profile.socialLinks && profile.socialLinks.other) || '';
+  editProfileForm.elements['fullName'].value = profile.fullName || '';
+  editProfileForm.elements['jobTitle'].value = profile.jobTitle || '';
+  editProfileForm.elements['company'].value = profile.company || '';
+  editProfileForm.elements['bio'].value = profile.bio || '';
+  editProfileForm.elements['contactEmail'].value = (profile.contact && profile.contact.email) || profile.contactEmail || '';
+  editProfileForm.elements['contactPhone'].value = (profile.contact && profile.contact.phone) || profile.contactPhone || '';
+  editProfileForm.elements['contactLocation'].value = (profile.contact && profile.contact.location) || profile.contactLocation || '';
+  editProfileForm.elements['linkedin'].value = (profile.socialLinks && profile.socialLinks.linkedin) || '';
+  editProfileForm.elements['twitter'].value = (profile.socialLinks && profile.socialLinks.twitter) || '';
+  editProfileForm.elements['github'].value = (profile.socialLinks && profile.socialLinks.github) || '';
+  editProfileForm.elements['facebook'].value = (profile.socialLinks && profile.socialLinks.facebook) || '';
+  editProfileForm.elements['instagram'].value = (profile.socialLinks && profile.socialLinks.instagram) || '';
+  editProfileForm.elements['tiktok'].value = (profile.socialLinks && profile.socialLinks.tiktok) || '';
+  editProfileForm.elements['youtube'].value = (profile.socialLinks && profile.socialLinks.youtube) || '';
+  editProfileForm.elements['whatsapp'].value = (profile.socialLinks && profile.socialLinks.whatsapp) || '';
+  editProfileForm.elements['telegram'].value = (profile.socialLinks && profile.socialLinks.telegram) || '';
+  editProfileForm.elements['snapchat'].value = (profile.socialLinks && profile.socialLinks.snapchat) || '';
+  editProfileForm.elements['pinterest'].value = (profile.socialLinks && profile.socialLinks.pinterest) || '';
+  editProfileForm.elements['reddit'].value = (profile.socialLinks && profile.socialLinks.reddit) || '';
+  editProfileForm.elements['website'].value = (profile.socialLinks && profile.socialLinks.website) || profile.website || '';
+  editProfileForm.elements['other'].value = (profile.socialLinks && profile.socialLinks.other) || '';
 
   // Featured Links
   featuredLinks = Array.isArray(profile.featuredLinks) ? profile.featuredLinks.map(l => ({...l})) : [];
@@ -791,13 +690,13 @@ window.openEditProfileModal = async function(profileId) {
 
   // Verification Status
   if (profile.verificationStatus) {
-    if (editProfileForm.elements['verificationStatusType']) editProfileForm.elements['verificationStatusType'].value = profile.verificationStatus.type || 'unverified';
+    editProfileForm.elements['verificationStatusType'].value = profile.verificationStatus.type || 'unverified';
     if (editProfileForm.elements['verificationStatusVerifiedAt'])
       editProfileForm.elements['verificationStatusVerifiedAt'].value = profile.verificationStatus.verifiedAt ? profile.verificationStatus.verifiedAt.split('T')[0] : '';
     if (editProfileForm.elements['verificationStatusVerifiedBy'])
       editProfileForm.elements['verificationStatusVerifiedBy'].value = profile.verificationStatus.verifiedBy || '';
   } else {
-    if (editProfileForm.elements['verificationStatusType']) editProfileForm.elements['verificationStatusType'].value = 'unverified';
+    editProfileForm.elements['verificationStatusType'].value = 'unverified';
     if (editProfileForm.elements['verificationStatusVerifiedAt'])
       editProfileForm.elements['verificationStatusVerifiedAt'].value = '';
     if (editProfileForm.elements['verificationStatusVerifiedBy'])
@@ -808,101 +707,86 @@ window.openEditProfileModal = async function(profileId) {
     editProfileForm.elements['qrUrl'].value = profile.qrUrl || '';
 
   // Profile image preview
-  const profileImagePreview = document.getElementById('profileImagePreview');
-  if (profileImagePreview && (profile.profileImageId || (profile.profileImage && profile.profileImage.data))) {
+  if (profile.profileImageId || (profile.profileImage && profile.profileImage.data)) {
     // If you have a URL or can construct one, set it here
     // Otherwise, handle base64 or blob as needed
     // Example: editProfileForm.querySelector('#profileImagePreview').src = ...
     // For now, just show the preview if available
-    if (profileImagePreview) profileImagePreview.style.display = '';
+    editProfileForm.querySelector('#profileImagePreview').style.display = '';
   } else {
-    if (profileImagePreview) profileImagePreview.style.display = 'none';
+    editProfileForm.querySelector('#profileImagePreview').style.display = 'none';
   }
 
   // Set the userId display field
-  if (editProfileForm.elements['userIdDisplay']) editProfileForm.elements['userIdDisplay'].value = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
+  editProfileForm.elements['userIdDisplay'].value = (profile.userId && profile.userId._id) ? profile.userId._id : profile.userId || '';
 
   const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
   modal.show();
 };
 
-if (editProfileForm) {
-    editProfileForm.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const formData = new FormData(editProfileForm);
-      
-      // Add custom field serialization
-      formData.append('featuredLinks', JSON.stringify(featuredLinks));
-      formData.append('gallery', JSON.stringify(galleryItems));
-      formData.append('recentActivity', JSON.stringify(recentActivities));
-      
-      // Add verification status
-      const verificationStatus = {
-        type: editProfileForm.elements['verificationStatusType'] ? editProfileForm.elements['verificationStatusType'].value : 'unverified',
-        verifiedAt: editProfileForm.elements['verificationStatusVerifiedAt'] ? editProfileForm.elements['verificationStatusVerifiedAt'].value : '',
-        verifiedBy: editProfileForm.elements['verificationStatusVerifiedBy'] ? editProfileForm.elements['verificationStatusVerifiedBy'].value : ''
-      };
-      formData.append('verificationStatus', JSON.stringify(verificationStatus));
-      
-      // Handle profile image upload
-      const profileImageInput = editProfileForm.querySelector('input[name="profileImage"]');
-      if (croppedBlob) {
-        // Use cropped image
-        formData.delete('profileImage'); // Remove any existing file input
-        formData.append('profileImage', croppedBlob, 'profile-image.jpg');
-        console.log('Using cropped blob for profile image');
-      } else if (profileImageInput && profileImageInput.files[0]) {
-        // Use original file input if no cropped blob
-        formData.delete('profileImage');
-        formData.append('profileImage', profileImageInput.files[0]);
-        console.log('Using original file input for profile image');
-      }
-      
-      const profileId = editProfileForm.elements['profileId'].value;
-      console.log('Submitting profile update for:', profileId, 'croppedBlob:', croppedBlob, 'hasFile:', profileImageInput?.files[0]);
-      
+editProfileForm.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const formData = new FormData(editProfileForm);
+  
+  // Add custom field serialization
+  formData.append('featuredLinks', JSON.stringify(featuredLinks));
+  formData.append('gallery', JSON.stringify(galleryItems));
+  formData.append('recentActivity', JSON.stringify(recentActivities));
+  
+  // Add verification status
+  const verificationStatus = {
+    type: editProfileForm.elements['verificationStatusType'].value,
+    verifiedAt: editProfileForm.elements['verificationStatusVerifiedAt'].value,
+    verifiedBy: editProfileForm.elements['verificationStatusVerifiedBy'].value
+  };
+  formData.append('verificationStatus', JSON.stringify(verificationStatus));
+  
+  // Ensure only one file is sent as profileImage
+  if (croppedBlob) {
+    formData.delete('profileImage'); // Remove any file input
+    formData.append('profileImage', croppedBlob, 'profile-image.jpg');
+    editProfileForm.elements['profileImage'].value = '';
+  }
+  
+  const profileId = editProfileForm.elements['profileId'].value;
+  console.log('Submitting profile update for:', profileId, 'croppedBlob:', croppedBlob);
+  
+  try {
+  const res = await fetch(`${API_BASE}/profiles/${profileId}`, {
+    method: 'PUT',
+    body: formData,
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+    }
+  });
+    
+  if (res.ok) {
+      // Always close modal on success
+      const modal = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
+      if (modal) modal.hide();
+    fetchAndRenderProfiles();
+      croppedBlob = null;
+      showToast('Profile updated successfully!', 'success');
+    } else {
+      let errorText = await res.text();
+      let errorMsg = '';
       try {
-      const res = await fetch(`${API_BASE}/profiles/${profileId}`, {
-        method: 'PUT',
-        body: formData,
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-          // Note: Don't set Content-Type header for FormData - browser will set it automatically with boundary
-        }
-      });
-        
-      if (res.ok) {
-          // Always close modal on success
-          const modal = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
-          if (modal) modal.hide();
-        fetchAndRenderProfiles();
-          croppedBlob = null;
-          showToast('Profile updated successfully!', 'success');
-        } else {
-          let errorText = await res.text();
-          let errorMsg = '';
-          try {
-            const errorData = JSON.parse(errorText);
-            errorMsg = errorData.message || errorData.error || errorText;
-          } catch {
-            errorMsg = errorText;
-          }
-          showToast(`Error: ${errorMsg}`, 'error');
-        }
-      } catch (err) {
-        showToast(`Error: ${err.message}`, 'error');
+        const errorData = JSON.parse(errorText);
+        errorMsg = errorData.message || errorData.error || errorText;
+      } catch {
+        errorMsg = errorText;
       }
-    });
-}
+      showToast(`Error: ${errorMsg}`, 'error');
+    }
+  } catch (err) {
+    showToast(`Error: ${err.message}`, 'error');
+  }
+});
 
 // Delete profile function
 window.deleteProfile = async function(profileId) {
   if (!confirm('Are you sure you want to delete this profile?')) return;
   
-  if (!localStorage.getItem('adminToken')) {
-    console.error('Admin token not found for profile deletion.');
-    return;
-  }
   try {
     const res = await fetch(`${API_BASE}/profiles/${profileId}`, {
       method: 'DELETE',
@@ -931,52 +815,27 @@ const cropperModal = cropperModalEl ? new bootstrap.Modal(cropperModalEl) : null
 const cropperImage = document.getElementById('cropperImage');
 const profileImagePreview = document.getElementById('profileImagePreview');
 
-// Test function for profile image upload
-window.testProfileImageUpload = async function() {
-  const formData = new FormData();
-  const testFile = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
-  formData.append('profileImage', testFile);
-  
-  try {
-    const response = await fetch(`${API_BASE}/profiles/test-upload`, {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-      }
-    });
-    const result = await response.json();
-    console.log('Test upload result:', result);
-    alert('Test upload result: ' + JSON.stringify(result));
-  } catch (error) {
-    console.error('Test upload error:', error);
-    alert('Test upload error: ' + error.message);
-  }
-};
-
 if (profileImageInput) {
   profileImageInput.addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = function(event) {
-      if (cropperImage) cropperImage.src = event.target.result;
+      cropperImage.src = event.target.result;
       if (cropperModal) cropperModal.show();
       setTimeout(() => {
         if (cropper) cropper.destroy();
-        if (cropperImage && typeof Cropper !== 'undefined') {
-          cropper = new Cropper(cropperImage, {
-            aspectRatio: 7 / 8,
-            viewMode: 1,
-            autoCropArea: 1,
-            movable: false,
-            zoomable: true,
-            rotatable: false,
-            scalable: false,
-            responsive: true,
-            background: false
-          });
-        }
+        cropper = new Cropper(cropperImage, {
+          aspectRatio: 7 / 8,
+          viewMode: 1,
+          autoCropArea: 1,
+          movable: false,
+          zoomable: true,
+          rotatable: false,
+          scalable: false,
+          responsive: true,
+          background: false
+        });
       }, 300);
     };
     reader.readAsDataURL(file);
@@ -986,28 +845,16 @@ if (profileImageInput) {
 const cropImageBtn = document.getElementById('cropImageBtn');
 if (cropImageBtn) {
   cropImageBtn.addEventListener('click', function() {
-    if (!cropper) {
-      console.error('Cropper not initialized');
-      return;
-    }
-    try {
-      cropper.getCroppedCanvas().toBlob(blob => {
-        if (blob) {
-          croppedBlob = blob;
-          console.log('Cropped blob created:', blob.size, 'bytes');
-          // Show preview
-          if (profileImagePreview) {
-            profileImagePreview.src = URL.createObjectURL(blob);
-            profileImagePreview.style.display = '';
-          }
-          if (cropperModal) cropperModal.hide();
-        } else {
-          console.error('Failed to create cropped blob');
-        }
-      }, 'image/jpeg', 0.9); // Added quality parameter
-    } catch (error) {
-      console.error('Error cropping image:', error);
-    }
+    if (!cropper) return;
+    cropper.getCroppedCanvas().toBlob(blob => {
+      croppedBlob = blob;
+      // Show preview
+      if (profileImagePreview) {
+        profileImagePreview.src = URL.createObjectURL(blob);
+        profileImagePreview.style.display = '';
+      }
+      if (cropperModal) cropperModal.hide();
+    }, 'image/jpeg');
   });
 } 
 
@@ -1017,7 +864,6 @@ const addFeaturedLinkBtnAdd = document.getElementById('addFeaturedLinkBtnAdd');
 let featuredLinks = [];
 
 function renderFeaturedLinks() {
-  if (!featuredLinksSection) return;
   featuredLinksSection.innerHTML = '';
   featuredLinks.forEach((link, idx) => {
     const div = document.createElement('div');
@@ -1056,23 +902,21 @@ if (addFeaturedLinkBtnAdd) {
   });
 }
 
-if (featuredLinksSection) {
-    featuredLinksSection.addEventListener('input', function(e) {
-      const idx = e.target.getAttribute('idx');
-      if (e.target.hasAttribute('data-flabel')) featuredLinks[idx].label = e.target.value;
-      if (e.target.hasAttribute('data-furl')) featuredLinks[idx].url = e.target.value;
-      if (e.target.hasAttribute('data-ficon')) featuredLinks[idx].icon = e.target.value;
-      if (e.target.hasAttribute('data-forder')) featuredLinks[idx].order = parseInt(e.target.value) || 0;
-    });
+featuredLinksSection.addEventListener('input', function(e) {
+  const idx = e.target.getAttribute('idx');
+  if (e.target.hasAttribute('data-flabel')) featuredLinks[idx].label = e.target.value;
+  if (e.target.hasAttribute('data-furl')) featuredLinks[idx].url = e.target.value;
+  if (e.target.hasAttribute('data-ficon')) featuredLinks[idx].icon = e.target.value;
+  if (e.target.hasAttribute('data-forder')) featuredLinks[idx].order = parseInt(e.target.value) || 0;
+});
 
-    featuredLinksSection.addEventListener('click', function(e) {
-      if (e.target.closest('[data-remove-featured-link]')) {
-        const idx = e.target.closest('[data-remove-featured-link]').getAttribute('data-remove-featured-link');
-        featuredLinks.splice(idx, 1);
-        renderFeaturedLinks();
-      }
-    });
-}
+featuredLinksSection.addEventListener('click', function(e) {
+  if (e.target.closest('[data-remove-featured-link]')) {
+    const idx = e.target.closest('[data-remove-featured-link]').getAttribute('data-remove-featured-link');
+    featuredLinks.splice(idx, 1);
+    renderFeaturedLinks();
+  }
+});
 
 
 
@@ -1082,7 +926,6 @@ const addGalleryItemBtnAdd = document.getElementById('addGalleryItemBtnAdd');
 let galleryItems = [];
 
 function renderGalleryItems() {
-  if (!gallerySection) return;
   gallerySection.innerHTML = '';
   galleryItems.forEach((item, idx) => {
     const div = document.createElement('div');
@@ -1099,7 +942,7 @@ function renderGalleryItems() {
         </div>
         <div class="col-md-4">
           <label class="form-label mb-0">Media</label>
-          <input type="url" class="form-control mb-1" value="${item.url || ''}" data-gurl idx="${idx}" placeholder="${item.type === 'video' ? 'Paste video URL' : ''}" style="display:${item.type === 'video' ? '' : 'none'}">
+          <input type="url" class="form-control mb-1" value="${item.url || ''}" data-gurl idx="${idx}" placeholder="${item.type === 'video' ? 'Paste video URL' : 'Paste image URL or upload below'}">
           <input type="file" class="form-control mb-1" accept="image/*" data-gfile idx="${idx}" style="display:${item.type === 'image' ? '' : 'none'}">
           <div class="progress mb-1" style="display:none;" id="gallery-upload-progress-${idx}">
             <div class="progress-bar" role="progressbar" style="width: 0%"></div>
@@ -1142,23 +985,19 @@ function renderGalleryItems() {
       if (!file) return;
       // Show progress bar
       const progressBar = document.getElementById(`gallery-upload-progress-${idx}`);
-      if (progressBar) progressBar.style.display = 'block';
-      const bar = progressBar ? progressBar.querySelector('.progress-bar') : null;
-      if (bar) bar.style.width = '0%';
+      progressBar.style.display = 'block';
+      const bar = progressBar.querySelector('.progress-bar');
+      bar.style.width = '0%';
       // Upload to backend
       const formData = new FormData();
       formData.append('image', file);
-      if (!localStorage.getItem('adminToken')) {
-        console.error('Admin token not found for gallery image upload.');
-        return;
-      }
       try {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'https://onetapp-backend.onrender.com/api/profiles/gallery/upload-image');
         xhr.upload.addEventListener('progress', function(e) {
           if (e.lengthComputable) {
             const percent = Math.round((e.loaded / e.total) * 100);
-            if (bar) bar.style.width = percent + '%';
+            bar.style.width = percent + '%';
           }
         });
         xhr.onload = function() {
@@ -1174,17 +1013,17 @@ function renderGalleryItems() {
             }
           } else {
             alert('Upload failed: ' + xhr.responseText);
-            if (progressBar) progressBar.style.display = 'none';
+            progressBar.style.display = 'none';
           }
         };
         xhr.onerror = function() {
           alert('Upload failed.');
-          if (progressBar) progressBar.style.display = 'none';
+          progressBar.style.display = 'none';
         };
         xhr.send(formData);
       } catch (err) {
         alert('Upload error: ' + err.message);
-        if (progressBar) progressBar.style.display = 'none';
+        progressBar.style.display = 'none';
       }
     });
   });
@@ -1218,43 +1057,41 @@ async function getVimeoThumbnail(url) {
   return '';
 }
 
-if (gallerySection) {
-    gallerySection.addEventListener('input', async function(e) {
-      const idx = e.target.getAttribute('idx');
-      if (e.target.hasAttribute('data-gtype')) galleryItems[idx].type = e.target.value;
-      if (e.target.hasAttribute('data-gurl')) {
-        let url = e.target.value.trim();
-        // Only add https:// if not already present for video URLs
-        if (galleryItems[idx].type === 'video' && !/^https?:\/\//i.test(url)) {
-          url = 'https://' + url;
-        }
-        galleryItems[idx].url = url;
-        // Auto-fetch thumbnail for video URLs
-        if (galleryItems[idx].type === 'video') {
-          let thumb = getYouTubeThumbnail(galleryItems[idx].url);
-          if (!thumb && galleryItems[idx].url.includes('vimeo.com')) {
-            thumb = await getVimeoThumbnail(galleryItems[idx].url);
-          }
-          if (thumb) {
-            galleryItems[idx].thumbnail = thumb;
-            renderGalleryItems();
-          }
-        }
+gallerySection.addEventListener('input', async function(e) {
+  const idx = e.target.getAttribute('idx');
+  if (e.target.hasAttribute('data-gtype')) galleryItems[idx].type = e.target.value;
+  if (e.target.hasAttribute('data-gurl')) {
+    let url = e.target.value.trim();
+    // Only add https:// if not already present for video URLs
+    if (galleryItems[idx].type === 'video' && !/^https?:\/\//i.test(url)) {
+      url = 'https://' + url;
+    }
+    galleryItems[idx].url = url;
+    // Auto-fetch thumbnail for video URLs
+    if (galleryItems[idx].type === 'video') {
+      let thumb = getYouTubeThumbnail(galleryItems[idx].url);
+      if (!thumb && galleryItems[idx].url.includes('vimeo.com')) {
+        thumb = await getVimeoThumbnail(galleryItems[idx].url);
       }
-      if (e.target.hasAttribute('data-gthumb')) galleryItems[idx].thumbnail = e.target.value;
-      if (e.target.hasAttribute('data-gtitle')) galleryItems[idx].title = e.target.value;
-      if (e.target.hasAttribute('data-gdesc')) galleryItems[idx].description = e.target.value;
-      if (e.target.hasAttribute('data-gorder')) galleryItems[idx].order = parseInt(e.target.value) || 0;
-    });
-
-    gallerySection.addEventListener('click', function(e) {
-      if (e.target.closest('[data-remove-gallery-item]')) {
-        const idx = e.target.closest('[data-remove-gallery-item]').getAttribute('data-remove-gallery-item');
-        galleryItems.splice(idx, 1);
+      if (thumb) {
+        galleryItems[idx].thumbnail = thumb;
         renderGalleryItems();
       }
-    });
-}
+    }
+  }
+  if (e.target.hasAttribute('data-gthumb')) galleryItems[idx].thumbnail = e.target.value;
+  if (e.target.hasAttribute('data-gtitle')) galleryItems[idx].title = e.target.value;
+  if (e.target.hasAttribute('data-gdesc')) galleryItems[idx].description = e.target.value;
+  if (e.target.hasAttribute('data-gorder')) galleryItems[idx].order = parseInt(e.target.value) || 0;
+});
+
+gallerySection.addEventListener('click', function(e) {
+  if (e.target.closest('[data-remove-gallery-item]')) {
+    const idx = e.target.closest('[data-remove-gallery-item]').getAttribute('data-remove-gallery-item');
+    galleryItems.splice(idx, 1);
+    renderGalleryItems();
+  }
+});
 
 
 
@@ -1266,7 +1103,6 @@ const addRecentActivityBtnAdd = document.getElementById('addRecentActivityBtnAdd
 let recentActivities = [];
 
 function renderRecentActivities() {
-  if (!recentActivitySection) return;
   recentActivitySection.innerHTML = '';
   recentActivities.forEach((item, idx) => {
     const div = document.createElement('div');
@@ -1313,25 +1149,23 @@ if (addRecentActivityBtnAdd) {
   });
 }
 
-if (recentActivitySection) {
-    recentActivitySection.addEventListener('input', function(e) {
-      const idx = e.target.getAttribute('idx');
-      if (e.target.hasAttribute('data-rtype')) recentActivities[idx].type = e.target.value;
-      if (e.target.hasAttribute('data-rtitle')) recentActivities[idx].title = e.target.value;
-      if (e.target.hasAttribute('data-rdesc')) recentActivities[idx].description = e.target.value;
-      if (e.target.hasAttribute('data-rurl')) recentActivities[idx].url = e.target.value;
-      if (e.target.hasAttribute('data-rdate')) recentActivities[idx].date = e.target.value;
-      if (e.target.hasAttribute('data-ricon')) recentActivities[idx].icon = e.target.value;
-    });
+recentActivitySection.addEventListener('input', function(e) {
+  const idx = e.target.getAttribute('idx');
+  if (e.target.hasAttribute('data-rtype')) recentActivities[idx].type = e.target.value;
+  if (e.target.hasAttribute('data-rtitle')) recentActivities[idx].title = e.target.value;
+  if (e.target.hasAttribute('data-rdesc')) recentActivities[idx].description = e.target.value;
+  if (e.target.hasAttribute('data-rurl')) recentActivities[idx].url = e.target.value;
+  if (e.target.hasAttribute('data-rdate')) recentActivities[idx].date = e.target.value;
+  if (e.target.hasAttribute('data-ricon')) recentActivities[idx].icon = e.target.value;
+});
 
-    recentActivitySection.addEventListener('click', function(e) {
-      if (e.target.closest('[data-remove-recent-activity]')) {
-        const idx = e.target.closest('[data-remove-recent-activity]').getAttribute('data-remove-recent-activity');
-        recentActivities.splice(idx, 1);
-        renderRecentActivities();
-      }
-    });
-}
+recentActivitySection.addEventListener('click', function(e) {
+  if (e.target.closest('[data-remove-recent-activity]')) {
+    const idx = e.target.closest('[data-remove-recent-activity]').getAttribute('data-remove-recent-activity');
+    recentActivities.splice(idx, 1);
+    renderRecentActivities();
+  }
+});
 
 
 
