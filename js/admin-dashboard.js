@@ -948,10 +948,12 @@ function renderGalleryItems() {
             <div class="progress-bar" role="progressbar" style="width: 0%"></div>
           </div>
         </div>
+        ${item.type === 'video' ? `
         <div class="col-md-2">
           <label class="form-label mb-0">Thumbnail</label>
           <input type="url" class="form-control" value="${item.thumbnail || ''}" data-gthumb idx="${idx}" placeholder="(optional)">
         </div>
+        ` : ''}
         <div class="col-md-2">
           <label class="form-label mb-0">Title</label>
           <input type="text" class="form-control" value="${item.title || ''}" data-gtitle idx="${idx}">
